@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# 변경된 파일 목록을 가져오기
+changed_files=$(git diff --cached --name-only)
+
+  echo "Running frontend Lint..."
+  npm run format || exit 1
+  npm run lint || exit 1
+  npm run type-check || exit 1
