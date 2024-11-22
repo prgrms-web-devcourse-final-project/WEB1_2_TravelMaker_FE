@@ -9,6 +9,7 @@ const Main = () => {
   return (
     <Wrapper>
       <Title>Hello World!</Title>
+      <SecondaryFont>Departure: 2024.11.20 Arrival: 2024.11.22</SecondaryFont>
       <h1 className="text-3xl font-bold underline">Hello world!</h1>
       <button
         type="button"
@@ -26,6 +27,10 @@ const Main = () => {
     </Wrapper>
   );
 };
+
+export const SecondaryFont = styled.h1`
+  font-family: ${({ theme }) => theme.typography.fontFamily.secondary};
+`;
 
 // Create a Title component that'll render an <h1> tag with some styles
 const Title = styled.h1`
