@@ -1,8 +1,15 @@
 import "./tailwind.css";
 
 import { createGlobalStyle } from "styled-components";
+import TicketingRegular from "@assets/fonts/Ticketing-regular.otf";
 
 export const GlobalStyle = createGlobalStyle`
+    @font-face {
+        font-family: 'Ticketing-regular';
+        src: url(${TicketingRegular}) format('opentype');
+        font-weight: normal;
+        font-style: normal;
+    }
     /*
     Josh's Custom CSS Reset
     https://www.joshwcomeau.com/css/custom-css-reset/
@@ -62,5 +69,14 @@ export const GlobalStyle = createGlobalStyle`
     #root,
     #__next {
         isolation: isolate;
+    }
+
+    body {
+        font-family: 'IBM Plex Sans KR', sans-serif;
+        font-family: ${({ theme }) => `${theme.typography.fontFamily.main}, sans-serif`};
+        font-weight: 400;
+        font-style: normal;
+        background-color: ${({ theme }) => theme.colors.background.neutral0};
+        color:  ${({ theme }) => theme.colors.text.title};
     }
 `;
