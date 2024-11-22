@@ -72,7 +72,6 @@ export const GlobalStyle = createGlobalStyle`
     }
 
     body {
-        font-family: 'IBM Plex Sans KR', sans-serif;
         font-family: ${({ theme }) => `${theme.typography.fontFamily.main}, sans-serif`};
         font-weight: 400;
         font-style: normal;
