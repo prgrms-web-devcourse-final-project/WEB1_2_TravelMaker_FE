@@ -67,7 +67,7 @@ export const DefaultInput: StoryObj<PlannerInputArgTypes> = {
       bold: args["font.bold"],
     };
 
-    return <Planner.Label {...args} font={props} />;
+    return <Planner.Input {...args} font={props} />;
   },
   args: {
     label: "SI3DK21K",

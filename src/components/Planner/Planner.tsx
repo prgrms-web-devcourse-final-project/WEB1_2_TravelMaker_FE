@@ -32,7 +32,7 @@ const Planner: PlannerComponent = {
       </Base.Container>
     );
   },
-  Input: ({ label, onChange, placeholder, fullWidth = true }) => {
+  Input: ({ label, onChange, placeholder, font = { size: "medium" }, fullWidth = true }) => {
     const onChangeHandler = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
       return onChange(value);
     };
@@ -40,7 +40,12 @@ const Planner: PlannerComponent = {
     return (
       <Base.Container $fullWidth={fullWidth}>
         <Base.Content>
-          <Base.Input placeholder={placeholder} onChange={onChangeHandler} value={label} />
+          <Base.Input
+            placeholder={placeholder}
+            onChange={onChangeHandler}
+            value={label}
+            $font={font}
+          />
         </Base.Content>
       </Base.Container>
     );
@@ -74,13 +79,15 @@ const Base = {
     font-weight: ${({ $font }) => ($font.bold ? 600 : 400)};
     color: ${({ theme }) => theme.colors.text.body};
   `,
-  Input: styled.input`
+  Input: styled.input<{ $font: Partial<PlannerFont> }>`
     width: 100%;
     text-align: center;
     border: none;
     outline: none;
     background-color: transparent;
-    font-size: ${({ theme }) => theme.typography.heading.h3.fontSize};
+    font-size: ${({ theme: { typography }, $font }) =>
+      $font.size === "small" ? typography.body.regular.fontSize : typography.heading.h3.fontSize};
+    font-weight: ${({ $font }) => ($font.bold ? 600 : 400)};
     color: ${({ theme }) => theme.colors.text.body};
   `,
 };
