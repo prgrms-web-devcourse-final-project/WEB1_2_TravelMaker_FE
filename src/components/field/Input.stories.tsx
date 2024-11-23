@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
 import { fn } from "@storybook/test";
 
-import Planner, { PlannerInputProps } from "./Planner";
-import { baseArgTypes, PlannerBaseArgTypes, PlannerInputArgTypes } from "./baseArgTypes";
+import FormField, { FormFieldInputProps } from "./FormField";
+import { baseArgTypes, FormFieldBaseArgTypes, FormFieldInputArgTypes } from "./baseArgTypes";
 
 const meta = {
-  title: "Components/Planner/Input",
-  component: Planner.Input,
+  title: "Components/FormField/Input",
+  component: FormField.Input,
   parameters: {
     docs: {
       description: {
@@ -18,7 +18,7 @@ const meta = {
   args: {
     "font.size": "medium",
     "font.bold": false,
-  } as PlannerBaseArgTypes,
+  } as FormFieldBaseArgTypes,
   argTypes: {
     ...baseArgTypes,
     onChange: {
@@ -32,11 +32,11 @@ const meta = {
       },
     },
   },
-} satisfies Meta<typeof Planner.Input>;
+} satisfies Meta<typeof FormField.Input>;
 
 export default meta;
 
-const InputWithState = (args: PlannerInputProps) => {
+const InputWithState = (args: FormFieldInputProps) => {
   if (!args) {
     throw ReferenceError("Invalid arguments");
   }
@@ -46,10 +46,10 @@ const InputWithState = (args: PlannerInputProps) => {
   useEffect(() => {
     setValue(args.label);
     args.onChange?.(args.label);
-  }, [args]);
+  }, [args, args.label]);
 
   return (
-    <Planner.Input
+    <FormField.Input
       {...args}
       label={value}
       onChange={(newValue) => {
@@ -60,14 +60,14 @@ const InputWithState = (args: PlannerInputProps) => {
   );
 };
 
-export const DefaultInput: StoryObj<PlannerInputArgTypes> = {
+export const DefaultInput: StoryObj<FormFieldInputArgTypes> = {
   render: (args) => {
     const props = {
       size: args["font.size"],
       bold: args["font.bold"],
     };
 
-    return <Planner.Input {...args} font={props} />;
+    return <InputWithState {...args} font={props} />;
   },
   args: {
     label: "SI3DK21K",
@@ -77,7 +77,7 @@ export const DefaultInput: StoryObj<PlannerInputArgTypes> = {
   },
 };
 
-export const Placeholder: StoryObj<typeof Planner.Input> = {
+export const Placeholder: StoryObj<typeof FormField.Input> = {
   render: (args) => <InputWithState {...args} />,
   args: {
     label: "",

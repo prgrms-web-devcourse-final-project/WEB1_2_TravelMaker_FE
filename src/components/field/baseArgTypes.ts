@@ -1,14 +1,25 @@
 import type { ArgTypes } from "@storybook/react";
-import { PlannerBaseProps, PlannerFont, PlannerInputProps } from "./Planner";
+import {
+  FormFieldBaseProps,
+  FormFieldClickableProps,
+  FormFieldFont,
+  FormFieldInputProps,
+} from "./FormField";
 
-interface PlannerFontArgTypes {
-  "font.size": PlannerFont["size"];
-  "font.bold": PlannerFont["bold"];
+interface FormFieldFontArgTypes {
+  "font.size": FormFieldFont["size"];
+  "font.bold": FormFieldFont["bold"];
 }
 
-interface PlannerBaseArgTypes extends Omit<PlannerBaseProps, "font">, PlannerFontArgTypes {}
+interface FormFieldBaseArgTypes extends Omit<FormFieldBaseProps, "font">, FormFieldFontArgTypes {}
 
-interface PlannerInputArgTypes extends Omit<PlannerInputProps, "font">, PlannerFontArgTypes {}
+interface FormFieldInputArgTypes extends Omit<FormFieldInputProps, "font">, FormFieldFontArgTypes {}
+
+interface FormFieldClickableArgTypes
+  extends Omit<FormFieldClickableProps, "font">,
+    FormFieldFontArgTypes {
+  "icon.left": JSX.Element;
+}
 
 const baseArgTypes = {
   label: {
@@ -59,4 +70,4 @@ const baseArgTypes = {
 } satisfies Partial<ArgTypes>;
 
 export { baseArgTypes };
-export type { PlannerBaseArgTypes, PlannerInputArgTypes };
+export type { FormFieldBaseArgTypes, FormFieldInputArgTypes, FormFieldClickableArgTypes };

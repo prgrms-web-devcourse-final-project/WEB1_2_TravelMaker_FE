@@ -1,28 +1,36 @@
 import { ChangeEvent, FC } from "react";
 import styled from "styled-components";
 
-interface PlannerBaseProps {
+interface FormFieldBaseProps {
   label: string;
   fullWidth?: boolean;
-  font: Partial<PlannerFont>;
+  font: Partial<FormFieldFont>;
 }
 
-type PlannerFont = {
+type FormFieldFont = {
   size: "small" | "medium";
   bold: boolean;
 };
 
-interface PlannerInputProps extends PlannerBaseProps {
+interface FormFieldInputProps extends FormFieldBaseProps {
   onChange: (value: string) => void;
   placeholder?: string;
 }
 
-type PlannerComponent = {
-  Label: FC<PlannerBaseProps>;
-  Input: FC<PlannerInputProps>;
+interface FormFieldClickableProps extends FormFieldBaseProps {
+  onClick: () => void;
+  icon?: {
+    left: JSX.Element;
+  };
+}
+
+type FormFieldComponent = {
+  Label: FC<FormFieldBaseProps>;
+  Input: FC<FormFieldInputProps>;
+  Clickable: FC<FormFieldClickableProps>;
 };
 
-const Planner: PlannerComponent = {
+const FormField: FormFieldComponent = {
   Label: ({ label, font = { size: "medium" }, fullWidth = true }) => {
     return (
       <Base.Container $fullWidth={fullWidth}>
@@ -50,6 +58,16 @@ const Planner: PlannerComponent = {
       </Base.Container>
     );
   },
+  Clickable: ({ label, onClick, icon, font = { size: "medium" }, fullWidth = true }) => {
+    return (
+      <Base.Container $fullWidth={fullWidth} as="button" onClick={onClick}>
+        <Base.Content>
+          {icon?.left ? <IconContainer>{icon.left}</IconContainer> : null}
+          <Base.Text $font={font}>{label}</Base.Text>
+        </Base.Content>
+      </Base.Container>
+    );
+  },
 };
 
 const Base = {
@@ -61,15 +79,19 @@ const Base = {
     min-width: ${(props) => (props.$fullWidth ? "320px" : undefined)};
     max-width: 320px;
     height: 55px;
-    padding: 15px;
+    padding: 20px;
     border-radius: ${({ theme: { cornerRadius } }) => cornerRadius.large};
     background-color: ${({ theme }) => theme.colors.secondary.subtle};
   `,
   Content: styled.div`
     flex: 1;
     width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 7px;
   `,
-  Text: styled.p<{ $font: Partial<PlannerFont> }>`
+  Text: styled.p<{ $font: Partial<FormFieldFont> }>`
     text-align: center;
     overflow: hidden;
     white-space: nowrap;
@@ -79,7 +101,7 @@ const Base = {
     font-weight: ${({ $font }) => ($font.bold ? 600 : 400)};
     color: ${({ theme }) => theme.colors.text.body};
   `,
-  Input: styled.input<{ $font: Partial<PlannerFont> }>`
+  Input: styled.input<{ $font: Partial<FormFieldFont> }>`
     width: 100%;
     text-align: center;
     border: none;
@@ -92,5 +114,9 @@ const Base = {
   `,
 };
 
-export default Planner;
-export type { PlannerBaseProps, PlannerFont, PlannerInputProps };
+const IconContainer = styled.div`
+  padding-bottom: 3px;
+`;
+
+export default FormField;
+export type { FormFieldBaseProps, FormFieldFont, FormFieldInputProps, FormFieldClickableProps };

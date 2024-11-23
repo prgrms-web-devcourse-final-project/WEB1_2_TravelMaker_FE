@@ -174,7 +174,7 @@ const sharedShadows = {
 export const lightTheme: DefaultTheme = {
   colors: {
     primary: {
-      normal: "#7BBAFA",
+      normal: "#7EB4EA",
       hover: "#9FCAF1",
       active: "#518CF0",
       disabled: "#7BBAFA50",
@@ -222,9 +222,9 @@ export const lightTheme: DefaultTheme = {
       disabled: "#F7221650",
     },
     text: {
-      title: "#182636",
-      body: "#244461",
-      bodySubtle: "#38628E",
+      title: "#1B2636",
+      body: "#2B4461",
+      bodySubtle: "#3B628E",
       caption: "#6F99C1",
     },
     background: {

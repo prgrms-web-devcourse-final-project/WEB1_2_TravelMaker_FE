@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
-import Planner from "./Planner";
-import { baseArgTypes, PlannerBaseArgTypes } from "./baseArgTypes";
+import FormField from "./FormField";
+import { baseArgTypes, FormFieldBaseArgTypes } from "./baseArgTypes";
 
 const meta = {
-  title: "Components/Planner/Label",
-  component: Planner.Label,
+  title: "Components/FormField/Label",
+  component: FormField.Label,
   parameters: {
     docs: {
       description: {
@@ -16,22 +16,22 @@ const meta = {
   args: {
     "font.size": "medium",
     "font.bold": false,
-  } as PlannerBaseArgTypes,
+  } as FormFieldBaseArgTypes,
   argTypes: {
     ...baseArgTypes,
   },
-} satisfies Meta<typeof Planner.Label>;
+} satisfies Meta<typeof FormField.Label>;
 
 export default meta;
 
-export const DefaultLabel: StoryObj<PlannerBaseArgTypes> = {
+export const DefaultLabel: StoryObj<FormFieldBaseArgTypes> = {
   render: (args) => {
     const props = {
       size: args["font.size"],
       bold: args["font.bold"],
     };
 
-    return <Planner.Label {...args} font={props} />;
+    return <FormField.Label {...args} font={props} />;
   },
   args: {
     label: "SI3DK21K",
@@ -39,7 +39,7 @@ export const DefaultLabel: StoryObj<PlannerBaseArgTypes> = {
   },
 };
 
-export const ResizableLabel: StoryObj<typeof Planner.Label> = {
+export const ResizableLabel: StoryObj<typeof FormField.Label> = {
   args: {
     label: "🛫",
     fullWidth: false,
