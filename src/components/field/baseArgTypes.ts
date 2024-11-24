@@ -1,12 +1,13 @@
 import type { ArgTypes } from "@storybook/react";
 import {
+  FormFieldActionLabelProps,
   FormFieldBaseProps,
   FormFieldClickableProps,
   FormFieldFont,
   FormFieldInputProps,
 } from "./FormField";
 
-interface FormFieldFontArgTypes {
+export interface FormFieldFontArgTypes {
   "font.size": FormFieldFont["size"];
   "font.bold": FormFieldFont["bold"];
 }
@@ -19,6 +20,13 @@ interface FormFieldClickableArgTypes
   extends Omit<FormFieldClickableProps, "font">,
     FormFieldFontArgTypes {
   "icon.left": JSX.Element;
+}
+
+interface FormActionLabelArgTypes
+  extends Omit<FormFieldActionLabelProps, "font">,
+    FormFieldFontArgTypes {
+  "icon.right.Item": JSX.Element;
+  "icon.right.onClick": () => void;
 }
 
 const baseArgTypes = {
@@ -70,4 +78,9 @@ const baseArgTypes = {
 } satisfies Partial<ArgTypes>;
 
 export { baseArgTypes };
-export type { FormFieldBaseArgTypes, FormFieldInputArgTypes, FormFieldClickableArgTypes };
+export type {
+  FormFieldBaseArgTypes,
+  FormFieldInputArgTypes,
+  FormFieldClickableArgTypes,
+  FormActionLabelArgTypes,
+};

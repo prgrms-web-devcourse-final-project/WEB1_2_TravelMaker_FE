@@ -24,10 +24,20 @@ interface FormFieldClickableProps extends FormFieldBaseProps {
   };
 }
 
+interface FormFieldActionLabelProps extends FormFieldBaseProps {
+  icon: {
+    right: {
+      Item: JSX.Element;
+      onClick: (label: string) => void;
+    };
+  };
+}
+
 type FormFieldComponent = {
   Label: FC<FormFieldBaseProps>;
   Input: FC<FormFieldInputProps>;
   Clickable: FC<FormFieldClickableProps>;
+  ActionLabel: FC<FormFieldActionLabelProps>;
 };
 
 const FormField: FormFieldComponent = {
@@ -58,7 +68,7 @@ const FormField: FormFieldComponent = {
       </Base.Container>
     );
   },
-  Clickable: ({ label, onClick, icon, font = { size: "medium" }, fullWidth = true }) => {
+  Clickable: ({ label, onClick, icon, font = { size: "medium" }, fullWidth = false }) => {
     return (
       <Base.Container $fullWidth={fullWidth} as="button" onClick={onClick}>
         <Base.Content>
@@ -68,7 +78,38 @@ const FormField: FormFieldComponent = {
       </Base.Container>
     );
   },
+  ActionLabel: ({ label, icon, font = { size: "small" }, fullWidth = true }) => {
+    const onClickHandler = () => {
+      icon.right.onClick(label);
+    };
+
+    return (
+      <Base.Container $fullWidth={fullWidth}>
+        <Base.Content>
+          <ButtonContainer $hidden></ButtonContainer>
+          <FullContainer>
+            <Base.Text $font={font}>{label}</Base.Text>
+          </FullContainer>
+          <ButtonContainer $hidden={false} onClick={onClickHandler}>
+            {icon.right.Item}
+          </ButtonContainer>
+        </Base.Content>
+      </Base.Container>
+    );
+  },
 };
+
+const FullContainer = styled.div`
+  flex: 1;
+  min-width: 0;
+`;
+
+const ButtonContainer = styled.button<{ $hidden: boolean }>`
+  visibility: ${({ $hidden }) => ($hidden ? "hidden" : "visible")};
+  width: 32px;
+  aspect-ratio: 1;
+  border-radius: ${({ theme: { cornerRadius } }) => cornerRadius.small};
+`;
 
 const Base = {
   Container: styled.div<{ $fullWidth: boolean }>`
@@ -97,7 +138,7 @@ const Base = {
     white-space: nowrap;
     text-overflow: ellipsis;
     font-size: ${({ theme: { typography }, $font }) =>
-      $font.size === "small" ? typography.body.regular.fontSize : typography.heading.h3.fontSize};
+      $font.size === "small" ? typography.heading.h4.fontSize : typography.heading.h3.fontSize};
     font-weight: ${({ $font }) => ($font.bold ? 600 : 400)};
     color: ${({ theme }) => theme.colors.text.body};
   `,
@@ -108,7 +149,7 @@ const Base = {
     outline: none;
     background-color: transparent;
     font-size: ${({ theme: { typography }, $font }) =>
-      $font.size === "small" ? typography.body.regular.fontSize : typography.heading.h3.fontSize};
+      $font.size === "small" ? typography.heading.h4.fontSize : typography.heading.h3.fontSize};
     font-weight: ${({ $font }) => ($font.bold ? 600 : 400)};
     color: ${({ theme }) => theme.colors.text.body};
   `,
@@ -119,4 +160,10 @@ const IconContainer = styled.div`
 `;
 
 export default FormField;
-export type { FormFieldBaseProps, FormFieldFont, FormFieldInputProps, FormFieldClickableProps };
+export type {
+  FormFieldBaseProps,
+  FormFieldFont,
+  FormFieldInputProps,
+  FormFieldClickableProps,
+  FormFieldActionLabelProps,
+};

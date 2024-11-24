@@ -28,6 +28,9 @@ const meta = {
       },
     },
     ["icon.left"]: {
+      type: {
+        name: "function",
+      },
       description: "아이콘 컴포넌트를 렌더링 합니다.",
       table: {
         type: { summary: "JSX.Element" },
