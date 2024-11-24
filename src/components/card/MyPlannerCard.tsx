@@ -5,14 +5,15 @@ import EmptyBox from "@common/styles/Empty";
 import { calcVwFromPx } from "@common/styles/theme";
 import PlaneIcon, { PlaneIcon2 } from "@components/icons/Plane";
 
-interface Props {
+interface MyPlannerCardProps {
   onClick: () => void;
+  title?: string;
   country: string;
   startDate: string;
   endDate: string;
 }
 
-const MyPlannerCard: FC<Props> = ({ onClick, country, startDate, endDate }) => {
+const MyPlannerCard: FC<MyPlannerCardProps> = ({ onClick, title, country, startDate, endDate }) => {
   const [isAnimating, setIsAnimating] = useState(false);
 
   const onClickHandler = () => {
@@ -34,8 +35,8 @@ const MyPlannerCard: FC<Props> = ({ onClick, country, startDate, endDate }) => {
         {/* 상단 블록 */}
         <TopContainer>
           <PlaneIcon />
-          <Label>MY TRIP</Label>
-          <EmptyBox size={30} />
+          <Label>{title ?? "MY TRIP"}</Label>
+          <EmptyBox width={30} />
         </TopContainer>
         <ContentContainer>
           {/* 아이콘 블록 */}
@@ -114,7 +115,7 @@ const ContentContainer = styled.div`
 `;
 
 const IconContainer = styled.div<{ $isAnimating: boolean }>`
-  padding-left: clamp(25px, calc(2.604vw), 50px);
+  padding-left: clamp(25px, calc(2vw), 50px);
   animation: ${({ $isAnimating }) => ($isAnimating ? flyAnimation : "none")} 1s forwards;
 `;
 
@@ -156,6 +157,9 @@ const DateLabel = styled(TicketingFont)`
   text-align: right;
   font-size: ${({ theme }) => theme.typography.caption.fontSize};
   color: ${({ theme }) => theme.colors.text.title};
+
+  @media (max-width: 1500px) {
+  }
 `;
 
 export default MyPlannerCard;

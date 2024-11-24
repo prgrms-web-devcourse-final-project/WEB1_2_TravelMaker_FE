@@ -13,6 +13,9 @@ const meta = {
       },
     },
   },
+  args: {
+    title: "MY TRIP",
+  },
   argTypes: {
     country: {
       control: "text",
@@ -30,6 +33,13 @@ const meta = {
       action: "onClick",
       description: "클릭 이벤트 발생 시 호출되는 함수입니다.",
     },
+    title: {
+      control: "text",
+      description: "카드 제목을 수정합니다.",
+      table: {
+        defaultValue: { summary: "MY TRIP" },
+      },
+    },
   },
 } satisfies Meta<typeof MyPlannerCard>;
 
@@ -39,6 +49,16 @@ type Story = StoryObj<typeof meta>;
 
 export const DefaultPlannerCard: Story = {
   args: {
+    country: "KOREA",
+    startDate: "2024.11.24",
+    endDate: "2024.11.30",
+    onClick: fn(),
+  },
+};
+
+export const ChangedTitlePlannerCard: Story = {
+  args: {
+    title: "Changed Title",
     country: "KOREA",
     startDate: "2024.11.24",
     endDate: "2024.11.30",

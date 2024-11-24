@@ -321,3 +321,5 @@ export const darkTheme: DefaultTheme = {
 
 export const calcVwFromPx = (px: number) => `min(${px}px, calc(${px} / 1920 * 100vw))`;
 export const calcVhFromPx = (px: number) => `min(${px}px, calc(${px} / 1080 * 100vh))`;
+export const calcResponsive = (min: number, max: number) =>
+  `clamp(${min}px, calc(${max} / 1920 * 100vw), ${max}px)`;
