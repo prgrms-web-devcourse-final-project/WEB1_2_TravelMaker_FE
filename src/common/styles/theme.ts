@@ -318,3 +318,6 @@ export const darkTheme: DefaultTheme = {
   strokeWidth: sharedStrokeWidth,
   shadows: sharedShadows,
 };
+
+export const calcVwFromPx = (px: number) => `min(${px}px, calc(${px} / 1920 * 100vw))`;
+export const calcVhFromPx = (px: number) => `min(${px}px, calc(${px} / 1080 * 100vh))`;
