@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Button from "../../components/stories/Button";
 import Google from "../../components/assets/Icon";
 import Kakao from "../../components/assets/Icon1";
+import LargeLogo from "../../components/assets/LargeLogo"; // LargeLogo 컴포넌트 경로
 
 const LoginPageWrapper = styled.div`
   display: flex;
@@ -13,40 +14,39 @@ const LoginPageWrapper = styled.div`
   background-color: #f9fafc;
 `;
 
-const Title = styled.h1`
-  font-size: 32px;
-  font-weight: 600;
-  color: #4c7aa7;
-  margin-bottom: 40px;
+const LoginDiv = styled.div`
+  width: 500px;
+  height: 650px;
 `;
 
-const Description = styled.p`
-  font-size: 18px;
-  color: #4c7aa7;
-  margin-bottom: 60px;
+const LogoWrapper = styled.div`
+  margin-bottom: 40px; /* 로고 아래 간격 */
 `;
 
-const LoginPage: React.FC = () => {
+const Login: React.FC = () => {
   const handleLoginClick = () => {
     alert("로그인 버튼 클릭됨");
   };
 
   return (
     <LoginPageWrapper>
-      <Title>로그인</Title>
-      <Description>로그인을 통해 더 많은 기능을 사용할 수 있습니다.</Description>
-      <Button
-        label="로그인"
-        icon={Google} // 아이콘 컴포넌트를 전달
-        onClick={handleLoginClick}
-      />
-     <Button
-        label="로그인"
-        icon={Kakao} // 아이콘 컴포넌트를 전달
-        onClick={handleLoginClick}
-      />
+      <LoginDiv>
+        <LogoWrapper>
+          <LargeLogo width={300} height={320} /> {/* SVG 컴포넌트 사용 */}
+        </LogoWrapper>
+        <Button
+          label="구글로 로그인"
+          icon={Google}
+          onClick={handleLoginClick}
+        />
+        <Button
+          label="카카오로 로그인"
+          icon={Kakao}
+          onClick={handleLoginClick}
+        />
+      </LoginDiv>
     </LoginPageWrapper>
   );
 };
 
-export default LoginPage;
+export default Login;
