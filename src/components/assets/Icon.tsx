@@ -1,13 +1,7 @@
 // import * as React from "react";
 import type { SVGProps } from "react";
 const Icon = (props: SVGProps<SVGSVGElement>) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={48}
-    height={48}
-    fill="none"
-    {...props}
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width={48} height={48} fill="none" {...props}>
     <g clipPath="url(#a)">
       <path
         fill="#4285F4"
@@ -33,4 +27,5 @@ const Icon = (props: SVGProps<SVGSVGElement>) => (
     </defs>
   </svg>
 );
+
 export default Icon;

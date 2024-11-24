@@ -1,5 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
 export interface ButtonProps {
   /** 버튼 내부 텍스트 */
@@ -28,7 +28,9 @@ const StyledButton = styled.button`
   cursor: pointer;
   font-family: ${({ theme }) => theme.typography.fontFamily.main};
   box-shadow: ${({ theme }) => theme.shadows.small};
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
 
   &:hover {
     background-color: #f0f0f0;
@@ -38,7 +40,6 @@ const StyledButton = styled.button`
     position: absolute;
     left: 11px; /* 버튼 왼쪽 끝에서 11px 떨어진 위치 */
   }
-  
 `;
 
 const Button: React.FC<ButtonProps> = ({ label, icon: Icon, onClick }) => {
