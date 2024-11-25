@@ -33,7 +33,7 @@ const LoginPageWrapper = styled.div`
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: #FFFFFF;
+  background-color: ${({ theme }) => theme.colors.background.neutral0};
 `;
 
 const LoginDiv = styled.div`
