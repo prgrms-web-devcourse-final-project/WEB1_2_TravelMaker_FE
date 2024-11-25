@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import Profile from "../assets/images/ProfileImage";
+import Profile from "../assets/images/DefaultImage";
 import CameraIcon from "../assets/icons/CameraIcon";
 import EditIcon from "../assets/icons/EditIcon";
 
@@ -12,7 +12,7 @@ export const ProfileWithInfo: React.FC<{
 }> = ({ src, name, email, onCameraClick }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [currentName, setCurrentName] = useState(name);
-  const [profileImage, setProfileImage] = useState(src);
+  const [profileImage, setProfileImage] = useState<string | null | undefined>(src);
 
   const handleEditClick = () => {
     setIsEditing(true);
@@ -51,16 +51,23 @@ export const ProfileWithInfo: React.FC<{
     };
   };
 
+  const handleResetToDefault = () => {
+    setProfileImage(null);
+  };
+
   return (
     <Container>
       <ProfileWrapper>
-        {profileImage ? (
-          <ProfileImage src={profileImage} alt="Profile" />
-        ) : (
-          <DefaultBackground>
-            <Profile />
-          </DefaultBackground>
-        )}
+        <ProfileImageWrapper>
+          {profileImage ? (
+            <ProfileImage src={profileImage} alt="Profile" />
+          ) : (
+            <DefaultBackground>
+              <Profile />
+            </DefaultBackground>
+          )}
+          <HoverText onClick={handleResetToDefault}>기본 프로필 이미지로 변경</HoverText>
+        </ProfileImageWrapper>
         <CameraIconWrapper onClick={handleFileUpload}>
           <CameraIcon />
         </CameraIconWrapper>
@@ -92,7 +99,7 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding-top: 220px;
+  background-color: ${({ theme }) => theme.colors.background.neutral3};
 `;
 
 const ProfileWrapper = styled.div`
@@ -105,27 +112,57 @@ const ProfileWrapper = styled.div`
   margin-bottom: 40px;
 `;
 
+const ProfileImageWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border: ${({ theme }) => theme.strokeWidth.thick} solid
+    ${({ theme }) => theme.colors.stroke.neutral3};
+  border-radius: ${({ theme }) => theme.cornerRadius.circular};
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover span {
+    opacity: 1;
+  }
+`;
+
 const ProfileImage = styled.img`
   width: 100%;
   height: 100%;
-  border-radius: 50%;
+  border-radius: ${({ theme }) => theme.cornerRadius.circular};
   object-fit: cover;
 `;
 
 const DefaultBackground = styled.div`
   width: 100%;
   height: 100%;
-  border-radius: 50%;
+  border-radius: ${({ theme }) => theme.cornerRadius.circular};
   display: flex;
   align-items: center;
   justify-content: center;
+`;
+
+const HoverText = styled.span`
+  position: absolute;
+  bottom: 35%;
+  background-color: ${({ theme }) => theme.colors.background.neutral1};
+  color: ${({ theme }) => theme.colors.text.body};
+  font-size: ${({ theme }) => theme.typography.heading.h3.fontSize};
+  padding: 5px 10px;
+  border-radius: ${({ theme }) => theme.cornerRadius.medium};
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  cursor: pointer;
 `;
 
 const CameraIconWrapper = styled.div`
   position: absolute;
   bottom: 0px;
   right: 0px;
-  border-radius: 50%;
+  border-radius: ${({ theme }) => theme.cornerRadius.circular};
   width: 70px;
   height: 70px;
   display: flex;
@@ -160,39 +197,42 @@ const InputWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-left: 30px;
 `;
 
 const Input = styled.input`
   flex: 1;
   width: 100%;
   font-size: 40px;
-  font-weight: bold;
-  color: #2b4461;
+  font-weight: ${({ theme }) => theme.typography.heading.h1.fontWeight};
   text-align: center;
   border: none;
-  border-bottom: 2px solid #2b4461;
+  border-bottom: ${({ theme }) => theme.strokeWidth.thick} solid
+    ${({ theme }) => theme.colors.stroke.neutral3};
   outline: none;
 `;
 
 const ConfirmButton = styled.button`
-  font-size: 20px;
-  background-color: #2b4461;
-  color: white;
+  font-size: ${({ theme }) => theme.typography.heading.h2.fontSize};
+  background-color: ${({ theme }) => theme.colors.text.body};
+  color: ${({ theme }) => theme.colors.background.neutral0};
   border: none;
   border-radius: 5px;
   padding: 5px 10px;
   cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease;
 
   &:hover {
-    background-color: #1b2636;
+    background-color: ${({ theme }) => theme.colors.text.title};
+    transform: scale(1.01);
   }
 `;
 
 const UserName = styled.div`
   font-size: 40px;
-  font-weight: bold;
-  color: #2b4461;
+  font-weight: ${({ theme }) => theme.typography.heading.h1.fontWeight};
+  color: ${({ theme }) => theme.colors.text.body};
 `;
 
 const EditIconWrapper = styled.div`
@@ -204,6 +244,6 @@ const EditIconWrapper = styled.div`
 
 const Email = styled.div`
   width: 280px;
-  font-size: 24px;
-  color: #2b4461;
+  font-size: ${({ theme }) => theme.typography.heading.h2.fontSize};
+  color: ${({ theme }) => theme.colors.text.body};
 `;
