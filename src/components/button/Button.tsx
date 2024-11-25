@@ -1,4 +1,4 @@
-import { calcResponsive } from "@common/styles/theme";
+import { calcResponsiveByPercent } from "@common/styles/theme";
 import React from "react";
 import styled from "styled-components";
 
@@ -9,6 +9,7 @@ export interface ButtonProps {
   icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   /** 클릭 핸들러 */
   onClick?: () => void;
+  type?: "small" | "medium";
 }
 
 const StyledButton = styled.button`
@@ -17,8 +18,8 @@ const StyledButton = styled.button`
   align-items: center;
   justify-content: center; /* 텍스트를 버튼의 가운데 정렬 */
   gap: 8px;
-  width: ${calcResponsive(370, 500)};
-  height: ${calcResponsive(60, 70)};
+  width: ${calcResponsiveByPercent(-25, 500)};
+  height: ${calcResponsiveByPercent(-15, 70)};
   padding: 0;
   font-size: 26px;
   font-weight: 400;
@@ -44,7 +45,21 @@ const StyledButton = styled.button`
   }
 `;
 
-const Button: React.FC<ButtonProps> = ({ label, icon: Icon, onClick }) => {
+const SmallStyledButton = styled(StyledButton)`
+  width: ${calcResponsiveByPercent(-25, 150)};
+  height: ${calcResponsiveByPercent(-15, 55)};
+  font-size: ${({ theme }) => theme.typography.heading.h3.fontSize};
+`;
+
+const Button: React.FC<ButtonProps> = ({ label, icon: Icon, onClick, type = "medium" }) => {
+  if (type === "small") {
+    return (
+      <SmallStyledButton onClick={onClick}>
+        <span>{label}</span>
+      </SmallStyledButton>
+    );
+  }
+
   return (
     <StyledButton onClick={onClick}>
       {Icon && <Icon width={48} height={48} />}
