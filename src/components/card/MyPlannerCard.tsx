@@ -157,9 +157,6 @@ const DateLabel = styled(TicketingFont)`
   text-align: right;
   font-size: ${({ theme }) => theme.typography.caption.fontSize};
   color: ${({ theme }) => theme.colors.text.title};
-
-  @media (max-width: 1500px) {
-  }
 `;
 
 export default MyPlannerCard;
