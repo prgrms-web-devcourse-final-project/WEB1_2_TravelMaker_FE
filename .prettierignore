@@ -3,4 +3,4 @@ dist
 public
 .husky
 .github
-
+mockServiceWorker.js

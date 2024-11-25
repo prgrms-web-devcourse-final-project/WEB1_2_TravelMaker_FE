@@ -70,6 +70,7 @@ export default tseslint.config(
       // 함수 선언 대신 함수 표현식을 사용하도록 강제합니다.
       "func-style": ["error", "expression"],
     },
+    ignores: ["mockServiceWorker.js"],
   },
 
   // Prettier와 ESLint 추천 규칙을 함께 사용하도록 설정합니다.
