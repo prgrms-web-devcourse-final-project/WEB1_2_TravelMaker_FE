@@ -1,4 +1,4 @@
-import { calcResponsive, calcVwFromPx } from "@common/styles/theme";
+import { calcResponsive } from "@common/styles/theme";
 import React from "react";
 import styled from "styled-components";
 
@@ -17,8 +17,7 @@ const StyledButton = styled.button`
   align-items: center;
   justify-content: center; /* 텍스트를 버튼의 가운데 정렬 */
   gap: 8px;
-  width: ${calcVwFromPx(500)};
-  min-width: 370px;
+  width: ${calcResponsive(370, 500)};
   height: ${calcResponsive(60, 70)};
   padding: 0;
   font-size: 26px;
