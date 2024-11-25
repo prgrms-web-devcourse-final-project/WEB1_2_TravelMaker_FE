@@ -19,7 +19,7 @@ const StyledButton = styled.button`
   width: 500px;
   height: 70px;
   padding: 0;
-  font-size: 26px;
+  font-size: ${({ theme }) => theme.typography.heading.h2.fontSize};
   font-weight: 400;
   border-radius: ${({ theme }) => theme.cornerRadius.large};
   border: ${({ theme: { strokeWidth, colors } }) =>
