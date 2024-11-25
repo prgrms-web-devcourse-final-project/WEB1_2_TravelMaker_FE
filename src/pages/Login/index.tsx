@@ -17,9 +17,9 @@ const Login: React.FC = () => {
           <LargeLogo width={300} height={320} /> {/* SVG 컴포넌트 사용 */}
         </LogoWrapper>
         <ButtonWrapper>
-        <Button label="구글로 로그인" icon={Google} onClick={handleLoginClick} />
+          <Button label="Google로 시작하기" icon={Google} onClick={handleLoginClick} />
         </ButtonWrapper>
-        <Button label="카카오로 로그인" icon={Kakao} onClick={handleLoginClick} />
+        <Button label="Kakao로 시작하기" icon={Kakao} onClick={handleLoginClick} />
       </LoginDiv>
     </LoginPageWrapper>
   );
@@ -33,7 +33,7 @@ const LoginPageWrapper = styled.div`
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: #f9fafc;
+  background-color: #FFFFFF;
 `;
 
 const LoginDiv = styled.div`
@@ -47,7 +47,6 @@ const LogoWrapper = styled.div`
   margin-left: 100px;
 `;
 const ButtonWrapper = styled.div`
-margin-top: 150px;
+  margin-top: 150px;
   margin-bottom: 40px;
 `;
-
