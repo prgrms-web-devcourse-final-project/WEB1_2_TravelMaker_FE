@@ -1,3 +1,4 @@
+import calcByPercent from "@common/utils/calcByPercent";
 import "styled-components";
 import { DefaultTheme } from "styled-components";
 
@@ -319,7 +320,34 @@ export const darkTheme: DefaultTheme = {
   shadows: sharedShadows,
 };
 
+/**
+ * 주어진 픽셀(px) 값을 뷰포트 너비(vw) 단위로 변환합니다.
+ * @param px 변환할 픽셀 값
+ * @returns 최소값(`min`)으로 픽셀(px) 값과 뷰포트 너비(vw) 값을 반환하는 CSS 표현식
+ */
 export const calcVwFromPx = (px: number) => `min(${px}px, calc(${px} / 1920 * 100vw))`;
+
+/**
+ * 주어진 픽셀(px) 값을 뷰포트 높이(vh) 단위로 변환합니다.
+ * @param px 변환할 픽셀 값
+ * @returns 최소값(`min`)으로 픽셀(px) 값과 뷰포트 높이(vh) 값을 반환하는 CSS 표현식
+ */
 export const calcVhFromPx = (px: number) => `min(${px}px, calc(${px} / 1080 * 100vh))`;
+
+/**
+ * 주어진 최소값과 최대값 범위에서, 뷰포트 너비(vw)에 따라 반응형 값을 계산합니다.
+ * @param min 최소 픽셀 값
+ * @param max 최대 픽셀 값
+ * @returns `clamp`를 사용하여 최소값, 뷰포트 기반 계산 값, 최대값을 포함하는 CSS 표현식
+ */
 export const calcResponsive = (min: number, max: number) =>
   `clamp(${min}px, calc(${max} / 1920 * 100vw), ${max}px)`;
+
+/**
+ * 퍼센트를 기준으로 최소값을 계산하고, 최대값과 함께 반응형 값을 제공합니다.
+ * @param percentage 최소값을 계산할 퍼센트
+ * @param max 최대 픽셀 값
+ * @returns `calcResponsive`를 호출하여 퍼센트 기반 최소값과 최대값으로 생성된 CSS 표현식
+ */
+export const calcResponsiveByPercent = (percentage: number, max: number) =>
+  calcResponsive(calcByPercent(max, percentage), max);
