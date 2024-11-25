@@ -7,8 +7,7 @@ const LargeLogo = (props: SVGProps<SVGSVGElement>) => (
     width={props.width || 300} // 기본값 300
     height={props.height || 320} // 기본값 320
     fill="none"
-    {...props}
-  >
+    {...props}>
     <mask
       id="a"
       width={235}
@@ -18,8 +17,7 @@ const LargeLogo = (props: SVGProps<SVGSVGElement>) => (
       maskUnits="userSpaceOnUse"
       style={{
         maskType: "alpha",
-      }}
-    >
+      }}>
       <path fill="#000" d="M236.448 13.557H2.658v214.227h233.79z" />
     </mask>
     <g mask="url(#a)">
@@ -32,8 +30,7 @@ const LargeLogo = (props: SVGProps<SVGSVGElement>) => (
         maskUnits="userSpaceOnUse"
         style={{
           maskType: "alpha",
-        }}
-      >
+        }}>
         <path fill="#000" d="M37.815 61.158h166.992v125.815H37.815z" />
       </mask>
       <g mask="url(#b)">
@@ -46,12 +43,8 @@ const LargeLogo = (props: SVGProps<SVGSVGElement>) => (
           maskUnits="userSpaceOnUse"
           style={{
             maskType: "alpha",
-          }}
-        >
-          <path
-            fill="#000"
-            d="M235.56 158.248 64.756 225.905 3.805 81.938l170.803-67.657z"
-          />
+          }}>
+          <path fill="#000" d="M235.56 158.248 64.756 225.905 3.805 81.938l170.803-67.657z" />
         </mask>
         <g mask="url(#c)">
           <mask
@@ -63,12 +56,8 @@ const LargeLogo = (props: SVGProps<SVGSVGElement>) => (
             maskUnits="userSpaceOnUse"
             style={{
               maskType: "alpha",
-            }}
-          >
-            <path
-              fill="#000"
-              d="M235.57 158.243 64.766 225.9 3.814 81.933l170.804-67.657z"
-            />
+            }}>
+            <path fill="#000" d="M235.57 158.243 64.766 225.9 3.814 81.933l170.804-67.657z" />
           </mask>
           <g mask="url(#d)">
             <mask
@@ -80,12 +69,8 @@ const LargeLogo = (props: SVGProps<SVGSVGElement>) => (
               maskUnits="userSpaceOnUse"
               style={{
                 maskType: "alpha",
-              }}
-            >
-              <path
-                fill="#000"
-                d="M235.581 158.238 64.778 225.895 3.826 81.929 174.63 14.272z"
-              />
+              }}>
+              <path fill="#000" d="M235.581 158.238 64.778 225.895 3.826 81.929 174.63 14.272z" />
             </mask>
             <g mask="url(#e)">
               <path
@@ -107,8 +92,7 @@ const LargeLogo = (props: SVGProps<SVGSVGElement>) => (
       maskUnits="userSpaceOnUse"
       style={{
         maskType: "alpha",
-      }}
-    >
+      }}>
       <path fill="#000" d="M46.154 15.249H249.6v197.577H46.154z" />
     </mask>
     <g mask="url(#f)">
@@ -126,8 +110,7 @@ const LargeLogo = (props: SVGProps<SVGSVGElement>) => (
       maskUnits="userSpaceOnUse"
       style={{
         maskType: "alpha",
-      }}
-    >
+      }}>
       <path fill="#000" d="M46.154 15.249H249.6v197.577H46.154z" />
     </mask>
     <g mask="url(#g)">
@@ -146,4 +129,5 @@ const LargeLogo = (props: SVGProps<SVGSVGElement>) => (
     />
   </svg>
 );
+
 export default LargeLogo;

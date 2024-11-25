@@ -1,7 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 
-import { Main, NotFound, My, Planner } from "pages";
-import Login from "@pages/Login/LoginPage";
+import { Main, NotFound, Login, My, Planner } from "pages";
 
 const router = createBrowserRouter([
   { path: "/", element: <Main /> }, // 메인 페이지
