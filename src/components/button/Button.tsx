@@ -21,10 +21,11 @@ const StyledButton = styled.button`
   padding: 0;
   font-size: 26px;
   font-weight: 400;
-  border-radius: 10px;
-  border: 1.5px solid #4c7aa7;
-  background-color: #ffffff;
-  color: #4c7aa7;
+  border-radius: ${({ theme }) => theme.cornerRadius.large};
+  border: ${({ theme: { strokeWidth, colors } }) =>
+    `${strokeWidth.regular} solid ${colors.secondary.normal}`};
+  background-color: ${({ theme }) => theme.colors.background.neutral0};
+  color: ${({ theme }) => theme.colors.secondary.normal};
   cursor: pointer;
   font-family: ${({ theme }) => theme.typography.fontFamily.main};
   box-shadow: ${({ theme }) => theme.shadows.small};
@@ -33,7 +34,7 @@ const StyledButton = styled.button`
     transform 0.2s ease;
 
   &:hover {
-    background-color: #f0f0f0;
+    background-color: ${({ theme }) => theme.colors.background.neutral1};
     transform: scale(1.01);
   }
   svg {

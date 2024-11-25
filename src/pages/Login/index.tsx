@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import Button from "../../components/button/Button";
-import Google from "../../components/assets/icons/GoogleIcon";
-import Kakao from "../../components/assets/icons/KakaoIcon";
-import LargeLogo from "../../components/assets/LargeLogo"; // LargeLogo 컴포넌트 경로
+import Button from "@components/button/Button";
+import Google from "@components/assets/icons/GoogleIcon";
+import Kakao from "@components/assets/icons/KakaoIcon";
+import LargeLogo from "@components/assets/images/LargeLogo"; // LargeLogo 컴포넌트 경로
 
 const Login: React.FC = () => {
   const handleLoginClick = () => {
@@ -16,8 +16,10 @@ const Login: React.FC = () => {
         <LogoWrapper>
           <LargeLogo width={300} height={320} /> {/* SVG 컴포넌트 사용 */}
         </LogoWrapper>
-        <Button label="구글로 로그인" icon={Google} onClick={handleLoginClick} />
-        <Button label="카카오로 로그인" icon={Kakao} onClick={handleLoginClick} />
+        <ButtonWrapper>
+          <Button label="Google로 시작하기" icon={Google} onClick={handleLoginClick} />
+        </ButtonWrapper>
+        <Button label="Kakao로 시작하기" icon={Kakao} onClick={handleLoginClick} />
       </LoginDiv>
     </LoginPageWrapper>
   );
@@ -31,7 +33,7 @@ const LoginPageWrapper = styled.div`
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: #f9fafc;
+  background-color: ${({ theme }) => theme.colors.background.neutral0};
 `;
 
 const LoginDiv = styled.div`
@@ -42,4 +44,9 @@ const LoginDiv = styled.div`
 
 const LogoWrapper = styled.div`
   margin-bottom: 40px; /* 로고 아래 간격 */
+  margin-left: 100px;
+`;
+const ButtonWrapper = styled.div`
+  margin-top: 150px;
+  margin-bottom: 40px;
 `;
