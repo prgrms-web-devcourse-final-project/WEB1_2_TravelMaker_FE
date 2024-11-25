@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import Button from "../../components/button/Button";
-import Google from "../../components/assets/icons/GoogleIcon";
-import Kakao from "../../components/assets/icons/KakaoIcon";
-import LargeLogo from "../../components/assets/LargeLogo"; // LargeLogo 컴포넌트 경로
+import Button from "@components/button/Button";
+import Google from "@components/assets/icons/GoogleIcon";
+import Kakao from "@components/assets/icons/KakaoIcon"
+import LargeLogo from "@components/assets/images/LargeLogo"; // LargeLogo 컴포넌트 경로
 
 const Login: React.FC = () => {
   const handleLoginClick = () => {
