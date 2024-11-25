@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import Profile from "./ProfileImage";
-import CameraIcon from "./CameraIcon";
-import EditIcon from "./EditIcon";
+import Profile from "../assets/images/ProfileImage";
+import CameraIcon from "../assets/icons/CameraIcon";
+import EditIcon from "../assets/icons/EditIcon";
 
 export const ProfileWithInfo: React.FC<{
   src?: string;

@@ -3,7 +3,7 @@ import { FC, useState } from "react";
 
 import EmptyBox from "@common/styles/Empty";
 import { calcVwFromPx } from "@common/styles/theme";
-import PlaneIcon, { PlaneIcon2 } from "@components/icons/Plane";
+import PlaneIcon, { PlaneIcon2 } from "@components/assets/icons/Plane";
 
 interface MyPlannerCardProps {
   onClick: () => void;

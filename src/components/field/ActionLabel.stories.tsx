@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 
 import FormField, { FormFieldActionLabelProps } from "./FormField";
 import { baseArgTypes, FormActionLabelArgTypes, FormFieldBaseArgTypes } from "./baseArgTypes";
-import CopyIcon from "@components/icons/Copy";
+import CopyIcon from "@components/assets/icons/Copy";
 import { fn } from "@storybook/test";
 
 const meta = {
