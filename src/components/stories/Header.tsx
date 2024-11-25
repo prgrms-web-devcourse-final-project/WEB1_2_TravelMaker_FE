@@ -1,5 +1,5 @@
 import "./header.css";
-import { Button } from "@components/stories/Button";
+import { Button } from "@components/Button/Button";
 
 type User = {
   name: string;
