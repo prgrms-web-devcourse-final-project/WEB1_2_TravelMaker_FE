@@ -52,19 +52,13 @@ const SmallStyledButton = styled(StyledButton)`
 `;
 
 const Button: React.FC<ButtonProps> = ({ label, icon: Icon, onClick, type = "medium" }) => {
-  if (type === "small") {
-    return (
-      <SmallStyledButton onClick={onClick}>
-        <span>{label}</span>
-      </SmallStyledButton>
-    );
-  }
+  const ButtonComponent = type === "small" ? SmallStyledButton : StyledButton;
 
   return (
-    <StyledButton onClick={onClick}>
+    <ButtonComponent onClick={onClick}>
       {Icon && <Icon width={48} height={48} />}
       <span>{label}</span> {/* 텍스트는 버튼 중앙에 위치 */}
-    </StyledButton>
+    </ButtonComponent>
   );
 };
 
