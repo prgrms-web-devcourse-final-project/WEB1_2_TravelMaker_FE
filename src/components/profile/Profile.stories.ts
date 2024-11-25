@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { ProfileWithInfo } from "./Profile";
 
 const meta = {
-  title: "Wayfarer/Components/Profile",
+  title: "Components/Profile",
   component: ProfileWithInfo,
   parameters: {
     layout: "centered",
