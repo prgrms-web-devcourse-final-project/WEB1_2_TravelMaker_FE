@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Icon from "./Logo";
+import Icon from "../assets/images/SmallLogo";
 
 export const Header = () => (
   <HeaderWrapper>

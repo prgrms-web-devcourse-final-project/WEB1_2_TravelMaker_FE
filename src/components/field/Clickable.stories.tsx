@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import FormField, { FormFieldClickableProps } from "./FormField";
 import { baseArgTypes, FormFieldClickableArgTypes } from "./baseArgTypes";
 import { fn } from "@storybook/test";
-import DateIcon from "@components/icons/Date";
+import DateIcon from "@components/assets/icons/Date";
 
 const meta = {
   title: "Components/FormField/Clickable",

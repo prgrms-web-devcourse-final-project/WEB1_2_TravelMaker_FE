@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { ThemeProvider } from "styled-components";
 import { lightTheme } from "../../common/styles/theme"; // 테마 파일 경로에 맞게 수정
 import LoginButton from "../button/Button"; // 수정된 Button 컴포넌트
-import Icon from "../assets/Icon";
-import Icon1 from "../assets/Icon1";
+import Icon from "../assets/icons/GoogleIcon";
+import Icon1 from "../assets/icons/KakaoIcon";
 
 const meta = {
   title: "Components/Button",
