@@ -11,18 +11,20 @@ interface RouteCardProps {
   onClickDetail?: () => void; // 상세 버튼 클릭 핸들러
 }
 
-const RouteCard: FC<RouteCardProps> = ({ 
-  index, 
-  title = "제목 없음", 
-  location, 
-  onClickClose, 
-  onClickDetail 
+const RouteCard: FC<RouteCardProps> = ({
+  index,
+  title = "제목 없음",
+  location,
+  onClickClose,
+  onClickDetail,
 }) => {
   return (
     <OuterContainer>
       <TopContainer>
         <Index>{index}</Index>
-        <CloseButton onClick={onClickClose}><CloseIcon /></CloseButton>
+        <CloseButton onClick={onClickClose}>
+          <CloseIcon />
+        </CloseButton>
       </TopContainer>
       <InnerContainer>
         <TitleSection>{title}</TitleSection>
@@ -43,6 +45,7 @@ const OuterContainer = styled.div`
   user-select: none;
   width: ${calcVwFromPx(460)};
   min-width: 460px;
+  min-height: 130px;
   height: 130px;
   background-color: ${({ theme }) => theme.colors.primary.subtle};
   border-radius: ${({ theme }) => theme.cornerRadius.large};
@@ -52,7 +55,7 @@ const OuterContainer = styled.div`
 `;
 
 const TopContainer = styled.div`
-margin-left: 10px;
+  margin-left: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -76,7 +79,6 @@ const CloseButton = styled.button`
   }
 `;
 
-
 const InnerContainer = styled.div`
   margin-left: 18px;
   display: flex;
@@ -84,29 +86,29 @@ const InnerContainer = styled.div`
 `;
 
 const TitleSection = styled.div`
-width: 350px;
-margin-top: -10px;
+  width: 350px;
+  margin-top: -10px;
   font-size: ${({ theme }) => theme.typography.heading.h2.fontSize};
   color: ${({ theme }) => theme.colors.text.body};
   font-family: ${({ theme }) => theme.typography.fontFamily.main};
   font-weight: 500;
 
-    /* 말줄임표 설정 */
-    white-space: nowrap; /* 한 줄로 제한 */
+  /* 말줄임표 설정 */
+  white-space: nowrap; /* 한 줄로 제한 */
   overflow: hidden; /* 넘친 내용 숨김 */
   text-overflow: ellipsis; /* 말줄임표 표시 */
 `;
 
 const LocationSection = styled.div`
-width: 330px;
+  width: 330px;
   margin-top: 5px;
   font-size: ${({ theme }) => theme.typography.body.regular.fontSize};
   color: ${({ theme }) => theme.colors.text.body};
   font-family: ${({ theme }) => theme.typography.fontFamily.main};
   font-weight: 500;
 
-    /* 말줄임표 설정 */
-    white-space: nowrap; /* 한 줄로 제한 */
+  /* 말줄임표 설정 */
+  white-space: nowrap; /* 한 줄로 제한 */
   overflow: hidden; /* 넘친 내용 숨김 */
   text-overflow: ellipsis; /* 말줄임표 표시 */
 `;
