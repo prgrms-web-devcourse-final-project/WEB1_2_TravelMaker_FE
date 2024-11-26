@@ -32,5 +32,5 @@ type Story = StoryObj<typeof meta>;
 export const DefaultInfoCard: Story = {
   args: {
     label: "일반 마커를 확정하면\n순서대로 일정이 추가됩니다.",
-  }
+  },
 };
