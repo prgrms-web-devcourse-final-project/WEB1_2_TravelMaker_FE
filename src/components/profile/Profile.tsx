@@ -99,7 +99,7 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: ${({ theme }) => theme.colors.background.neutral3};
+  background-color: ${({ theme }) => theme.colors.background.neutral0};
 `;
 
 const ProfileWrapper = styled.div`
