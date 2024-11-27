@@ -1,10 +1,11 @@
+import { calcResponsiveByPercent } from "@common/styles/theme";
 import { ChangeEvent, FC } from "react";
 import styled from "styled-components";
 
 interface FormFieldBaseProps {
   label: string;
   fullWidth?: boolean;
-  font: Partial<FormFieldFont>;
+  font?: FormFieldFont;
 }
 
 type FormFieldFont = {
@@ -118,8 +119,8 @@ const Base = {
     align-items: center;
     width: 100%;
     min-width: ${(props) => (props.$fullWidth ? "320px" : undefined)};
-    max-width: 320px;
-    height: 55px;
+    max-width: ${calcResponsiveByPercent(-25, 320)};
+    height: ${calcResponsiveByPercent(-15, 55)};
     padding: 20px;
     border-radius: ${({ theme: { cornerRadius } }) => cornerRadius.large};
     background-color: ${({ theme }) => theme.colors.secondary.subtle};
