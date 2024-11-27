@@ -21,7 +21,7 @@ interface PlanButtonsProps {
   schedules: Schedule[];
 }
 
-const PlanButtons: React.FC<PlanButtonsProps> = ({ }) => {
+const PlanButtons: React.FC<PlanButtonsProps> = () => {
   // const [filteredSchedules, setFilteredSchedules] = useState<Schedule[]>(schedules);
 
   // const handleFilter = (planType: string) => {
