@@ -1,18 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import styled from "styled-components";
-import Profile from "../assets/images/DefaultImage";
+import DefaultImage from "../assets/images/DefaultImage.svg";
 import CameraIcon from "../assets/icons/CameraIcon";
 import EditIcon from "../assets/icons/EditIcon";
-
-export const ProfileWithInfo: React.FC<{
+interface ProfileWithInfoProps {
   src?: string;
   name: string;
   email: string;
   onCameraClick?: (file: File) => void;
-}> = ({ src, name, email, onCameraClick }) => {
+}
+
+const ProfileWithInfo: React.FC<ProfileWithInfoProps> = ({ src, name, email, onCameraClick }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [currentName, setCurrentName] = useState(name);
   const [profileImage, setProfileImage] = useState<string | null | undefined>(src);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleEditClick = () => {
     setIsEditing(true);
@@ -27,28 +29,23 @@ export const ProfileWithInfo: React.FC<{
   };
 
   const handleFileUpload = () => {
-    const input = document.createElement("input");
+    fileInputRef.current?.click();
+  };
 
-    input.type = "file";
-    input.accept = "image/png, image/jpeg";
-    input.click();
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
 
-    input.onchange = (e: Event) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
+    if (file) {
+      const reader = new FileReader();
 
-      if (file) {
-        const reader = new FileReader();
+      reader.onload = () => {
+        const imageUrl = reader.result as string;
 
-        reader.onload = () => {
-          const imageUrl = reader.result as string;
-
-          setProfileImage(imageUrl);
-          onCameraClick?.(file);
-        };
-
-        reader.readAsDataURL(file);
-      }
-    };
+        setProfileImage(imageUrl);
+        onCameraClick?.(file);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleResetToDefault = () => {
@@ -63,7 +60,7 @@ export const ProfileWithInfo: React.FC<{
             <ProfileImage src={profileImage} alt="Profile" />
           ) : (
             <DefaultBackground>
-              <Profile />
+              <img src={DefaultImage} alt="Default" />
             </DefaultBackground>
           )}
           <HoverText onClick={handleResetToDefault}>기본 프로필 이미지로 변경</HoverText>
@@ -71,6 +68,13 @@ export const ProfileWithInfo: React.FC<{
         <CameraIconWrapper onClick={handleFileUpload}>
           <CameraIcon />
         </CameraIconWrapper>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/png, image/jpeg"
+          style={{ display: "none" }}
+          onChange={handleFileChange}
+        />
       </ProfileWrapper>
       <InfoWrapper>
         <UserNameWrapper>
@@ -247,3 +251,5 @@ const Email = styled.div`
   font-size: ${({ theme }) => theme.typography.heading.h2.fontSize};
   color: ${({ theme }) => theme.colors.text.body};
 `;
+
+export default ProfileWithInfo;

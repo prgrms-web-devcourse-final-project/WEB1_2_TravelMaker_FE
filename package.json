@@ -25,6 +25,7 @@
     ]
   },
   "dependencies": {
+    "@react-google-maps/api": "^2.20.3",
     "@reduxjs/toolkit": "^2.3.0",
     "axios": "^1.7.7",
     "msw": "^2.6.5",
