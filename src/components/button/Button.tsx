@@ -22,7 +22,7 @@ const StyledButton = styled.button<{ $fullWidth?: boolean }>`
   width: ${({ $fullWidth }) => ($fullWidth ? "100%" : calcResponsiveByPercent(-25, 500))};
   height: ${calcResponsiveByPercent(-15, 70)};
   padding: 0;
-  font-size: 26px;
+  font-size: ${({ theme }) => theme.typography.heading.h2.fontSize};
   font-weight: 400;
   border-radius: ${({ theme }) => theme.cornerRadius.large};
   border: ${({ theme: { strokeWidth, colors } }) =>
