@@ -74,7 +74,7 @@ const Container = styled.div`
   padding: 15px;
   border-radius: ${({ theme }) => theme.cornerRadius.large};
   background-color: ${({ theme }) => theme.colors.primary.subtle};
-  border: 1px solid ${({ theme }) => theme.colors.text.body};
+  border: ${({ theme }) => theme.strokeWidth.regular} solid ${({ theme }) => theme.colors.text.body};
   position: relative;
 `;
 

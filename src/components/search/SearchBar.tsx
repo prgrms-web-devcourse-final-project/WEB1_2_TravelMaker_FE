@@ -42,9 +42,9 @@ const Container = styled.div`
   height: 50px;
   display: flex;
   align-items: center;
-  border-radius: 20px;
+  border-radius: ${({ theme }) => theme.cornerRadius.extraLarge};
   padding: 10px 15px;
-  background-color: #fff;
+  background-color: ${({ theme }) => theme.colors.background.neutral0};
   font-family: ${({ theme }) => theme.typography.fontFamily.main};
   box-shadow: ${({ theme }) => theme.shadows.small};
   max-width: 400px;

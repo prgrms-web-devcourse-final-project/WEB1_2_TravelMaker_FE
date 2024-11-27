@@ -89,12 +89,12 @@ const List = styled.div`
 
   &::-webkit-scrollbar-track {
     background: ${({ theme }) => theme.colors.background.neutral2};
-    border-radius: 10px;
+    border-radius: ${({ theme }) => theme.cornerRadius.large};
   }
 
   &::-webkit-scrollbar-thumb {
     background: ${({ theme }) => theme.colors.primary.hover};
-    border-radius: 10px;
+    border-radius: ${({ theme }) => theme.cornerRadius.large};
   }
 
   &::-webkit-scrollbar-thumb:hover {
