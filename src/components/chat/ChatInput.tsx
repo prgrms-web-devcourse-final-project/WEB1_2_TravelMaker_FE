@@ -21,6 +21,7 @@ const ChatInput: FC<Props> = ({ onSubmit }) => {
     if (textareaRef.current) {
       onSubmit(textareaRef.current.value);
       textareaRef.current.value = "";
+      textareaRef.current.style.height = "auto";
     }
   };
 
