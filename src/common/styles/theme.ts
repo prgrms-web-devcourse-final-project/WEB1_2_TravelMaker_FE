@@ -1,6 +1,7 @@
-import calcByPercent from "@common/utils/calcByPercent";
 import "styled-components";
 import { DefaultTheme } from "styled-components";
+
+import calcByPercent from "@common/utils/calcByPercent";
 
 declare module "styled-components" {
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -46,7 +47,7 @@ interface Text {
   caption: string;
 }
 
-interface Shadows {
+export interface Shadows {
   small: string;
   medium: string;
   large: string;
