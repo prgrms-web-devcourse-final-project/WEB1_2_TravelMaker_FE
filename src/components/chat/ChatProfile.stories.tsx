@@ -5,6 +5,7 @@ import ChatProfile from "./ChatProfile";
 const meta = {
   title: "Components/Chat/Profile",
   component: ChatProfile,
+
   argTypes: {
     size: {
       control: {
@@ -14,6 +15,18 @@ const meta = {
         step: 10,
       },
     },
+    shadow: {
+      control: "radio",
+      description: "그림자 스타일을 정의합니다.",
+      options: ["small", "medium", "large", "none"],
+      table: {
+        type: { summary: '"small" | "medium" | "large" | "none"' },
+        defaultValue: { summary: "none" },
+      },
+    },
+  },
+  args: {
+    shadow: "none",
   },
 } satisfies Meta<typeof ChatProfile>;
 
@@ -33,5 +46,13 @@ export const StrokeChatProfile: Story = {
     size: 50,
     url: "https://picsum.photos/200/300",
     stroke: true,
+  },
+};
+
+export const ShadowChatProfile: Story = {
+  args: {
+    size: 50,
+    url: "https://picsum.photos/200/300",
+    shadow: "medium",
   },
 };
