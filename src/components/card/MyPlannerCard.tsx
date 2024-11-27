@@ -1,7 +1,7 @@
 import styled, { keyframes } from "styled-components";
 import { FC, useState } from "react";
 
-import EmptyBox from "@common/styles/Empty";
+import EmptyBox from "@common/styles/EmptyBox";
 import { calcVwFromPx } from "@common/styles/theme";
 import PlaneIcon, { PlaneIcon2 } from "@components/assets/icons/Plane";
 
