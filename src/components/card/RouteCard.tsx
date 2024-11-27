@@ -6,15 +6,21 @@ import CloseIcon from "@components/assets/icons/CloseIcon";
 interface RouteCardProps {
   index: number;
   title?: string;
-  location: string;
+  address: string;
   onClickClose?: () => void; // 닫기 버튼 클릭 핸들러
   onClickDetail?: () => void; // 상세 버튼 클릭 핸들러
 }
+// interface ScheduleItem {
+//   schedule_id: number;
+//   title?: string;
+//   address: string;
+//   content: string;
+// }
 
 const RouteCard: FC<RouteCardProps> = ({
   index,
   title = "제목 없음",
-  location,
+  address,
   onClickClose,
   onClickDetail,
 }) => {
@@ -28,7 +34,7 @@ const RouteCard: FC<RouteCardProps> = ({
       </TopContainer>
       <InnerContainer>
         <TitleSection>{title}</TitleSection>
-        <LocationSection>{location}</LocationSection>
+        <LocationSection>{address}</LocationSection>
       </InnerContainer>
       <BottomContainer>
         <DetailButton onClick={onClickDetail}>상세보기</DetailButton>

@@ -12,11 +12,12 @@ const RouteCardList: FC<Props> = ({ items = [] }) => {
       {items.length > 0 ? (
         <>
           {items.map((item, index) => {
+            //plan을 필터링한 후에 인덱스 넣어주기?
             return <RouteCard key={`${Math.random()}-${index}`} {...item} />;
           })}
         </>
       ) : (
-        <RouteCard index={1} title="서울시 강남구" location="서울시 강남구" />
+        <RouteCard index={1} title="서울시 강남구" address="서울시 강남구" />
       )}
     </CardListContainer>
   );
@@ -29,7 +30,6 @@ const CardListContainer = styled.div`
   gap: 20px;
   max-height: 730px; /* 아이템이 많을 때 730px을 초과하면 스크롤이 생기도록 설정 */
   overflow-y: scroll; /* 세로 스크롤이 자동으로 생기도록 설정 */
-  scrollbar-width: none;
 `;
 
 export default RouteCardList;

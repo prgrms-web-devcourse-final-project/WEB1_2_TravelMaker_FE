@@ -8,13 +8,6 @@ import { fn } from "@storybook/test";
 const meta = {
   title: "Components/Button/LargeButton",
   component: LoginButton,
-  decorators: [
-    (Story) => (
-      <div style={{ padding: "20px", backgroundColor: "#f4f7fb" }}>
-        <Story />
-      </div>
-    ),
-  ],
   args: {
     type: "medium",
   },

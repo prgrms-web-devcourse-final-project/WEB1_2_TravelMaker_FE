@@ -1,4 +1,3 @@
-import React from "react";
 import { Meta, StoryObj } from "@storybook/react";
 import ScheduleBar from "./ScheduleBar";
 
@@ -27,9 +26,9 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     schedules: [
-      { schedule_id: 1, data: "Day1", plan: "A", date:"11.20", room_id: "abcA" },
-      { schedule_id: 2, data: "Day2", plan: "B", date:"11.21", room_id: "abcB" },
-      { schedule_id: 3, data: "Day3", plan: "C", date:"11.22", room_id: "abcC" },
+      { schedule_id: 1, data: "Day1", plan: "A", date: "11.20", room_id: "abcA" },
+      { schedule_id: 2, data: "Day2", plan: "B", date: "11.21", room_id: "abcB" },
+      { schedule_id: 3, data: "Day3", plan: "C", date: "11.22", room_id: "abcC" },
     ],
   },
 };

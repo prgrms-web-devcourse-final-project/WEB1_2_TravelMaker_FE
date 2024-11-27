@@ -1,7 +1,14 @@
-import React, { Component, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import PreviousIcon from "@components/assets/icons/PreviousIcon";
 import NextIcon from "@components/assets/icons/NextIcon";
+
+interface ScheduleItem {
+  schedule_id: number;
+  title?: string;
+  address: string;
+  content: string;
+}
 
 interface Schedule {
   schedule_id: number;
@@ -9,6 +16,7 @@ interface Schedule {
   plan: string; // 계획
   date: string;
   room_id: string;
+  scheduleItem?: ScheduleItem[];
 }
 
 interface ScheduleBarProps {
@@ -19,26 +27,29 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ schedules }) => {
   const [currentIndex, setCurrentIndex] = useState(0); // 현재 스케줄 인덱스
 
   const handlePrev = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex > 0 ? prevIndex - 1 : schedules.length - 1
-    ); // 이전 버튼: 0이면 마지막으로 순환
+    setCurrentIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : schedules.length - 1)); // 이전 버튼: 0이면 마지막으로 순환
   };
 
   const handleNext = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex < schedules.length - 1 ? prevIndex + 1 : 0
-    ); // 다음 버튼: 마지막이면 처음으로 순환
+    setCurrentIndex((prevIndex) => (prevIndex < schedules.length - 1 ? prevIndex + 1 : 0)); // 다음 버튼: 마지막이면 처음으로 순환
   };
 
   const currentSchedule = schedules[currentIndex];
 
   return (
     <Container>
-      <Button onClick={handlePrev}><PreviousIcon /></Button>
+      <Button onClick={handlePrev}>
+        <PreviousIcon />
+      </Button>
       <DataContainer>
-        <>{currentSchedule.data} ({currentSchedule.date}</>)
+        <>
+          {currentSchedule.data} ({currentSchedule.date}
+        </>
+        )
       </DataContainer>
-      <Button onClick={handleNext}><NextIcon /></Button>
+      <Button onClick={handleNext}>
+        <NextIcon />
+      </Button>
     </Container>
   );
 };
@@ -71,17 +82,17 @@ const Button = styled.button`
 `;
 
 const DataContainer = styled.div`
-padding: 6px;
-width: 240px;
-height: 60px;
-border-radius: ${({ theme }) => theme.cornerRadius.large};
+  padding: 6px;
+  width: 240px;
+  height: 60px;
+  border-radius: ${({ theme }) => theme.cornerRadius.large};
   border: ${({ theme: { strokeWidth, colors } }) =>
     `${strokeWidth.thick} solid ${colors.stroke.neutral3}`};
-  background-color: ${({theme}) => theme.colors.primary.subtle};
+  background-color: ${({ theme }) => theme.colors.primary.subtle};
   flex-grow: 1;
   text-align: center;
-  font-size: ${({theme}) => theme.typography.heading.h1.fontSize};
-  font-family: ${({theme}) => theme.typography.fontFamily.main};
+  font-size: ${({ theme }) => theme.typography.heading.h1.fontSize};
+  font-family: ${({ theme }) => theme.typography.fontFamily.main};
   font-weight: 600;
-  color: ${({theme}) => theme.colors.text.body};
+  color: ${({ theme }) => theme.colors.text.body};
 `;

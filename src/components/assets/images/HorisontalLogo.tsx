@@ -1,13 +1,7 @@
 import * as React from "react";
 import type { SVGProps } from "react";
 const HorisontalLogo = (props: SVGProps<SVGSVGElement>) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width={160}
-    height={70}
-    fill="none"
-    {...props}
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width={160} height={70} fill="none" {...props}>
     <mask
       id="a"
       width={68}
@@ -17,8 +11,7 @@ const HorisontalLogo = (props: SVGProps<SVGSVGElement>) => (
       maskUnits="userSpaceOnUse"
       style={{
         maskType: "alpha",
-      }}
-    >
+      }}>
       <path fill="#000" d="M67.139 4.164H0V70h67.139z" />
     </mask>
     <g mask="url(#a)">
@@ -31,8 +24,7 @@ const HorisontalLogo = (props: SVGProps<SVGSVGElement>) => (
         maskUnits="userSpaceOnUse"
         style={{
           maskType: "alpha",
-        }}
-      >
+        }}>
         <path fill="#000" d="M10.096 18.794h47.957v38.665H10.096z" />
       </mask>
       <g mask="url(#b)">
@@ -45,12 +37,8 @@ const HorisontalLogo = (props: SVGProps<SVGSVGElement>) => (
           maskUnits="userSpaceOnUse"
           style={{
             maskType: "alpha",
-          }}
-        >
-          <path
-            fill="#000"
-            d="m66.882 48.634-49.05 20.793L.325 25.183 49.378 4.39z"
-          />
+          }}>
+          <path fill="#000" d="m66.882 48.634-49.05 20.793L.325 25.183 49.378 4.39z" />
         </mask>
         <g mask="url(#c)">
           <mask
@@ -62,12 +50,8 @@ const HorisontalLogo = (props: SVGProps<SVGSVGElement>) => (
             maskUnits="userSpaceOnUse"
             style={{
               maskType: "alpha",
-            }}
-          >
-            <path
-              fill="#000"
-              d="m66.882 48.634-49.05 20.793L.325 25.183 49.378 4.39z"
-            />
+            }}>
+            <path fill="#000" d="m66.882 48.634-49.05 20.793L.325 25.183 49.378 4.39z" />
           </mask>
           <g mask="url(#d)">
             <mask
@@ -79,12 +63,8 @@ const HorisontalLogo = (props: SVGProps<SVGSVGElement>) => (
               maskUnits="userSpaceOnUse"
               style={{
                 maskType: "alpha",
-              }}
-            >
-              <path
-                fill="#000"
-                d="m66.882 48.634-49.05 20.793L.325 25.183 49.378 4.39z"
-              />
+              }}>
+              <path fill="#000" d="m66.882 48.634-49.05 20.793L.325 25.183 49.378 4.39z" />
             </mask>
             <g mask="url(#e)">
               <path
@@ -106,8 +86,7 @@ const HorisontalLogo = (props: SVGProps<SVGSVGElement>) => (
       maskUnits="userSpaceOnUse"
       style={{
         maskType: "alpha",
-      }}
-    >
+      }}>
       <path fill="#000" d="M11.938 4.094h58.424v60.719H11.938z" />
     </mask>
     <g mask="url(#f)">
@@ -122,4 +101,5 @@ const HorisontalLogo = (props: SVGProps<SVGSVGElement>) => (
     />
   </svg>
 );
+
 export default HorisontalLogo;
