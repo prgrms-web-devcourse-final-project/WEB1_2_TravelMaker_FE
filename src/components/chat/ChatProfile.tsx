@@ -12,9 +12,9 @@ interface Props {
 const ChatProfile: FC<Props> = ({ size, url, stroke, shadow = "none" }) => {
   return (
     <ProfileContainer>
-      <ImageWrapper $size={size} $stroke={stroke} $shadow={shadow}>
+      <ImageContainer $size={size} $stroke={stroke} $shadow={shadow}>
         <StyledImage src={url} alt={"chat-avatar"} />
-      </ImageWrapper>
+      </ImageContainer>
     </ProfileContainer>
   );
 };
@@ -26,10 +26,11 @@ const ProfileContainer = styled.div`
 
 type ShadowTypes = keyof (Shadows & { none: "string" });
 
-const ImageWrapper = styled.div<{ $size?: number; $stroke?: boolean; $shadow: ShadowTypes }>`
-  position: relative; // 자식 요소의 절대 위치 지정을 위한 기준점 설정 (방장 마크, 뱃지 등)
-  width: 100%;
+const ImageContainer = styled.div<{ $size?: number; $stroke?: boolean; $shadow: ShadowTypes }>`
+  position: relative;
   max-width: ${({ $size }) => ($size ? `${$size}px` : "100%")};
+  width: ${({ $size }) => ($size ? `${$size}px` : "100%")}; // width 추가
+  height: ${({ $size }) => ($size ? `${$size}px` : "100%")}; // height 추가
   aspect-ratio: 1/1;
   border-radius: 50%;
   overflow: hidden;
@@ -44,6 +45,7 @@ const StyledImage = styled.img`
   height: 100%;
   object-fit: cover;
   object-position: center;
+  display: block;
 `;
 
 export default ChatProfile;
