@@ -6,7 +6,7 @@ import Icon from "../assets/icons/GoogleIcon";
 import Icon1 from "../assets/icons/KakaoIcon";
 
 const meta = {
-  title: "Components/Button",
+  title: "Components/Button/LargeButton",
   component: LoginButton,
   decorators: [
     (Story) => (
