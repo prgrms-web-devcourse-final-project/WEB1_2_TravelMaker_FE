@@ -17,12 +17,12 @@ const ChatList: FC<Props> = ({ dataList = [] }) => {
   return (
     <Container>
       <EmptyBox fullWidth height={CHAT_INFO_BAR_HEADER_HEIGHT} />
-      {dataList.map(({ type, text, url }) => {
+      {dataList.map(({ type, text, url }, index) => {
         if (type === "sender") {
-          return <SenderMessage key={text} text={text} />;
+          return <SenderMessage key={index} text={text} />;
         }
 
-        return <ReceiverMessage key={text} text={text} url={url} />;
+        return <ReceiverMessage key={index} text={text} url={url} />;
       })}
     </Container>
   );

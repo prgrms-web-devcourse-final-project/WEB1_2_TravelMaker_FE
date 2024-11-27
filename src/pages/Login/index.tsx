@@ -10,13 +10,12 @@ const Login: React.FC = () => {
     alert("로그인 버튼 클릭됨");
   };
 
-
   //구글 및 카카오 로그인 버튼 클릭 시 해당 OAuth 서버로 인증 요청을 보내도록 설정
 
   // const handleLoginClick = (provider: "google" | "kakao") => {
   //   const googleAuthUrl = "https://accounts.google.com/o/oauth2/auth?client_id=YOUR_GOOGLE_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code&scope=email profile";
-  //   const kakaoAuthUrl = "https://kauth.kakao.com/oauth/authorize?client_id=YOUR_KAKAO_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code"; 
-  
+  //   const kakaoAuthUrl = "https://kauth.kakao.com/oauth/authorize?client_id=YOUR_KAKAO_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code";
+
   //   if (provider === "google") {
   //     window.location.href = googleAuthUrl; // 구글 로그인 리다이렉트
   //   } else if (provider === "kakao") {
@@ -24,14 +23,13 @@ const Login: React.FC = () => {
   //   }
   // };
 
-
   //인증 완료 후, 클라이언트는 백엔드로 토큰 요청 API를 호출
   //백엔드로부터 받은 JWT 또는 access_token을 저장하고, 로그인 상태 관리
 
   // useEffect(() => {
   //   const urlParams = new URLSearchParams(window.location.search);
   //   const code = urlParams.get("code");
-  
+
   //   if (code) {
   //     fetch("/api/auth/callback", { // 백엔드에 인증 코드 전달
   //       method: "POST",
@@ -47,9 +45,8 @@ const Login: React.FC = () => {
   //   }
   // }, []);
 
-
   //리다이렉트 처리
-  
+
   // const redirectToHome = () => {
   //   const token = localStorage.getItem("token");
   //   if (token) {
@@ -82,8 +79,6 @@ const Login: React.FC = () => {
   icon={Kakao}
   onClick={() => handleLoginClick("kakao")}
  /> */}
-
-
       </LoginDiv>
     </LoginPageWrapper>
   );
