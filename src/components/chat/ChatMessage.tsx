@@ -1,4 +1,4 @@
-import EmptyBox from "@common/styles/Empty";
+import EmptyBox from "@common/styles/EmptyBox";
 import { calcResponsiveByPercent } from "@common/styles/theme";
 import { FC } from "react";
 import styled from "styled-components";
@@ -9,7 +9,7 @@ interface SenderMessageProps {
 }
 
 interface ReceiverMessageProps extends SenderMessageProps {
-  url?: string;
+  url: string | null;
 }
 
 // 상대방 메시지
@@ -17,7 +17,7 @@ const ReceiverMessage: FC<ReceiverMessageProps> = ({ text, url }) => {
   return (
     <Container>
       <ProfileContainer>
-        <ChatProfile size={30} url={url} />
+        <ChatProfile size={30} shadow="small" url={url ?? undefined} />
       </ProfileContainer>
       <Content $type="receiver">
         <Label>{text}</Label>
@@ -26,12 +26,6 @@ const ReceiverMessage: FC<ReceiverMessageProps> = ({ text, url }) => {
     </Container>
   );
 };
-
-const ProfileContainer = styled.div`
-  flex-shrink: 0;
-  width: 40px;
-  height: 55px;
-`;
 
 // 본인 메시지
 const SenderMessage: FC<SenderMessageProps> = ({ text }) => {
@@ -48,6 +42,12 @@ const SenderMessage: FC<SenderMessageProps> = ({ text }) => {
 const Container = styled.div`
   display: flex;
   flex-direction: row;
+`;
+
+const ProfileContainer = styled.div`
+  flex-shrink: 0;
+  width: 40px;
+  height: 55px;
 `;
 
 const Content = styled.div<{ $type: "sender" | "receiver" }>`
