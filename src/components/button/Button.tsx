@@ -1,3 +1,4 @@
+import { calcResponsiveByPercent } from "@common/styles/theme";
 import React from "react";
 import styled from "styled-components";
 
@@ -8,16 +9,18 @@ export interface ButtonProps {
   icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   /** 클릭 핸들러 */
   onClick?: () => void;
+  type?: "small" | "medium";
+  fullWidth?: boolean;
 }
 
-const StyledButton = styled.button`
+const StyledButton = styled.button<{ $fullWidth?: boolean }>`
   position: relative; /* 아이콘 위치를 조정하기 위해 relative */
   display: flex;
   align-items: center;
   justify-content: center; /* 텍스트를 버튼의 가운데 정렬 */
   gap: 8px;
-  width: 500px;
-  height: 70px;
+  width: ${({ $fullWidth }) => ($fullWidth ? "100%" : calcResponsiveByPercent(-25, 500))};
+  height: ${calcResponsiveByPercent(-15, 70)};
   padding: 0;
   font-size: ${({ theme }) => theme.typography.heading.h2.fontSize};
   font-weight: 400;
@@ -43,12 +46,26 @@ const StyledButton = styled.button`
   }
 `;
 
-const Button: React.FC<ButtonProps> = ({ label, icon: Icon, onClick }) => {
+const SmallStyledButton = styled(StyledButton)`
+  width: ${calcResponsiveByPercent(-25, 150)};
+  height: ${calcResponsiveByPercent(-15, 55)};
+  font-size: ${({ theme }) => theme.typography.heading.h3.fontSize};
+`;
+
+const Button: React.FC<ButtonProps> = ({
+  label,
+  icon: Icon,
+  onClick,
+  type = "medium",
+  fullWidth = false,
+}) => {
+  const ButtonComponent = type === "small" ? SmallStyledButton : StyledButton;
+
   return (
-    <StyledButton onClick={onClick}>
+    <ButtonComponent onClick={onClick} $fullWidth={fullWidth}>
       {Icon && <Icon width={48} height={48} />}
       <span>{label}</span> {/* 텍스트는 버튼 중앙에 위치 */}
-    </StyledButton>
+    </ButtonComponent>
   );
 };
 
