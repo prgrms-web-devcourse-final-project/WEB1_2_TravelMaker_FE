@@ -3,38 +3,51 @@ import styled from "styled-components";
 import PreviousIcon from "@components/assets/icons/PreviousIcon";
 import NextIcon from "@components/assets/icons/NextIcon";
 
-interface ScheduleItem {
-  schedule_id: number;
-  title?: string;
-  address: string;
-  content: string;
-}
-
+// 개별 스케줄 데이터의 타입 정의
+// 개별 스케줄 데이터의 타입 정의
 interface Schedule {
-  schedule_id: number;
-  data: string; // 날짜 정보
-  plan: string; // 계획
-  date: string;
-  room_id: string;
-  scheduleItem?: ScheduleItem[];
+  schedule_id: number; // 스케줄의 고유 ID
+  plan: string; // 플랜 (예: "A", "B", "C")
+  date: string; // 날짜 (예: "11/20")
+  room_id: string; // 방 ID
+  scheduleItem?: {
+    schedule_id: number;
+    marker_id?:number;
+    title?: string;
+    address: string;
+    content: string;
+  }[];
 }
 
 interface ScheduleBarProps {
   schedules: Schedule[];
+  currentDate: string; // 현재 선택된 날짜
+  onChangeDate: (date: string) => void; // 날짜 변경 핸들러
 }
 
-const ScheduleBar: React.FC<ScheduleBarProps> = ({ schedules }) => {
-  const [currentIndex, setCurrentIndex] = useState(0); // 현재 스케줄 인덱스
+const ScheduleBar: React.FC<ScheduleBarProps> = ({
+  schedules,
+  currentDate,
+  onChangeDate,
+}) => {
+  // 현재 날짜의 인덱스를 찾는 함수
+  const currentIndex = schedules.findIndex((s) => s.date === currentDate);
 
-  const handlePrev = () => {
-    setCurrentIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : schedules.length - 1)); // 이전 버튼: 0이면 마지막으로 순환
-  };
+const handlePrev = () => {
+  if (schedules.length > 0) {
+    // 이전 날짜가 없으면 마지막 날짜로 돌아가게 처리
+    const prevIndex = currentIndex > 0 ? currentIndex - 1 : schedules.length - 1;
+    onChangeDate(schedules[prevIndex].date); // 이전 날짜로 변경
+  }
+};
 
   const handleNext = () => {
-    setCurrentIndex((prevIndex) => (prevIndex < schedules.length - 1 ? prevIndex + 1 : 0)); // 다음 버튼: 마지막이면 처음으로 순환
+    if (schedules.length > 0) {
+      const nextIndex = currentIndex < schedules.length - 1 ? currentIndex + 1 : 0;
+      onChangeDate(schedules[nextIndex].date); // 다음 날짜로 변경
+    }
   };
 
-  const currentSchedule = schedules[currentIndex];
 
   return (
     <Container>
@@ -42,10 +55,14 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ schedules }) => {
         <PreviousIcon />
       </Button>
       <DataContainer>
-        <>
-          {currentSchedule.data} ({currentSchedule.date}
-        </>
-        )
+        {schedules.length > 0 && currentIndex !== -1 ? (
+          <>
+            <span>{`Day ${currentIndex + 1}`}</span>
+            <span>{` (${currentDate})`}</span>
+          </>
+        ) : (
+          <span>{`Day 1`}</span>
+        )}
       </DataContainer>
       <Button onClick={handleNext}>
         <NextIcon />

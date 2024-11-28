@@ -4,40 +4,38 @@ import { calcVwFromPx } from "@common/styles/theme";
 import CloseIcon from "@components/assets/icons/CloseIcon";
 
 interface RouteCardProps {
-  index: number;
-  title?: string;
-  address: string;
-  onClickClose?: () => void; // 닫기 버튼 클릭 핸들러
-  onClickDetail?: () => void; // 상세 버튼 클릭 핸들러
+  schedule_id: number; // 스케줄 ID
+  marker_id?: number; // 카드의 순서
+  title?: string; // 제목 (기본값: "제목 없음")
+  address: string; // 주소
+  contents?: string; // 내용 (옵션)
 }
-// interface ScheduleItem {
-//   schedule_id: number;
-//   title?: string;
-//   address: string;
-//   content: string;
-// }
 
+// RouteCard 컴포넌트 정의
 const RouteCard: FC<RouteCardProps> = ({
-  index,
+  marker_id,
   title = "제목 없음",
   address,
-  onClickClose,
-  onClickDetail,
 }) => {
   return (
     <OuterContainer>
+      {/* 상단: 인덱스와 닫기 버튼 */}
       <TopContainer>
-        <Index>{index}</Index>
-        <CloseButton onClick={onClickClose}>
+        <Index>{marker_id}</Index>
+        <CloseButton>
           <CloseIcon />
         </CloseButton>
       </TopContainer>
+
+      {/* 중단: 제목과 위치 */}
       <InnerContainer>
         <TitleSection>{title}</TitleSection>
         <LocationSection>{address}</LocationSection>
       </InnerContainer>
+
+      {/* 하단: 상세보기 버튼 */}
       <BottomContainer>
-        <DetailButton onClick={onClickDetail}>상세보기</DetailButton>
+        <DetailButton>상세보기</DetailButton>
       </BottomContainer>
     </OuterContainer>
   );

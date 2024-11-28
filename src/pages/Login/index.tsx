@@ -62,7 +62,7 @@ const Login: React.FC = () => {
         </LogoWrapper>
         <ButtonWrapper>
           <Button label="Google로 시작하기" icon={Google} onClick={handleLoginClick} />
-        <Button label="Kakao로 시작하기" icon={Kakao} onClick={handleLoginClick} />
+          <Button label="Kakao로 시작하기" icon={Kakao} onClick={handleLoginClick} />
         </ButtonWrapper>
 
         {/* 버튼에 provider 값을 전달: */}

@@ -1,15 +1,14 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-// import ScheduleBar from "./ScheduleBar";
-import CheckIcon from "@components/assets/icons/CheckIcon";
+import CheckIcon from "@components/assets/icons/CheckIcon"; 
 
+// 스케줄 데이터 타입 정의
 interface Schedule {
-  schedule_id: number;
-  data: string;
-  plan: string;
-  date: string;
-  room_id: string;
-  scheduleItem: {
+  schedule_id: number; // 스케줄의 고유 ID
+  plan: string; // 플랜 (예: "A", "B", "C")
+  date: string; // 날짜 (예: "11/20")
+  room_id: string; // 방 ID
+  scheduleItem?: {
     schedule_id: number;
     title?: string;
     address: string;
@@ -17,46 +16,31 @@ interface Schedule {
   }[];
 }
 
+// PlanButtons 컴포넌트에 전달될 props 타입 정의
 interface PlanButtonsProps {
-  schedules: Schedule[];
+  currentPlan: string; // 현재 선택된 플랜
+  onChangePlan: (plan: string) => void; // 플랜 변경 핸들러
 }
 
-const PlanButtons: React.FC<PlanButtonsProps> = () => {
-  // const [filteredSchedules, setFilteredSchedules] = useState<Schedule[]>(schedules);
-
-  // const handleFilter = (planType: string) => {
-  //   const filtered = schedules.filter((schedule) => schedule.plan === planType);
-  //   setFilteredSchedules(filtered);
-  // };
-  const [selectedPlan, setSelectedPlan] = useState<string>("A"); // 초기 상태는 Plan A 선택
-  const handleSelect = (plan: string) => {
-    setSelectedPlan(plan);
-  };
-
+// PlanButtons 컴포넌트 정의
+const PlanButtons: React.FC<PlanButtonsProps> = ({ currentPlan, onChangePlan }) => {
   return (
     <Container>
-      <Button onClick={() => handleSelect("A")} isSelected={selectedPlan === "A"}>
-        {selectedPlan === "A" && <StyledCheckIcon />}
-        Plan A
-      </Button>
-      <Button onClick={() => handleSelect("B")} isSelected={selectedPlan === "B"}>
-        {selectedPlan === "B" && <StyledCheckIcon />}
-        Plan B
-      </Button>
-      <Button onClick={() => handleSelect("C")} isSelected={selectedPlan === "C"}>
-        {selectedPlan === "C" && <StyledCheckIcon />}
-        Plan C
-      </Button>
-      {/* <Button onClick={() => setFilteredSchedules(schedules)}>All</Button>
-      <Button onClick={() => handleFilter("A")}>Plan A</Button>
-      <Button onClick={() => handleFilter("B")}>Plan B</Button>
-      <Button onClick={() => handleFilter("C")}>Plan C</Button> */}
-
-      {/* 필터링된 스케줄을 ScheduleBar로 전달 */}
-      {/* <ScheduleBar schedules={filteredSchedules} /> */}
+      {["A", "B", "C"].map((plan) => (
+        <Button
+          key={plan}
+          onClick={() => onChangePlan(plan)} // 클릭 시 선택된 플랜 변경
+          isSelected={currentPlan === plan} // 현재 선택된 플랜인지 확인
+        >
+          {currentPlan === plan && <StyledCheckIcon />} {/* 선택된 경우 체크 아이콘 표시 */}
+          {`Plan ${plan}`}
+        </Button>
+      ))}
     </Container>
   );
 };
+
+export default PlanButtons;
 
 const Container = styled.div`
   display: flex;
@@ -89,5 +73,3 @@ const StyledCheckIcon = styled(CheckIcon)`
   width: 16px;
   height: 16px;
 `;
-
-export default PlanButtons;
