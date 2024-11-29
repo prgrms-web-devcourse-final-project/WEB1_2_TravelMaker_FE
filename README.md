@@ -52,25 +52,42 @@ git clone https://github.com/prgrms-web-devcourse-final-project/WEB1_2_TravelMak
 cd WEB1_2_TravelMaker_FE
 ```
 
-**2. 의존성 설치**
+**2. Node.js 설치 및 버전 확인**
+
+Node.js가 설치되어 있어야 하며, Node.js 20.x 버전을 사용하는 것을 권장합니다.
+설치 여부를 확인하려면 아래 명령어를 실행하세요:
+
+```bash
+node -v
+```
+
+**3. 의존성 설치**
 
 ```bash
 npm install
 ```
 
-**3. .env 파일을 생성하고 필요한 환경 변수를 설정합니다.**
+**4. .env 파일을 생성하고 필요한 환경 변수를 설정합니다.**
 
 > [!TIP]  
 > `.env` 파일의 예시는 `.env.template` 파일을 참조하세요.
 
-**4. 개발 서버 실행**
+**5. 개발 서버 실행**
 
 ```bash
 npm run dev
 ```
 
-**5. Storybook 실행 (선택 사항)**
+**6. Storybook 실행 (선택 사항)**
 
 ```bash
 npm run storybook
+```
+
+**7. 빌드**
+빌드가 완료되면 dist 폴더가 생성됩니다.
+해당 폴더에는 배포 가능한 정적 파일이 포함되어 있습니다.
+
+```bash
+npm run build
 ```
