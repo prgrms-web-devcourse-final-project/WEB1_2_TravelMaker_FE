@@ -1,7 +1,7 @@
+import { fn } from "@storybook/test";
 import type { Meta, StoryObj } from "@storybook/react";
 
 import ChatInput from "./ChatInput";
-import { fn } from "@storybook/test";
 
 const meta = {
   title: "Components/Chat/Input",

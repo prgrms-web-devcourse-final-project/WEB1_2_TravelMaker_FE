@@ -1,8 +1,9 @@
-import EmptyBox from "@common/styles/EmptyBox";
-import { calcResponsiveByPercent } from "@common/styles/theme";
 import { FC } from "react";
 import styled from "styled-components";
-import ChatProfile from "./ChatProfile";
+
+import Profile from "./ChatProfile";
+import EmptyBox from "@common/styles/EmptyBox";
+import { calcResponsiveByPercent } from "@common/styles/theme";
 
 interface SenderMessageProps {
   text: string;
@@ -17,7 +18,7 @@ const ReceiverMessage: FC<ReceiverMessageProps> = ({ text, url }) => {
   return (
     <Container>
       <ProfileContainer>
-        <ChatProfile size={30} shadow="small" url={url ?? undefined} />
+        <Profile.Image size={30} shadow="small" url={url ?? undefined} />
       </ProfileContainer>
       <Content $type="receiver">
         <Label>{text}</Label>

@@ -1,7 +1,7 @@
+import { fn } from "@storybook/test";
 import type { Meta, StoryObj } from "@storybook/react";
 
 import Chat from "./Chat";
-import { fn } from "@storybook/test";
 
 const meta = {
   title: "Components/Chat/Chat",
@@ -55,6 +55,12 @@ export const DefaultChat: Story = {
         url: "https://picsum.photos/200/300",
       },
       { type: "sender", text: "네, 감사합니다!", url: null },
+    ],
+    profiles: [
+      { url: "https://picsum.photos/200/300", onClick: fn() },
+      { url: "https://picsum.photos/200/300", onClick: fn() },
+      { url: "https://picsum.photos/200/300", onClick: fn(), isHost: true },
+      { url: "https://picsum.photos/200/300", onClick: fn() },
     ],
   },
 };
