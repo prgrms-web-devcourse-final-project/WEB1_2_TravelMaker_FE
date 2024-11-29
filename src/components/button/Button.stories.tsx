@@ -6,7 +6,7 @@ import Icon1 from "../assets/icons/KakaoIcon";
 import { fn } from "@storybook/test";
 
 const meta = {
-  title: "Components/Button/LargeButton",
+  title: "Components/Button",
   component: LoginButton,
   decorators: [
     (Story) => (
