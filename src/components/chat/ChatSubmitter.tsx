@@ -9,14 +9,14 @@ interface Props {
 
 const ChatSubmitter: FC<Props> = ({ onSubmit }) => {
   return (
-    <Container>
+    <ChatInputContainer>
       <ChatInput onSubmit={onSubmit} />
-    </Container>
+    </ChatInputContainer>
   );
 };
 
-const Container = styled.div`
-  padding: 25px 20px;
+const ChatInputContainer = styled.div`
+  padding: 5px 20px 25px;
 `;
 
 export default ChatSubmitter;
