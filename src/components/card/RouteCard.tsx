@@ -12,11 +12,7 @@ interface RouteCardProps {
 }
 
 // RouteCard 컴포넌트 정의
-const RouteCard: FC<RouteCardProps> = ({
-  marker_id,
-  title = "제목 없음",
-  address,
-}) => {
+const RouteCard: FC<RouteCardProps> = ({ marker_id, title = "제목 없음", address }) => {
   return (
     <OuterContainer>
       {/* 상단: 인덱스와 닫기 버튼 */}

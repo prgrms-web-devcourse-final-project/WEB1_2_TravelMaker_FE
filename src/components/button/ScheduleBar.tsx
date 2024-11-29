@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import PreviousIcon from "@components/assets/icons/PreviousIcon";
 import NextIcon from "@components/assets/icons/NextIcon";
@@ -12,7 +12,7 @@ interface Schedule {
   room_id: string; // 방 ID
   scheduleItem?: {
     schedule_id: number;
-    marker_id?:number;
+    marker_id?: number;
     title?: string;
     address: string;
     content: string;
@@ -25,29 +25,26 @@ interface ScheduleBarProps {
   onChangeDate: (date: string) => void; // 날짜 변경 핸들러
 }
 
-const ScheduleBar: React.FC<ScheduleBarProps> = ({
-  schedules,
-  currentDate,
-  onChangeDate,
-}) => {
+const ScheduleBar: React.FC<ScheduleBarProps> = ({ schedules, currentDate, onChangeDate }) => {
   // 현재 날짜의 인덱스를 찾는 함수
   const currentIndex = schedules.findIndex((s) => s.date === currentDate);
 
-const handlePrev = () => {
-  if (schedules.length > 0) {
-    // 이전 날짜가 없으면 마지막 날짜로 돌아가게 처리
-    const prevIndex = currentIndex > 0 ? currentIndex - 1 : schedules.length - 1;
-    onChangeDate(schedules[prevIndex].date); // 이전 날짜로 변경
-  }
-};
+  const handlePrev = () => {
+    if (schedules.length > 0) {
+      // 이전 날짜가 없으면 마지막 날짜로 돌아가게 처리
+      const prevIndex = currentIndex > 0 ? currentIndex - 1 : schedules.length - 1;
+
+      onChangeDate(schedules[prevIndex].date); // 이전 날짜로 변경
+    }
+  };
 
   const handleNext = () => {
     if (schedules.length > 0) {
       const nextIndex = currentIndex < schedules.length - 1 ? currentIndex + 1 : 0;
+
       onChangeDate(schedules[nextIndex].date); // 다음 날짜로 변경
     }
   };
-
 
   return (
     <Container>

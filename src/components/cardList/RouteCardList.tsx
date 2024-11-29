@@ -20,12 +20,7 @@ const RouteCardList: FC<RouteCardListProps> = ({ items = [] }) => {
         ))
       ) : (
         // 기본 값으로 출력할 카드
-        <RouteCard
-          marker_id={1}
-          title="서울시 강남구"
-          address="서울시 강남구"
-          schedule_id={0}
-        />
+        <RouteCard marker_id={1} title="서울시 강남구" address="서울시 강남구" schedule_id={0} />
       )}
     </CardListContainer>
   );

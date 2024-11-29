@@ -1,9 +1,9 @@
-import React, { useState, useEffect  } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import PlanButtons from "@components/button/PlanButtons";
 import RouteCardList from "@components/cardList/RouteCardList";
-import ScheduleBar from "@components/button/ScheduleBar"; 
-import { mockSchedules } from "@components/button/mockSchedule"
+import ScheduleBar from "@components/button/ScheduleBar";
+import { mockSchedules } from "@components/button/mockSchedule";
 import HorisontalLogo from "@components/assets/images/HorisontalLogo";
 
 // 스케줄 아이템의 타입
@@ -21,11 +21,10 @@ const ScheduleManager = () => {
   const [currentPlan, setCurrentPlan] = useState("A");
   const [scheduleItems, setScheduleItems] = useState<ScheduleItem[]>([]); // 초기 상태에 타입 명시
 
-   // 현재 날짜와 플랜을 기반으로 schedule_id를 찾는 함수
-   const findScheduleId = (date: string, plan: string) => {
-    const schedule = schedules.find(
-      (s) => s.date === date && s.plan === plan
-    );
+  // 현재 날짜와 플랜을 기반으로 schedule_id를 찾는 함수
+  const findScheduleId = (date: string, plan: string) => {
+    const schedule = schedules.find((s) => s.date === date && s.plan === plan);
+
     return schedule?.schedule_id || null;
   };
 
@@ -33,19 +32,23 @@ const ScheduleManager = () => {
   const loadScheduleItems = (schedule_id: number | null) => {
     if (!schedule_id) return setScheduleItems([]);
     const schedule = schedules.find((s) => s.schedule_id === schedule_id);
+
     setScheduleItems(schedule?.scheduleItem || []);
   };
 
   // 초기 로드
   useEffect(() => {
     const initialScheduleId = findScheduleId(currentDate, currentPlan);
+
     loadScheduleItems(initialScheduleId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // 플랜 변경
   const handlePlanChange = (plan: string) => {
     setCurrentPlan(plan);
     const scheduleId = findScheduleId(currentDate, plan);
+
     loadScheduleItems(scheduleId);
   };
 
@@ -53,6 +56,7 @@ const ScheduleManager = () => {
   const handleDateChange = (date: string) => {
     setCurrentDate(date);
     const scheduleId = findScheduleId(date, currentPlan);
+
     loadScheduleItems(scheduleId);
   };
 
@@ -60,12 +64,12 @@ const ScheduleManager = () => {
     <Container>
       <PlanButtons currentPlan={currentPlan} onChangePlan={handlePlanChange} />
       <ScheduleBox>
-      <ScheduleBar
-        currentDate={currentDate}
-        schedules={schedules}
-        onChangeDate={handleDateChange}
-      />
-      <RouteCardList items={scheduleItems} />
+        <ScheduleBar
+          currentDate={currentDate}
+          schedules={schedules}
+          onChangeDate={handleDateChange}
+        />
+        <RouteCardList items={scheduleItems} />
       </ScheduleBox>
 
       <LogoWrapper>
@@ -89,10 +93,10 @@ const ScheduleBox = styled.div`
   display: flex;
   flex-direction: column;
   gap: 40px;
-`
+`;
 
 const LogoWrapper = styled.div`
- align-items: end;
+  align-items: end;
   display: flex;
   flex-direction: column;
   margin-top: 65px;

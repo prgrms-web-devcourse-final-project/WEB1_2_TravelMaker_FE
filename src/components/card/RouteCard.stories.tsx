@@ -1,21 +1,18 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta } from "@storybook/react";
 import RouteCard from "./RouteCard";
 
 const meta = {
   title: "Components/Card/RouteCard",
   component: RouteCard,
-  argTypes: {
-    onClickClose: { action: "close clicked" },
-    onClickDetail: { action: "detail clicked" },
-  },
+
   args: {},
 } satisfies Meta<typeof RouteCard>;
 
 export default meta;
 
-type Story = StoryObj<typeof meta>;
+// type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
+export const Default = {
   args: {
     index: 1,
     title: "산책로",
@@ -23,14 +20,14 @@ export const Default: Story = {
   },
 };
 
-export const WithoutTitle: Story = {
+export const WithoutTitle = {
   args: {
     index: 2,
     location: "부산광역시 해운대구 해운대해변로",
   },
 };
 
-export const LongText: Story = {
+export const LongText = {
   args: {
     index: 3,
     title: "아주 긴 제목을 가진 산책로입니다. 줄바꿈 처리가 잘 되어야 합니다.",

@@ -1,4 +1,3 @@
-import * as React from "react";
 import type { SVGProps } from "react";
 const HorisontalLogo = (props: SVGProps<SVGSVGElement>) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={160} height={70} fill="none" {...props}>
