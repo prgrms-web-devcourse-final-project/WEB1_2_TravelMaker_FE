@@ -1,7 +1,7 @@
 import styled, { keyframes } from "styled-components";
 import { FC, useState } from "react";
 
-import EmptyBox from "@common/styles/Empty";
+import EmptyBox from "@common/styles/EmptyBox";
 import { calcVwFromPx } from "@common/styles/theme";
 import PlaneIcon, { PlaneIcon2 } from "@components/assets/icons/Plane";
 
@@ -157,9 +157,6 @@ const DateLabel = styled(TicketingFont)`
   text-align: right;
   font-size: ${({ theme }) => theme.typography.caption.fontSize};
   color: ${({ theme }) => theme.colors.text.title};
-
-  @media (max-width: 1500px) {
-  }
 `;
 
 export default MyPlannerCard;

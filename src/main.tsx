@@ -1,4 +1,3 @@
-import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
 import { Provider as ReduxProvider } from "react-redux";
@@ -21,12 +20,10 @@ const enableMocking = async () => {
 
 enableMocking().then(() => {
   createRoot(document.getElementById("root")!).render(
-    <StrictMode>
-      <CustomThemeProvider>
-        <ReduxProvider store={store}>
-          <RouterProvider router={router} />
-        </ReduxProvider>
-      </CustomThemeProvider>
-    </StrictMode>
+    <CustomThemeProvider>
+      <ReduxProvider store={store}>
+        <RouterProvider router={router} />
+      </ReduxProvider>
+    </CustomThemeProvider>
   );
 });

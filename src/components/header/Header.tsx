@@ -33,7 +33,7 @@ const CircleButton = styled.div`
   width: 70px;
   height: 70px;
   background-color: #ccc;
-  border-radius: 50%;
+  border-radius: ${({ theme }) => theme.cornerRadius.circular};
   display: flex;
   align-items: center;
   justify-content: center;

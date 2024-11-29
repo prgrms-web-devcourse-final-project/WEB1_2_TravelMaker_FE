@@ -1,48 +1,67 @@
-import { useAppDispatch, useAppSelector } from "@common/hooks/useAppRedux";
 import styled from "styled-components";
-import { decrement, increment } from "./features/counter/counterSlice";
+
+import { calcResponsiveByPercent } from "@common/styles/theme";
+import MyPlannerCardList from "@components/cardList/MyPlannerCardList";
+import StartPlannerCard from "@components/card/StartPlannerCard";
 
 const Main = () => {
-  const count = useAppSelector((state) => state.counter.value);
-  const dispatch = useAppDispatch();
-
   return (
-    <Wrapper>
-      <Title>Hello World!</Title>
-      <SecondaryFont>Departure: 2024.11.20 Arrival: 2024.11.22</SecondaryFont>
-      <h1 className="text-3xl font-bold underline">Hello world!</h1>
-      <button
-        type="button"
-        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-        onClick={() => dispatch(increment())}>
-        Increment
-      </button>
-      <h2 className="text-indigo-300">{count}</h2>
-      <button
-        type="button"
-        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-        onClick={() => dispatch(decrement())}>
-        Decrement
-      </button>
-    </Wrapper>
+    <>
+      <Container>
+        <MyPlannerCardList items={mock} onEmptyCardClick={() => {}} />
+        <StartPlannerCard onClickPlanner={() => {}} onSubmit={() => {}} />
+      </Container>
+    </>
   );
 };
 
-export const SecondaryFont = styled.h1`
-  font-family: ${({ theme }) => theme.typography.fontFamily.secondary};
-`;
+const Container = styled.div`
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  gap: ${calcResponsiveByPercent(-15, 100)};
+  margin: 50px 0;
 
-// Create a Title component that'll render an <h1> tag with some styles
-const Title = styled.h1`
-  font-size: 1.5em;
-  text-align: center;
-  color: #bf4f74;
-`;
-
-// Create a Wrapper component that'll render a <section> tag with some styles
-const Wrapper = styled.section`
-  padding: 4em;
-  background: papayawhip;
+  @media (min-width: 1024px) {
+    margin: 0;
+    flex-direction: row;
+    gap: ${calcResponsiveByPercent(-15, 250)};
+  }
 `;
 
 export default Main;
+
+const mock = [
+  {
+    country: "KOREA",
+    startDate: "2024.11.24",
+    endDate: "2024.11.30",
+    onClick: () => {},
+  },
+  {
+    country: "JAPAN",
+    startDate: "2025.01.01",
+    endDate: "2025.01.07",
+    onClick: () => {},
+  },
+  {
+    country: "CHINA",
+    startDate: "2025.02.01",
+    endDate: "2025.02.07",
+    onClick: () => {},
+  },
+  {
+    country: "JAPAN",
+    startDate: "2025.03.01",
+    endDate: "2025.03.07",
+    onClick: () => {},
+  },
+  {
+    country: "KOREA",
+    startDate: "2025.11.24",
+    endDate: "2025.11.30",
+    onClick: () => {},
+  },
+];
