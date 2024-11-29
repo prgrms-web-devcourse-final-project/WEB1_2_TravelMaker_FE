@@ -6,10 +6,12 @@ import StartPlannerCard from "@components/card/StartPlannerCard";
 
 const Main = () => {
   return (
-    <Container>
-      <MyPlannerCardList items={mock} onEmptyCardClick={() => {}} />
-      <StartPlannerCard onClickPlanner={() => {}} onSubmit={() => {}} />
-    </Container>
+    <>
+      <Container>
+        <MyPlannerCardList items={mock} onEmptyCardClick={() => {}} />
+        <StartPlannerCard onClickPlanner={() => {}} onSubmit={() => {}} />
+      </Container>
+    </>
   );
 };
 
