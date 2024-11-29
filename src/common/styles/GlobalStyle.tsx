@@ -79,7 +79,7 @@ export const GlobalStyle = createGlobalStyle`
     text-rendering: optimizeLegibility;
 
     font-family: ${({ theme }) => `${theme.typography.fontFamily.main}, sans-serif`};
-    font-weight: 400;
+    font-weight: ${({ theme }) => theme.typography.fontWeight.regular};
     font-style: normal;
     background-color: ${({ theme }) => theme.colors.background.neutral0};
     color: ${({ theme }) => theme.colors.text.title};

@@ -140,7 +140,12 @@ const Base = {
     text-overflow: ellipsis;
     font-size: ${({ theme: { typography }, $font }) =>
       $font.size === "small" ? typography.heading.h4.fontSize : typography.heading.h3.fontSize};
-    font-weight: ${({ $font }) => ($font.bold ? 600 : 400)};
+    font-weight: ${({
+      $font,
+      theme: {
+        typography: { fontWeight },
+      },
+    }) => ($font.bold ? fontWeight.semiBold : fontWeight.regular)};
     color: ${({ theme }) => theme.colors.text.body};
   `,
   Input: styled.input<{ $font: Partial<FormFieldFont> }>`
@@ -151,7 +156,12 @@ const Base = {
     background-color: transparent;
     font-size: ${({ theme: { typography }, $font }) =>
       $font.size === "small" ? typography.heading.h4.fontSize : typography.heading.h3.fontSize};
-    font-weight: ${({ $font }) => ($font.bold ? 600 : 400)};
+    font-weight: ${({
+      $font,
+      theme: {
+        typography: { fontWeight },
+      },
+    }) => ($font.bold ? fontWeight.semiBold : fontWeight.regular)};
     color: ${({ theme }) => theme.colors.text.body};
   `,
 };

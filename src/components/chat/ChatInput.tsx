@@ -89,7 +89,7 @@ const TextArea = styled.textarea`
   vertical-align: top;
   display: flex;
   font-size: ${({ theme }) => theme.typography.body.bold.fontSize};
-  font-weight: ${({ theme }) => theme.typography.body.bold.fontWeight};
+  font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
   font-family: ${({ theme }) => theme.typography.fontFamily.main};
   color: ${({ theme }) => theme.colors.text.caption};
 `;
