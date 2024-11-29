@@ -21,7 +21,11 @@ const ProfileWithInfo: React.FC<ProfileWithInfoProps> = ({ src, name, email, onC
   };
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCurrentName(e.target.value);
+    const inputValue = e.target.value;
+
+    if (inputValue.length <= 8) {
+      setCurrentName(inputValue);
+    }
   };
 
   const handleConfirmClick = () => {

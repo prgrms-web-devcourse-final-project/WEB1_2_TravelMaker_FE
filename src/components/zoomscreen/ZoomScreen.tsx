@@ -1,59 +1,39 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import PlusIcon from "../assets/icons/ZoomPlusIcon";
 import MinusIcon from "../assets/icons/ZoomMinusIcon";
 
 interface ZoomScreenProps {
-  initialZoom?: number;
-  minZoom?: number;
-  maxZoom?: number;
+  currentZoom: number;
+  minZoom: number;
+  maxZoom: number;
+  onZoomIn: () => void;
+  onZoomOut: () => void;
 }
 
 export const ZoomScreen: React.FC<ZoomScreenProps> = ({
-  initialZoom = 1,
-  minZoom = 0.5,
-  maxZoom = 3,
+  currentZoom,
+  minZoom,
+  maxZoom,
+  onZoomIn,
+  onZoomOut,
 }) => {
-  const [zoomLevel, setZoomLevel] = useState(initialZoom);
-
-  const handleZoomIn = () => {
-    setZoomLevel((prevZoom) => Math.min(prevZoom * 1.2, maxZoom));
-  };
-
-  const handleZoomOut = () => {
-    setZoomLevel((prevZoom) => Math.max(prevZoom / 1.2, minZoom));
-  };
-
   return (
-    <ZoomWrapper zoom={zoomLevel}>
-      <ZoomContainer>
-        <ZoomButton onClick={handleZoomIn}>
-          <PlusIconWrapper>
-            <PlusIcon />
-          </PlusIconWrapper>
-        </ZoomButton>
-        <Divider />
-        <ZoomButton onClick={handleZoomOut}>
-          <MinusIconWrapper>
-            <MinusIcon />
-          </MinusIconWrapper>
-        </ZoomButton>
-      </ZoomContainer>
-    </ZoomWrapper>
+    <ZoomContainer>
+      <ZoomButton onClick={onZoomIn} disabled={currentZoom >= maxZoom}>
+        <PlusIconWrapper>
+          <PlusIcon />
+        </PlusIconWrapper>
+      </ZoomButton>
+      <Divider />
+      <ZoomButton onClick={onZoomOut} disabled={currentZoom <= minZoom}>
+        <MinusIconWrapper>
+          <MinusIcon />
+        </MinusIconWrapper>
+      </ZoomButton>
+    </ZoomContainer>
   );
 };
-
-const ZoomWrapper = styled.div<{ zoom: number }>`
-  transform: scale(${({ zoom }) => zoom});
-  transform-origin: center center;
-  transition: transform 0.3s ease-in-out;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: ${({ theme }) => theme.colors.background.neutral1};
-`;
 
 const ZoomContainer = styled.div`
   display: flex;
@@ -64,7 +44,8 @@ const ZoomContainer = styled.div`
   height: 100px;
   border: 1px solid ${({ theme }) => theme.colors.text.title};
   border-radius: 10px;
-  background-color: ${({ theme }) => theme.colors.background.neutral0};
+  background-color: ${({ theme }) => theme.colors.stroke.neutral1};
+  opacity: 0.8;
 `;
 
 const ZoomButton = styled.button`
@@ -80,6 +61,11 @@ const ZoomButton = styled.button`
   &:hover {
     background-color: ${({ theme }) => theme.colors.background.neutral1};
     border-radius: 10px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
   }
 `;
 

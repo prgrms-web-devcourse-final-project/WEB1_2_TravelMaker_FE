@@ -1,5 +1,11 @@
+import MapComponent from "./components/MapComponent";
+
 const Planner = () => {
-  return <h1>Planner</h1>;
+  return (
+    <div>
+      <MapComponent />
+    </div>
+  );
 };
 
 export default Planner;
