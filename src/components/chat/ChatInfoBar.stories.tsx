@@ -1,7 +1,8 @@
+import styled from "styled-components";
+import { fn } from "@storybook/test";
 import type { Meta, StoryObj } from "@storybook/react";
 
 import ChatInfoBar from "./ChatInfoBar";
-import styled from "styled-components";
 
 const meta = {
   title: "Components/Chat/InfoBar",
@@ -33,5 +34,11 @@ type Story = StoryObj<typeof meta>;
 export const DefaultChatInfoBar: Story = {
   args: {
     url: "https://picsum.photos/200/300",
+    profiles: [
+      { url: "https://picsum.photos/200/300", onClick: fn() },
+      { url: "https://picsum.photos/200/300", onClick: fn() },
+      { url: "https://picsum.photos/200/300", onClick: fn(), isHost: true },
+      { url: "https://picsum.photos/200/300", onClick: fn() },
+    ],
   },
 };
