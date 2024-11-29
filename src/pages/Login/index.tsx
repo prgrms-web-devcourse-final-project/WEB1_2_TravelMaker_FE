@@ -62,8 +62,8 @@ const Login: React.FC = () => {
         </LogoWrapper>
         <ButtonWrapper>
           <Button label="Google로 시작하기" icon={Google} onClick={handleLoginClick} />
+          <Button label="Kakao로 시작하기" icon={Kakao} onClick={handleLoginClick} />
         </ButtonWrapper>
-        <Button label="Kakao로 시작하기" icon={Kakao} onClick={handleLoginClick} />
 
         {/* 버튼에 provider 값을 전달: */}
 
@@ -106,6 +106,9 @@ const LogoWrapper = styled.div`
   margin-left: 100px;
 `;
 const ButtonWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  flex-direction: column;
   margin-top: 150px;
-  margin-bottom: 40px;
+  gap: 40px;
 `;
