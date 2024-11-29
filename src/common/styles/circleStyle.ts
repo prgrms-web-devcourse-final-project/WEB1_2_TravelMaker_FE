@@ -30,11 +30,14 @@ import { css } from "styled-components";
  * @param $size {number} 원의 크기를 정의하는 숫자 값 (단위: px).
  */
 const commonCircleStyle = css<{ $size: number }>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1/1;
+  border-radius: 50%;
   max-width: ${({ $size }) => ($size ? `${$size}px` : "100%")};
   width: ${({ $size }) => ($size ? `${$size}px` : "100%")};
   height: ${({ $size }) => ($size ? `${$size}px` : "100%")};
-  aspect-ratio: 1/1;
-  border-radius: 50%;
 `;
 
 export default commonCircleStyle;

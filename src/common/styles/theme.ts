@@ -27,14 +27,6 @@ export interface CustomTheme {
   shadows: Shadows;
 }
 
-type ThemeColors = CustomTheme["colors"];
-type ColorCategory = keyof ThemeColors;
-
-export type ColorTypes = {
-  category: ColorCategory;
-  state: keyof ThemeColors[ColorCategory];
-};
-
 interface Stroke {
   neutral1: string;
   neutral2: string;
