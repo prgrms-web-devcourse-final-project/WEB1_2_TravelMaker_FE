@@ -1,13 +1,14 @@
-import calcByPercent from "@common/utils/calcByPercent";
 import "styled-components";
 import { DefaultTheme } from "styled-components";
+
+import calcByPercent from "@common/utils/calcByPercent";
 
 declare module "styled-components" {
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   export interface DefaultTheme extends CustomTheme {}
 }
 
-interface CustomTheme {
+export interface CustomTheme {
   colors: {
     primary: ColorStates;
     secondary: ColorStates;
@@ -25,6 +26,14 @@ interface CustomTheme {
   strokeWidth: StrokeWidth;
   shadows: Shadows;
 }
+
+type ThemeColors = CustomTheme["colors"];
+type ColorCategory = keyof ThemeColors;
+
+export type ColorTypes = {
+  category: ColorCategory;
+  state: keyof ThemeColors[ColorCategory];
+};
 
 interface Stroke {
   neutral1: string;
