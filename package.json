@@ -7,10 +7,10 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "format": "prettier --write .",
-    "lint": "eslint .",
+    "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint --fix",
     "preview": "vite preview",
-    "type-check": "tsc --noEmit",
+    "type-check": "tsc -b --noEmit",
     "prepare": "husky",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
