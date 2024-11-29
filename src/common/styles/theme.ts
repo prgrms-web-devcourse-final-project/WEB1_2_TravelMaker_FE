@@ -8,7 +8,7 @@ declare module "styled-components" {
   export interface DefaultTheme extends CustomTheme {}
 }
 
-interface CustomTheme {
+export interface CustomTheme {
   colors: {
     primary: ColorStates;
     secondary: ColorStates;
@@ -26,6 +26,14 @@ interface CustomTheme {
   strokeWidth: StrokeWidth;
   shadows: Shadows;
 }
+
+type ThemeColors = CustomTheme["colors"];
+type ColorCategory = keyof ThemeColors;
+
+export type ColorTypes = {
+  category: ColorCategory;
+  state: keyof ThemeColors[ColorCategory];
+};
 
 interface Stroke {
   neutral1: string;
@@ -47,7 +55,7 @@ interface Text {
   caption: string;
 }
 
-export interface Shadows {
+interface Shadows {
   small: string;
   medium: string;
   large: string;

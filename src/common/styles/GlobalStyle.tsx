@@ -88,6 +88,10 @@ export const GlobalStyle = createGlobalStyle`
     overflow-x: hidden;
     overflow-y: auto;
 
+    /* 스크롤 동작을 부드럽게 만드는 속성*/
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+
     /* y축 스크롤바 스타일링 */
     &::-webkit-scrollbar {
         width: 6px;
