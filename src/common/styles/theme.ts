@@ -27,14 +27,6 @@ export interface CustomTheme {
   shadows: Shadows;
 }
 
-type ThemeColors = CustomTheme["colors"];
-type ColorCategory = keyof ThemeColors;
-
-export type ColorTypes = {
-  category: ColorCategory;
-  state: keyof ThemeColors[ColorCategory];
-};
-
 interface Stroke {
   neutral1: string;
   neutral2: string;
@@ -75,6 +67,16 @@ interface CornerRadius {
   circular: string;
 }
 
+interface FontWeight {
+  thin: 100;
+  extraLight: 200;
+  light: 300;
+  regular: 400;
+  medium: 500;
+  semiBold: 600;
+  bold: 700;
+}
+
 interface Typography {
   fontFamily: {
     main: "IBM Plex Sans KR";
@@ -91,6 +93,7 @@ interface Typography {
     bold: TextStyle;
   };
   caption: TextStyle;
+  fontWeight: FontWeight;
 }
 
 interface ColorStates {
@@ -119,6 +122,15 @@ const sharedTypography: Typography = {
   fontFamily: {
     main: "IBM Plex Sans KR",
     secondary: "Ticketing-regular",
+  },
+  fontWeight: {
+    thin: 100,
+    extraLight: 200,
+    light: 300,
+    regular: 400,
+    medium: 500,
+    semiBold: 600,
+    bold: 700,
   },
   heading: {
     h1: {

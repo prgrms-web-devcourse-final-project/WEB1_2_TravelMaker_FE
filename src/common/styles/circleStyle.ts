@@ -1,40 +1,47 @@
 import { css } from "styled-components";
 
 /**
- * 공통적인 원형 스타일을 적용하는 CSS 유틸리티.
+ * 공통적인 원형 스타일을 적용하는 CSS 유틸리티입니다.
  *
  * @description
- * 주어진 `$size` 값에 따라 원형(정사각형) 스타일을 설정합니다.
- * `$size` 값이 제공되지 않을 경우 기본적으로 100% 크기로 설정됩니다.
+ * flex를 사용하여 내부 콘텐츠를 중앙 정렬하고, 원형 스타일을 적용합니다.
+ * `$size` prop으로 크기를 지정할 수 있으며, 지정하지 않을 경우 부모 요소의 100% 크기를 사용합니다.
  *
  * @example
+ * ```tsx
  * import styled from "styled-components";
  *
  * const Circle = styled.div`
  *   ${commonCircleStyle};
  * `;
  *
- * <Circle $size={50} />
+ * // 사용 예시
+ * <Circle $size={50} /> // 50px 크기의 원
+ * <Circle /> // 부모 크기에 맞는 원
+ * ```
  *
- * @template $size {number}
- * - 설정된 숫자 값에 따라 원의 크기를 `px` 단위로 설정합니다.
- * - `$size`가 제공되지 않으면 기본적으로 부모의 크기에 따라 크기가 결정됩니다.
+ * @param {Object} props
+ * @param {number} [props.$size] - 원의 크기(px). 미지정시 100%를 사용
  *
- * @style
- * - `max-width`: 원의 최대 너비를 제한합니다.
- * - `width`: 원의 고정 너비를 설정합니다.
- * - `height`: 원의 고정 높이를 설정합니다.
- * - `aspect-ratio`: 1:1 비율을 유지하여 정사각형을 만듭니다.
- * - `border-radius`: 50%로 설정하여 원형으로 만듭니다.
- *
- * @param $size {number} 원의 크기를 정의하는 숫자 값 (단위: px).
+ * @cssProps
+ * - display: flex
+ * - justify-content: center
+ * - align-items: center
+ * - aspect-ratio: 1/1 (정사각형 비율 유지)
+ * - border-radius: 50% (원형)
+ * - max-width: $size px 또는 100%
+ * - width: $size px 또는 100%
+ * - height: $size px 또는 100%
  */
-const commonCircleStyle = css<{ $size: number }>`
+const commonCircleStyle = css<{ $size?: number }>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1/1;
+  border-radius: 50%;
   max-width: ${({ $size }) => ($size ? `${$size}px` : "100%")};
   width: ${({ $size }) => ($size ? `${$size}px` : "100%")};
   height: ${({ $size }) => ($size ? `${$size}px` : "100%")};
-  aspect-ratio: 1/1;
-  border-radius: 50%;
 `;
 
 export default commonCircleStyle;

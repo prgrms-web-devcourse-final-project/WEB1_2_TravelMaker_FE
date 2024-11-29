@@ -1,7 +1,7 @@
 import { ElementType, FC } from "react";
 import styled, { css } from "styled-components";
 
-import { ColorTypes, CustomTheme } from "@common/styles/theme";
+import { CustomTheme } from "@common/styles/theme";
 import extractNumber from "@common/utils/extractNumber";
 import calculateProportionalSize from "@common/utils/calculateProportionalSize";
 import CloseIcon from "@components/assets/icons/CloseIcon";
@@ -17,7 +17,7 @@ interface BaseContentStyleProps {
 }
 
 interface BadgeStyleProps extends Pick<BaseContentStyleProps, "$size"> {
-  $color: ColorTypes;
+  $color?: string;
   $showBadge?: boolean;
   $isInteractive?: boolean;
 }
@@ -38,8 +38,8 @@ interface ProfileBaseProps {
 
 interface ProfileImageProps extends ProfileBaseProps {
   url?: string;
-  badgeColor?: ColorTypes;
-  Icon?: ElementType<{ size: number; color: ColorTypes }>;
+  badgeColor?: string;
+  Icon?: ElementType<{ size?: number; color?: string }>;
   showBadge?: boolean;
   isHost?: boolean;
 }
@@ -75,20 +75,20 @@ const DEFAULTS = {
 } as const;
 
 const Profile: ProfileComponent = {
-  Image: ({ url, Icon = CloseIcon, ...styleProps }) => {
+  Image: ({ url, Icon = ProfileCloseIcon, ...styleProps }) => {
     const { size, stroke, shadow, badgeColor, showBadge, isHost } = styleProps;
     const { badgeDimension, badgeIconDimension, x, y } = getDimensions(size);
 
     return (
-      <Base.Container $size={size} $stroke={stroke} $shadow={shadow}>
+      <Base.ProfileContainer $size={size} $stroke={stroke} $shadow={shadow}>
         <Base.Host $position={{ x, y }} $isHost={isHost}>
           <HostIcon size={badgeDimension} />
         </Base.Host>
         <Base.Image src={url} />
-        <Base.Badge $size={badgeDimension} $color={badgeColor as ColorTypes} $showBadge={showBadge}>
-          <Icon size={badgeIconDimension} color={badgeColor as ColorTypes} />
+        <Base.Badge $size={badgeDimension} $color={badgeColor} $showBadge={showBadge}>
+          <Icon size={badgeIconDimension} />
         </Base.Badge>
-      </Base.Container>
+      </Base.ProfileContainer>
     );
   },
   Label: ({ text, ...styleProps }) => {
@@ -116,6 +116,10 @@ const Profile: ProfileComponent = {
   },
 };
 
+const ProfileCloseIcon = styled(CloseIcon).attrs(({ theme }) => ({
+  color: theme.colors.danger.normal,
+}))``;
+
 const baseContentStyle = css<BaseContentStyleProps>`
   ${commonCircleStyle}
   position: relative;
@@ -126,10 +130,12 @@ const baseContentStyle = css<BaseContentStyleProps>`
 `;
 
 const Base = {
-  Container: styled.div.attrs<BaseContentStyleProps>(({ $stroke = false, $shadow = "none" }) => ({
-    $stroke,
-    $shadow,
-  }))<BaseContentStyleProps>`
+  ProfileContainer: styled.div.attrs<BaseContentStyleProps>(
+    ({ $stroke = false, $shadow = "none" }) => ({
+      $stroke,
+      $shadow,
+    })
+  )<BaseContentStyleProps>`
     ${baseContentStyle}
     background-color: ${({ theme }) => theme.colors.tertiary.disabled};
   `,
@@ -168,17 +174,11 @@ const Base = {
     display: block;
     border-radius: 50%;
   `,
-  Badge: styled.div.attrs<BadgeStyleProps>(
-    ({
-      $color = { category: "danger", state: "normal" } as ColorTypes,
-      $size,
-      $showBadge = false,
-    }) => ({
-      $color,
-      $size,
-      $showBadge,
-    })
-  )<BadgeStyleProps>`
+  Badge: styled.div.attrs<BadgeStyleProps>(({ $color, $size, $showBadge = false, theme }) => ({
+    $color: $color ?? theme.colors.danger.normal,
+    $size,
+    $showBadge,
+  }))`
     ${commonCircleStyle}
     visibility:  ${({ $showBadge }) => ($showBadge ? "visible" : "hidden")};
     position: absolute;
@@ -186,14 +186,11 @@ const Base = {
     right: 0;
     transform: translate(1px, 1px);
     overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     background-color: ${({ theme }) => theme.colors.background.neutral0};
-    border: ${({ theme: { strokeWidth, colors }, $size, $color: { category, state } }) => {
+    border: ${({ theme: { strokeWidth, colors }, $size, $color }) => {
       const width = extractNumber(strokeWidth.regular);
       const calculatedWidth = Math.round(($size / DEFAULTS.BADGE_SIZE) * width);
-      const borderColor = colors[category][state] ?? colors.text.title;
+      const borderColor = $color ?? colors.text.title;
 
       return `${Math.max(width, calculatedWidth)}px solid ${borderColor}`;
     }};

@@ -35,7 +35,7 @@ const MyPlannerCardList: FC<Props> = ({ onEmptyCardClick, items = [] }) => {
 
 const HeaderTitle = styled.h1`
   font-size: 36px;
-  font-weight: 700;
+  font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
   color: ${({ theme }) => theme.colors.text.body};
 `;
 
