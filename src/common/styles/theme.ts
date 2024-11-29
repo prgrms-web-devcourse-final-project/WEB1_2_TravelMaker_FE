@@ -1,13 +1,14 @@
-import calcByPercent from "@common/utils/calcByPercent";
 import "styled-components";
 import { DefaultTheme } from "styled-components";
+
+import calcByPercent from "@common/utils/calcByPercent";
 
 declare module "styled-components" {
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   export interface DefaultTheme extends CustomTheme {}
 }
 
-interface CustomTheme {
+export interface CustomTheme {
   colors: {
     primary: ColorStates;
     secondary: ColorStates;
@@ -66,6 +67,16 @@ interface CornerRadius {
   circular: string;
 }
 
+interface FontWeight {
+  thin: 100;
+  extraLight: 200;
+  light: 300;
+  regular: 400;
+  medium: 500;
+  semiBold: 600;
+  bold: 700;
+}
+
 interface Typography {
   fontFamily: {
     main: "IBM Plex Sans KR";
@@ -82,6 +93,7 @@ interface Typography {
     bold: TextStyle;
   };
   caption: TextStyle;
+  fontWeight: FontWeight;
 }
 
 interface ColorStates {
@@ -110,6 +122,15 @@ const sharedTypography: Typography = {
   fontFamily: {
     main: "IBM Plex Sans KR",
     secondary: "Ticketing-regular",
+  },
+  fontWeight: {
+    thin: 100,
+    extraLight: 200,
+    light: 300,
+    regular: 400,
+    medium: 500,
+    semiBold: 600,
+    bold: 700,
   },
   heading: {
     h1: {

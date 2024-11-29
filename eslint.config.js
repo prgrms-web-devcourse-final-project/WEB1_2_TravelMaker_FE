@@ -17,7 +17,7 @@ import eslintPluginPrettierRecommended from "eslint-plugin-prettier/recommended"
 // ESLint 설정을 TypeScript용으로 구성합니다.
 export default tseslint.config(
   // ESLint가 무시할 경로를 설정합니다. (예: 컴파일된 파일이 있는 dist 폴더)
-  { ignores: ["dist"] },
+  { ignores: ["dist", "public/mockServiceWorker.js"] },
 
   // 주요 ESLint 규칙을 확장하고 파일 및 플러그인을 설정합니다.
   {
@@ -70,7 +70,6 @@ export default tseslint.config(
       // 함수 선언 대신 함수 표현식을 사용하도록 강제합니다.
       "func-style": ["error", "expression"],
     },
-    ignores: ["mockServiceWorker.js"],
   },
 
   // Prettier와 ESLint 추천 규칙을 함께 사용하도록 설정합니다.

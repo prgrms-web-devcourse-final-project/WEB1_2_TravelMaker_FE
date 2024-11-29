@@ -47,7 +47,7 @@ const SubmitContainer = styled.div`
 `;
 
 const LogoLabel = styled.h1`
-  font-weight: 700;
+  font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
   font-size: 64px;
   color: ${({ theme }) => theme.colors.text.body};
 `;
