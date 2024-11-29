@@ -9,6 +9,7 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react(), tsconfigPaths()], // React 플러그인 활성화
     define: {
+      __VITE_GOOGLE_KEY__: JSON.stringify(env.VITE_GOOGLE_KEY),
       __VITE_API_URL__: JSON.stringify(env.VITE_API_URL),
       __VITE_MSW_ENABLED__: JSON.stringify(env.VITE_MSW_ENABLED),
     },
