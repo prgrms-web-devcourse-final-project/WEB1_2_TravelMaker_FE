@@ -1,5 +1,3 @@
-import "./tailwind.css";
-
 import { createGlobalStyle } from "styled-components";
 import TicketingRegular from "@assets/fonts/Ticketing-regular.otf";
 
