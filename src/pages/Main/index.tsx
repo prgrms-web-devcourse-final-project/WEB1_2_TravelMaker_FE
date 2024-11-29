@@ -3,13 +3,17 @@ import styled from "styled-components";
 import { calcResponsiveByPercent } from "@common/styles/theme";
 import MyPlannerCardList from "@components/cardList/MyPlannerCardList";
 import StartPlannerCard from "@components/card/StartPlannerCard";
+import Header from "@components/header/Header";
 
 const Main = () => {
   return (
-    <Container>
-      <MyPlannerCardList items={mock} onEmptyCardClick={() => {}} />
-      <StartPlannerCard onClickPlanner={() => {}} onSubmit={() => {}} />
-    </Container>
+    <>
+      <Header />
+      <Container>
+        <MyPlannerCardList items={mock} onEmptyCardClick={() => {}} />
+        <StartPlannerCard onClickPlanner={() => {}} onSubmit={() => {}} />
+      </Container>
+    </>
   );
 };
 
