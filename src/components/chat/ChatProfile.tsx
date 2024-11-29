@@ -80,7 +80,7 @@ const Profile: ProfileComponent = {
     const { badgeDimension, badgeIconDimension, x, y } = getDimensions(size);
 
     return (
-      <Base.Container $size={size} $stroke={stroke} $shadow={shadow}>
+      <Base.ProfileContainer $size={size} $stroke={stroke} $shadow={shadow}>
         <Base.Host $position={{ x, y }} $isHost={isHost}>
           <HostIcon size={badgeDimension} />
         </Base.Host>
@@ -88,7 +88,7 @@ const Profile: ProfileComponent = {
         <Base.Badge $size={badgeDimension} $color={badgeColor as ColorTypes} $showBadge={showBadge}>
           <Icon size={badgeIconDimension} color={badgeColor as ColorTypes} />
         </Base.Badge>
-      </Base.Container>
+      </Base.ProfileContainer>
     );
   },
   Label: ({ text, ...styleProps }) => {
@@ -126,10 +126,12 @@ const baseContentStyle = css<BaseContentStyleProps>`
 `;
 
 const Base = {
-  Container: styled.div.attrs<BaseContentStyleProps>(({ $stroke = false, $shadow = "none" }) => ({
-    $stroke,
-    $shadow,
-  }))<BaseContentStyleProps>`
+  ProfileContainer: styled.div.attrs<BaseContentStyleProps>(
+    ({ $stroke = false, $shadow = "none" }) => ({
+      $stroke,
+      $shadow,
+    })
+  )<BaseContentStyleProps>`
     ${baseContentStyle}
     background-color: ${({ theme }) => theme.colors.tertiary.disabled};
   `,
