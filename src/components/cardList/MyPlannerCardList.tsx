@@ -46,6 +46,7 @@ const CardListContainer = styled.div`
   gap: ${calcResponsive(15, 30)};
   max-height: ${calcResponsive(335, 670)};
   overflow: scroll;
+  overflow-x: hidden;
   min-height: ${calcVhFromPx(670)};
   border-radius: ${({ theme }) => theme.cornerRadius.large};
   border: ${({ theme: { strokeWidth, colors } }) =>

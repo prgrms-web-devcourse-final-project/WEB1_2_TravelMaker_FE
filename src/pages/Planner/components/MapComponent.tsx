@@ -53,7 +53,7 @@ const MapComponent = () => {
     }[]
   >([]);
   const [currentZoom, setCurrentZoom] = useState(10);
-  const [mapCenter, setMapCenter] = useState(initialCenter);
+  const [mapCenter] = useState(initialCenter);
 
   const onLoad = (map: google.maps.Map) => {
     mapRef.current = map;
@@ -71,7 +71,6 @@ const MapComponent = () => {
 
         if (!markerExists) {
           setMarkers((prevMarkers) => [...prevMarkers, newMarker]);
-          setMapCenter(newMarker);
         }
       }
     });
@@ -84,7 +83,6 @@ const MapComponent = () => {
   const handleMarkerClick = (marker: { lat: number; lng: number }, index: number) => {
     setSelectedMarker(marker);
     setActiveMarker(index);
-    setMapCenter({ lat: marker.lat, lng: marker.lng });
   };
 
   const handleModalClose = () => {
