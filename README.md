@@ -14,17 +14,17 @@
 
 ### 🔧 **기술 스택**
 
-| **분류**           | **기술/도구**     |
-| ------------------ | ----------------- |
-| **IDE**            | VS Code           |
-| **언어**           | TypeScript        |
-| **프레임워크**     | React             |
-| **코드 포맷터**    | Prettier, ESLint  |
-| **CSS 라이브러리** | Styled-components |
-| **라이브러리**     | MSW, Axios        |
-| **번들러**         | Vite              |
-| **도구**           | Storybook, Figma  |
-| **상태 관리**      | Redux-toolkit     |
+| **분류**           | **기술/도구**                  |
+| ------------------ | ------------------------------ |
+| **IDE**            | VS Code                        |
+| **언어**           | TypeScript                     |
+| **프레임워크**     | React                          |
+| **코드 포맷터**    | Prettier, ESLint               |
+| **CSS 라이브러리** | Styled-components, Tailwindcss |
+| **라이브러리**     | MSW, Axios                     |
+| **번들러**         | Vite                           |
+| **도구**           | Storybook, Figma               |
+| **상태 관리**      | Redux-toolkit                  |
 
 ### 🛠️ **주요 기능**
 
@@ -38,7 +38,7 @@
 - **디자인 도구**: Figma로 UI/UX 설계.
 - **컴포넌트 관리**: Storybook을 활용한 컴포넌트 개발 및 문서화.
 - **코드 스타일**: Prettier와 ESLint로 일관성 있는 코드 유지.
-- **CSS 관리**: Styled-components를 사용하여 유연한 스타일링 제공.
+- **CSS 관리**: Styled-components와 Tailwind를 혼합 사용하여 유연한 스타일링 제공.
 
 ---
 
