@@ -35,13 +35,11 @@ export const DefaultLabel: StoryObj<FormFieldBaseArgTypes> = {
   },
   args: {
     label: "SI3DK21K",
-    fullWidth: true,
   },
 };
 
 export const ResizableLabel: StoryObj<typeof FormField.Label> = {
   args: {
     label: "🛫",
-    fullWidth: false,
   },
 };

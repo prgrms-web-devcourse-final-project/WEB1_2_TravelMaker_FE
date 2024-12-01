@@ -82,7 +82,6 @@ export const DefaultClickable: StoryObj<FormActionLabelArgTypes> = {
   },
   args: {
     label: "SI3DKD21",
-    fullWidth: true,
     icon: {
       right: {
         Item: <CopyIcon />,
