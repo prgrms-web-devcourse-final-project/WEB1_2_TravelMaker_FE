@@ -4,13 +4,12 @@ import styled from "styled-components";
 
 interface FormFieldBaseProps {
   label: string;
-  fullWidth?: boolean;
   font?: FormFieldFont;
 }
 
 type FormFieldFont = {
-  size: "small" | "medium";
-  bold: boolean;
+  size?: "small" | "medium";
+  bold?: boolean;
 };
 
 interface FormFieldInputProps extends FormFieldBaseProps {
@@ -19,7 +18,7 @@ interface FormFieldInputProps extends FormFieldBaseProps {
 }
 
 interface FormFieldClickableProps extends FormFieldBaseProps {
-  onClick: () => void;
+  onClick?: () => void;
   icon?: {
     left: JSX.Element;
   };
@@ -42,22 +41,22 @@ type FormFieldComponent = {
 };
 
 const FormField: FormFieldComponent = {
-  Label: ({ label, font = { size: "medium" }, fullWidth = true }) => {
+  Label: ({ label, font = { size: "medium" } }) => {
     return (
-      <Base.Container $fullWidth={fullWidth}>
+      <Base.Container>
         <Base.Content>
           <Base.Text $font={font}>{label}</Base.Text>
         </Base.Content>
       </Base.Container>
     );
   },
-  Input: ({ label, onChange, placeholder, font = { size: "medium" }, fullWidth = true }) => {
+  Input: ({ label, onChange, placeholder, font = { size: "medium" } }) => {
     const onChangeHandler = ({ target: { value } }: ChangeEvent<HTMLInputElement>) => {
       return onChange(value);
     };
 
     return (
-      <Base.Container $fullWidth={fullWidth}>
+      <Base.Container>
         <Base.Content>
           <Base.Input
             placeholder={placeholder}
@@ -69,9 +68,9 @@ const FormField: FormFieldComponent = {
       </Base.Container>
     );
   },
-  Clickable: ({ label, onClick, icon, font = { size: "medium" }, fullWidth = false }) => {
+  Clickable: ({ label, onClick, icon, font = { size: "medium" } }) => {
     return (
-      <Base.Container $fullWidth={fullWidth} as="button" onClick={onClick}>
+      <Base.Container as="button" onClick={onClick}>
         <Base.Content>
           {icon?.left ? <IconContainer>{icon.left}</IconContainer> : null}
           <Base.Text $font={font}>{label}</Base.Text>
@@ -79,13 +78,13 @@ const FormField: FormFieldComponent = {
       </Base.Container>
     );
   },
-  ActionLabel: ({ label, icon, font = { size: "small" }, fullWidth = true }) => {
+  ActionLabel: ({ label, icon, font = { size: "small", bold: true } }) => {
     const onClickHandler = () => {
       icon.right.onClick(label);
     };
 
     return (
-      <Base.Container $fullWidth={fullWidth}>
+      <Base.Container>
         <Base.Content>
           <ButtonContainer $hidden></ButtonContainer>
           <FullContainer>
@@ -103,23 +102,25 @@ const FormField: FormFieldComponent = {
 const FullContainer = styled.div`
   flex: 1;
   min-width: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 `;
 
 const ButtonContainer = styled.button<{ $hidden: boolean }>`
   visibility: ${({ $hidden }) => ($hidden ? "hidden" : "visible")};
   width: 32px;
   aspect-ratio: 1;
+  flex-shrink: 0;
   border-radius: ${({ theme: { cornerRadius } }) => cornerRadius.small};
 `;
 
 const Base = {
-  Container: styled.div<{ $fullWidth: boolean }>`
+  Container: styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
-    min-width: ${(props) => (props.$fullWidth ? "320px" : undefined)};
-    max-width: ${calcResponsiveByPercent(-25, 320)};
     height: ${calcResponsiveByPercent(-15, 55)};
     padding: 20px;
     border-radius: ${({ theme: { cornerRadius } }) => cornerRadius.large};
@@ -132,8 +133,10 @@ const Base = {
     justify-content: center;
     align-items: center;
     gap: 7px;
+    min-width: 0;
   `,
   Text: styled.p<{ $font: Partial<FormFieldFont> }>`
+    width: 100%;
     text-align: center;
     overflow: hidden;
     white-space: nowrap;
@@ -168,6 +171,9 @@ const Base = {
 
 const IconContainer = styled.div`
   padding-bottom: 3px;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
 `;
 
 export default FormField;

@@ -49,3 +49,11 @@ export const DefaultModal: Story = {
     onConfirm: fn(),
   },
 };
+
+export const SecondeModal: Story = {
+  args: {
+    title: "방을 삭제하시겠습니까?",
+    onCancel: fn(),
+    onConfirm: fn(),
+  },
+};

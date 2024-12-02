@@ -71,7 +71,6 @@ export const DefaultInput: StoryObj<FormFieldInputArgTypes> = {
   },
   args: {
     label: "SI3DK21K",
-    fullWidth: true,
     placeholder: "placeholder",
     onChange: fn(),
   },
@@ -81,7 +80,6 @@ export const Placeholder: StoryObj<typeof FormField.Input> = {
   render: (args) => <InputWithState {...args} />,
   args: {
     label: "",
-    fullWidth: true,
     placeholder: "placeholder",
     onChange: fn(),
   },
