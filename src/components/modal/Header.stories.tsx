@@ -2,29 +2,12 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { fn } from "@storybook/test";
 
 import Modal from "./Modal";
+import { headerArgTypes } from "./headerArgTypes";
 
 const meta = {
   title: "Components/Modal/Header",
   component: Modal.Header,
-  argTypes: {
-    onClickClose: {
-      type: {
-        name: "function",
-        required: true,
-      },
-      table: {
-        type: {
-          summary: "() => void",
-        },
-      },
-    },
-    title: {
-      type: {
-        name: "string",
-        required: true,
-      },
-    },
-  },
+  argTypes: { ...headerArgTypes },
 } satisfies Meta<typeof Modal.Header>;
 
 export default meta;
@@ -38,7 +21,7 @@ export const DefaultModal: Story = {
     </Modal.Layout>
   ),
   args: {
-    onClickClose: fn(),
+    onModalClose: fn(),
     title: "플래너 입장하기",
     center: false,
     showCloseIcon: true,

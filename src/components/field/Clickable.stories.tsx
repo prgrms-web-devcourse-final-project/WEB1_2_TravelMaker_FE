@@ -66,7 +66,6 @@ export const DefaultClickable: StoryObj<FormFieldClickableArgTypes> = {
   },
   args: {
     label: "24.11.24",
-    fullWidth: false,
     onClick: fn(),
     icon: {
       left: <DateIcon />,

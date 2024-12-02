@@ -43,15 +43,6 @@ const baseArgTypes = {
       },
     },
   },
-  fullWidth: {
-    description: "컴포넌트의 너비를 컨테이너의 전체 너비로 설정할지 여부를 결정합니다.",
-    control: "boolean",
-    table: {
-      defaultValue: {
-        summary: "true",
-      },
-    },
-  },
   font: {
     control: "object",
     table: {

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useCallback } from "react";
 import { GoogleMap, useJsApiLoader, OverlayView, Polyline } from "@react-google-maps/api";
 import styled from "styled-components";
 import NormalMarker from "@components/normalmarker/NormalMarker";
@@ -29,6 +29,7 @@ const MapComponent = () => {
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_KEY,
+    libraries: ["places"],
   });
 
   const mapRef = useRef<google.maps.Map | null>(null);
@@ -46,14 +47,11 @@ const MapComponent = () => {
   } | null>(null);
   const [activeMarker, setActiveMarker] = useState<number | null>(null);
   const [searchResults, setSearchResults] = useState<
-    {
-      title: string;
-      address: string;
-      imageSrc: string;
-    }[]
+    { imageSrc: string; title: string; address: string; lat: number; lng: number }[]
   >([]);
   const [currentZoom, setCurrentZoom] = useState(10);
   const [mapCenter] = useState(initialCenter);
+  const [isSearchVisible, setIsSearchVisible] = useState(true);
 
   const onLoad = (map: google.maps.Map) => {
     mapRef.current = map;
@@ -65,13 +63,7 @@ const MapComponent = () => {
           lng: event.latLng.lng(),
         };
 
-        const markerExists = markers.some(
-          (marker) => marker.lat === newMarker.lat && marker.lng === newMarker.lng
-        );
-
-        if (!markerExists) {
-          setMarkers((prevMarkers) => [...prevMarkers, newMarker]);
-        }
+        addMarker(newMarker);
       }
     });
   };
@@ -121,27 +113,62 @@ const MapComponent = () => {
   };
 
   const handleSearch = (query: string) => {
-    if (!query.trim()) return;
+    if (!query.trim() || !mapRef.current) return;
 
-    const results = [
-      {
-        title: `${query} - 장소 1`,
-        address: "서울특별시 강남구",
-        imageSrc: "https://via.placeholder.com/150",
-      },
-      {
-        title: `${query} - 장소 2`,
-        address: "서울특별시 종로구",
-        imageSrc: "https://via.placeholder.com/150",
-      },
-      {
-        title: `${query} - 장소 3`,
-        address: "서울특별시 마포구",
-        imageSrc: "https://via.placeholder.com/150",
-      },
-    ];
+    setSearchResults([]);
+    setIsSearchVisible(true);
 
-    setSearchResults(results);
+    const service = new window.google.maps.places.PlacesService(mapRef.current);
+    const center = mapRef.current.getCenter();
+
+    const request = {
+      query,
+      fields: ["name", "formatted_address", "photos", "geometry"],
+      location: center,
+      radius: 10000,
+    };
+
+    service.textSearch(request, (results, status, pagination) => {
+      if (status === window.google.maps.places.PlacesServiceStatus.OK && results) {
+        const formattedResults = results
+          .map((result) => {
+            const lat = result.geometry?.location?.lat();
+            const lng = result.geometry?.location?.lng();
+
+            if (lat === undefined || lng === undefined || isNaN(lat) || isNaN(lng)) {
+              return null;
+            }
+
+            return {
+              title: result.name || "Unnamed Place",
+              address: result.formatted_address || "No Address",
+              lat,
+              lng,
+              imageSrc:
+                result.photos && result.photos.length > 0
+                  ? result.photos[0].getUrl({ maxWidth: 100 })
+                  : "https://via.placeholder.com/100x70",
+            };
+          })
+          .filter(
+            (
+              result
+            ): result is {
+              imageSrc: string;
+              title: string;
+              address: string;
+              lat: number;
+              lng: number;
+            } => !!result
+          );
+
+        setSearchResults((prevResults) => [...prevResults, ...formattedResults]);
+
+        if (pagination && pagination.hasNextPage) {
+          pagination.nextPage();
+        }
+      }
+    });
   };
 
   const handleZoomIn = () => {
@@ -172,6 +199,36 @@ const MapComponent = () => {
       lng: marker.lng,
     }));
   };
+
+  const addMarker = useCallback(
+    (newMarker: { lat: number; lng: number }) => {
+      setMarkers((prevMarkers) => {
+        const markerExists = prevMarkers.some(
+          (marker) =>
+            Math.abs(marker.lat - newMarker.lat) < Number.EPSILON &&
+            Math.abs(marker.lng - newMarker.lng) < Number.EPSILON
+        );
+
+        if (!markerExists) {
+          return [...prevMarkers, newMarker];
+        }
+
+        return prevMarkers;
+      });
+    },
+    [setMarkers]
+  );
+
+  const handleResultClick = useCallback(
+    (lat: number, lng: number) => {
+      if (mapRef.current) {
+        mapRef.current.panTo({ lat, lng });
+        addMarker({ lat, lng });
+        setIsSearchVisible(false);
+      }
+    },
+    [mapRef, addMarker]
+  );
 
   return (
     <Container>
@@ -259,9 +316,9 @@ const MapComponent = () => {
       ) : (
         <div>로딩 중...</div>
       )}
-      {searchResults.length > 0 && (
+      {isSearchVisible && searchResults.length > 0 && (
         <ResultsContainer>
-          <SearchResultList results={searchResults} />
+          <SearchResultList results={searchResults} onResultClick={handleResultClick} />
         </ResultsContainer>
       )}
     </Container>
@@ -298,7 +355,7 @@ const MapContainer = styled.div`
 const ResultsContainer = styled.div`
   position: absolute;
   top: 90px;
-  left: 20px;
+  left: 40px;
   z-index: 10;
   width: 400px;
   max-height: 80vh;
