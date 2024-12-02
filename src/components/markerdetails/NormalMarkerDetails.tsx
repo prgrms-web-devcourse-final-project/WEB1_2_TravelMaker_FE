@@ -70,6 +70,7 @@ const ContentWrapper = styled.div`
   flex-direction: column;
   justify-content: space-between;
   overflow: hidden;
+  max-width: 180px;
 `;
 
 const Content = styled.div`

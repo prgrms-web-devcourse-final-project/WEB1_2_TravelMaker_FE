@@ -8,10 +8,13 @@ interface SearchResultListProps {
     imageSrc: string;
     title: string;
     address: string;
+    lat: number;
+    lng: number;
   }[];
+  onResultClick: (lat: number, lng: number) => void;
 }
 
-export const SearchResultList: React.FC<SearchResultListProps> = ({ results }) => {
+export const SearchResultList: React.FC<SearchResultListProps> = ({ results, onResultClick }) => {
   const [visibleCount, setVisibleCount] = useState(5);
 
   const hasMore = visibleCount < results.length;
@@ -32,6 +35,9 @@ export const SearchResultList: React.FC<SearchResultListProps> = ({ results }) =
             imageSrc={result.imageSrc}
             title={result.title}
             address={result.address}
+            lat={result.lat}
+            lng={result.lng}
+            onLocationClick={onResultClick}
           />
         ))}
       </List>
