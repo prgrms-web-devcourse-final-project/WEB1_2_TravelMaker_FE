@@ -2,7 +2,7 @@ import { ComponentProps, FC } from "react";
 import styled from "styled-components";
 
 import ChatInfoBar from "./ChatInfoBar";
-import { calcResponsiveByPercent } from "@common/styles/theme";
+import { calcResponsive } from "@common/styles/theme";
 import ChatList from "./ChatList";
 import ChatSubmitter from "./ChatSubmitter";
 
@@ -31,8 +31,8 @@ const ChatContainer = styled.div`
   overflow: hidden;
   flex-direction: column;
   position: relative;
-  width: ${calcResponsiveByPercent(-5, 375)};
-  height: ${calcResponsiveByPercent(-5, 750)};
+  width: ${calcResponsive({ value: 375, dimension: "height", minValue: 300 })};
+  height: ${calcResponsive({ value: 750, dimension: "height" })};
   background-color: ${({ theme }) => `${theme.colors.stroke.neutral1}CC`};
   border-radius: ${({ theme: { cornerRadius } }) => cornerRadius.extraLarge};
   border: ${({ theme: { strokeWidth, colors } }) =>

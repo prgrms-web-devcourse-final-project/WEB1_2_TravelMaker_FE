@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { calcResponsiveByPercent } from "@common/styles/theme";
+import { calcResponsive } from "@common/styles/theme";
 import MyPlannerCardList from "@components/cardList/MyPlannerCardList";
 import StartPlannerCard from "@components/card/StartPlannerCard";
 
@@ -17,18 +17,11 @@ const Main = () => {
 
 const Container = styled.div`
   display: flex;
-  flex-direction: column-reverse;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  gap: ${calcResponsiveByPercent(-15, 100)};
-  margin: 50px 0;
-
-  @media (min-width: 1024px) {
-    margin: 0;
-    flex-direction: row;
-    gap: ${calcResponsiveByPercent(-15, 250)};
-  }
+  gap: ${calcResponsive({ value: 250, dimension: "width" })};
 `;
 
 export default Main;

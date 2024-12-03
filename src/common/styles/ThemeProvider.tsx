@@ -1,6 +1,6 @@
 import { ThemeProvider as StyledThemeProvider } from "styled-components";
 
-import { lightTheme } from "@common/styles/theme.ts";
+import { lightTheme } from "@common/styles/theme";
 import { GlobalStyle } from "./GlobalStyle";
 import { PropsWithChildren } from "react";
 
