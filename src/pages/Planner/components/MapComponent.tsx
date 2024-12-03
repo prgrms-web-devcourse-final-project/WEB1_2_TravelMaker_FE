@@ -7,6 +7,7 @@ import ConfirmedMarker from "@components/confirmedmarker/ConfirmedMarker";
 import SearchBar from "@components/search/SearchBar";
 import SearchResultList from "@components/searchresultlist/SearchResultList";
 import ZoomScreen from "@components/zoomscreen/ZoomScreen";
+import NoImage from "@components/assets/images/NoImage.svg";
 
 const MapComponent = () => {
   const containerStyle = {
@@ -33,10 +34,14 @@ const MapComponent = () => {
   });
 
   const mapRef = useRef<google.maps.Map | null>(null);
+  const geocoderRef = useRef<google.maps.Geocoder | null>(null);
+
   const [markers, setMarkers] = useState<
     {
       lat: number;
       lng: number;
+      title?: string;
+      address?: string;
       isConfirmed?: boolean;
       index?: number;
     }[]
@@ -44,6 +49,9 @@ const MapComponent = () => {
   const [selectedMarker, setSelectedMarker] = useState<{
     lat: number;
     lng: number;
+    title?: string;
+    address?: string;
+    imageSrc?: string;
   } | null>(null);
   const [activeMarker, setActiveMarker] = useState<number | null>(null);
   const [searchResults, setSearchResults] = useState<
@@ -55,6 +63,7 @@ const MapComponent = () => {
 
   const onLoad = (map: google.maps.Map) => {
     mapRef.current = map;
+    geocoderRef.current = new window.google.maps.Geocoder();
 
     map.addListener("rightclick", (event: google.maps.MapMouseEvent) => {
       if (event.latLng) {
@@ -64,6 +73,44 @@ const MapComponent = () => {
         };
 
         addMarker(newMarker);
+        fetchLocationDetails(newMarker.lat, newMarker.lng);
+      }
+    });
+  };
+
+  const fetchLocationDetails = async (lat: number, lng: number) => {
+    if (!geocoderRef.current || !mapRef.current) return;
+
+    const location = { lat, lng };
+
+    geocoderRef.current.geocode({ location }, (results, status) => {
+      if (status === "OK" && results && results.length > 0) {
+        const formattedAddress = results[0]?.formatted_address || "Unknown Location";
+        const placeName = results[0]?.address_components?.[0]?.short_name || "Unnamed Place";
+
+        const service = new window.google.maps.places.PlacesService(mapRef.current!);
+        const placeRequest = {
+          location,
+          rankBy: google.maps.places.RankBy.DISTANCE,
+        };
+
+        service.nearbySearch(placeRequest, (placeResults, placeStatus) => {
+          let photoUrl = "https://via.placeholder.com/100x70";
+
+          if (placeStatus === window.google.maps.places.PlacesServiceStatus.OK && placeResults) {
+            const firstPlace = placeResults[0];
+
+            photoUrl = firstPlace?.photos?.[0]?.getUrl({ maxWidth: 100 }) || photoUrl;
+          }
+
+          addMarker({
+            lat,
+            lng,
+            title: placeName,
+            address: formattedAddress,
+            imageSrc: photoUrl,
+          });
+        });
       }
     });
   };
@@ -73,7 +120,11 @@ const MapComponent = () => {
   };
 
   const handleMarkerClick = (marker: { lat: number; lng: number }, index: number) => {
-    setSelectedMarker(marker);
+    const clickedMarker = markers.find((m) => m.lat === marker.lat && m.lng === marker.lng);
+
+    if (clickedMarker) {
+      setSelectedMarker(clickedMarker);
+    }
     setActiveMarker(index);
   };
 
@@ -138,29 +189,26 @@ const MapComponent = () => {
             if (lat === undefined || lng === undefined || isNaN(lat) || isNaN(lng)) {
               return null;
             }
+            const imageSrc =
+              result.photos && result.photos.length > 0
+                ? result.photos[0].getUrl({ maxWidth: 100 })
+                : NoImage;
 
             return {
               title: result.name || "Unnamed Place",
               address: result.formatted_address || "No Address",
               lat,
               lng,
-              imageSrc:
-                result.photos && result.photos.length > 0
-                  ? result.photos[0].getUrl({ maxWidth: 100 })
-                  : "https://via.placeholder.com/100x70",
+              imageSrc,
             };
           })
-          .filter(
-            (
-              result
-            ): result is {
-              imageSrc: string;
-              title: string;
-              address: string;
-              lat: number;
-              lng: number;
-            } => !!result
-          );
+          .filter((result) => !!result) as {
+          imageSrc: string;
+          title: string;
+          address: string;
+          lat: number;
+          lng: number;
+        }[];
 
         setSearchResults((prevResults) => [...prevResults, ...formattedResults]);
 
@@ -201,29 +249,47 @@ const MapComponent = () => {
   };
 
   const addMarker = useCallback(
-    (newMarker: { lat: number; lng: number }) => {
+    (newMarker: {
+      lat: number;
+      lng: number;
+      title?: string;
+      address?: string;
+      imageSrc?: string;
+    }) => {
       setMarkers((prevMarkers) => {
         const markerExists = prevMarkers.some(
-          (marker) =>
-            Math.abs(marker.lat - newMarker.lat) < Number.EPSILON &&
-            Math.abs(marker.lng - newMarker.lng) < Number.EPSILON
+          (marker) => marker.lat === newMarker.lat && marker.lng === newMarker.lng
         );
 
-        if (!markerExists) {
-          return [...prevMarkers, newMarker];
+        if (markerExists) {
+          return prevMarkers.map((marker) =>
+            marker.lat === newMarker.lat && marker.lng === newMarker.lng
+              ? { ...marker, ...newMarker }
+              : marker
+          );
         }
 
-        return prevMarkers;
+        return [...prevMarkers, newMarker];
       });
     },
     [setMarkers]
   );
 
   const handleResultClick = useCallback(
-    (lat: number, lng: number) => {
+    (lat: number, lng: number, title: string, address: string, imageSrc: string) => {
       if (mapRef.current) {
         mapRef.current.panTo({ lat, lng });
-        addMarker({ lat, lng });
+        addMarker({ lat, lng, title, address, imageSrc });
+        setSelectedMarker({ lat, lng, title, address, imageSrc });
+        setMarkers((prevMarkers) => {
+          const markerIndex = prevMarkers.findIndex(
+            (marker) => marker.lat === lat && marker.lng === lng
+          );
+
+          setActiveMarker(markerIndex);
+
+          return prevMarkers;
+        });
         setIsSearchVisible(false);
       }
     },
@@ -296,14 +362,14 @@ const MapComponent = () => {
           {selectedMarker && (
             <DetailsWrapper onClick={(e) => e.stopPropagation()}>
               <NormalMarkerDetails
-                title="마커 제목"
-                address="서울특별시 종로구"
-                imageSrc="https://via.placeholder.com/150"
+                title={selectedMarker?.title || "No Name"}
+                address={selectedMarker?.address || "No Address"}
+                imageSrc={selectedMarker?.imageSrc || NoImage}
                 onDelete={() => {
                   setMarkers((prev) =>
                     prev.filter(
                       (marker) =>
-                        marker.lat !== selectedMarker.lat || marker.lng !== selectedMarker.lng
+                        marker.lat !== selectedMarker?.lat || marker.lng !== selectedMarker?.lng
                     )
                   );
                   handleModalClose();
@@ -318,7 +384,12 @@ const MapComponent = () => {
       )}
       {isSearchVisible && searchResults.length > 0 && (
         <ResultsContainer>
-          <SearchResultList results={searchResults} onResultClick={handleResultClick} />
+          <SearchResultList
+            results={searchResults}
+            onResultClick={(lat, lng, title, address, imageSrc) =>
+              handleResultClick(lat, lng, title, address, imageSrc)
+            }
+          />
         </ResultsContainer>
       )}
     </Container>
