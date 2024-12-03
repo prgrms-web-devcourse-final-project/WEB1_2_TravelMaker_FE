@@ -8,7 +8,6 @@ import { useLocation } from "react-router-dom";
 import { sendAuthorizationCode } from "@pages/Login/LoginApi";
 
 const Login: React.FC = () => {
-  
   const location = useLocation();
 
   useEffect(() => {

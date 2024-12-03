@@ -14,7 +14,7 @@ export const sendAuthorizationCode = async (
     document.cookie = `accessToken=${accessToken}; path=/; HttpOnly`;
     document.cookie = `refreshToken=${refreshToken}; path=/; HttpOnly`;
     // console.log("로그인 성공");
-    window.location.href = "/planner"; 
+    window.location.href = "/planner";
   } catch {
     // console.error("로그인 실패");
   }
