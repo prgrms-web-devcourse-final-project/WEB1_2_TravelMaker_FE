@@ -11,7 +11,13 @@ interface SearchResultListProps {
     lat: number;
     lng: number;
   }[];
-  onResultClick: (lat: number, lng: number) => void;
+  onResultClick: (
+    lat: number,
+    lng: number,
+    title: string,
+    address: string,
+    imageSrc: string
+  ) => void;
 }
 
 export const SearchResultList: React.FC<SearchResultListProps> = ({ results, onResultClick }) => {
@@ -37,7 +43,9 @@ export const SearchResultList: React.FC<SearchResultListProps> = ({ results, onR
             address={result.address}
             lat={result.lat}
             lng={result.lng}
-            onLocationClick={onResultClick}
+            onLocationClick={() =>
+              onResultClick(result.lat, result.lng, result.title, result.address, result.imageSrc)
+            }
           />
         ))}
       </List>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import styled from "styled-components";
 
 interface NormalMarkerDetailsProps {
@@ -16,6 +16,27 @@ export const NormalMarkerDetails: React.FC<NormalMarkerDetailsProps> = ({
   onDelete,
   onConfirm,
 }) => {
+  const [tooltip, setTooltip] = useState<string | null>(null);
+
+  const titleRef = useRef<HTMLHeadingElement | null>(null);
+  const addressRef = useRef<HTMLParagraphElement | null>(null);
+
+  const checkOverflow = (element: HTMLElement | null) => {
+    if (!element) return false;
+
+    return element.scrollWidth > element.clientWidth || element.offsetHeight < element.scrollHeight;
+  };
+
+  const handleMouseEnter = (content: string, ref: React.RefObject<HTMLElement>) => {
+    if (ref.current && checkOverflow(ref.current)) {
+      setTooltip(content);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setTooltip(null);
+  };
+
   return (
     <DetailsContainer>
       <ImageWrapper>
@@ -23,8 +44,19 @@ export const NormalMarkerDetails: React.FC<NormalMarkerDetailsProps> = ({
       </ImageWrapper>
       <ContentWrapper>
         <Content>
-          <Title>{title}</Title>
-          <Address>{address}</Address>
+          <Title
+            ref={titleRef}
+            onMouseEnter={() => handleMouseEnter(title, titleRef)}
+            onMouseLeave={handleMouseLeave}>
+            {title}
+          </Title>
+          <Address
+            ref={addressRef}
+            onMouseEnter={() => handleMouseEnter(address, addressRef)}
+            onMouseLeave={handleMouseLeave}>
+            {address}
+          </Address>
+          {tooltip && <Tooltip>{tooltip}</Tooltip>}
         </Content>
       </ContentWrapper>
       <ButtonWrapper>
@@ -70,7 +102,7 @@ const ContentWrapper = styled.div`
   flex-direction: column;
   justify-content: space-between;
   overflow: hidden;
-  max-width: 180px;
+  max-width: 200px;
 `;
 
 const Content = styled.div`
@@ -92,10 +124,26 @@ const Title = styled.h2`
 const Address = styled.p`
   font-size: ${({ theme }) => theme.typography.body.regular.fontSize};
   color: ${({ theme }) => theme.colors.text.body};
-  white-space: nowrap;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
+`;
+
+const Tooltip = styled.div`
+  position: absolute;
+  bottom: -25px;
+  left: 70px;
+  background-color: ${({ theme }) => theme.colors.background.neutral0};
+  color: ${({ theme }) => theme.colors.text.title};
+  font-size: ${({ theme }) => theme.typography.caption.fontSize};
+  padding: 5px 10px;
+  border-radius: ${({ theme }) => theme.cornerRadius.medium};
+  box-shadow: ${({ theme }) => theme.shadows.small};
+  white-space: nowrap;
+  z-index: 10;
 `;
 
 const ButtonWrapper = styled.div`
