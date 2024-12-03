@@ -21,12 +21,12 @@ const Login: React.FC = () => {
   }, [location]);
 
   const handleLogin = (provider: "google" | "kakao") => {
+    const apiUrl = import.meta.env.VITE_API_URL;
+
     if (provider === "google") {
-      window.location.href =
-        "http://wayfarer-develop-env.eba-s3bm7efv.ap-northeast-2.elasticbeanstalk.com/auth/login/google";
+      window.location.href = `${apiUrl}/auth/login/google`;
     } else if (provider === "kakao") {
-      window.location.href =
-        "https://kauth.kakao.com/oauth/authorize?client_id=ecf4fa7ba5b7c3dd0aecf41e4f30163c&redirect_uri=http://wayfarer-develop-env.eba-s3bm7efv.ap-northeast-2.elasticbeanstalk.com/auth/kakao/callback&response_type=code";
+      window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=ecf4fa7ba5b7c3dd0aecf41e4f30163c&redirect_uri=${apiUrl}/auth/kakao/callback&response_type=code`;
     }
   };
 
