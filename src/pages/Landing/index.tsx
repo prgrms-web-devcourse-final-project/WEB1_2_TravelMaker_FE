@@ -6,7 +6,7 @@ import HorisontalLogo from "@components/assets/images/HorisontalLogo";
 import LandingFirst from "@pages/Landing/imgs/LandingFirst.svg";
 import LandingSecond from "@pages/Landing/imgs/LandingSecond.svg";
 import LandingThird from "@pages/Landing/imgs/LandingThird.svg";
-import LandingFourth from "@pages/Landing/imgs/LandingFourth.svg"; 
+import LandingFourth from "@pages/Landing/imgs/LandingFourth.svg";
 import LandingFifth from "@pages/Landing/imgs/LandingFifth.svg";
 
 const Landing: React.FC = () => {
@@ -25,7 +25,7 @@ const Landing: React.FC = () => {
           <ImagesContainer>
             <StyledImage src={LandingFirst} alt="LandingFirst" customMargin="30vh 0 0 0" />
             <StyledImage src={LandingSecond} alt="LandingSecond" customMargin="10vh 0 10vh 0" />
-            <StyledImage src={LandingThird} alt="LandingThird" customMargin="4% 0 0 -30vw" />
+            <ImageThree src={LandingThird} alt="LandingThird" />
             <StyledImage src={LandingFourth} alt="LandingFourth" customMargin="0 0 10% 0" />
             <StyledImage src={LandingFifth} alt="LandingFifth" customMargin="10vw 0 20vh -6vw" />
           </ImagesContainer>
@@ -77,6 +77,19 @@ const ImagesContainer = styled.div`
   align-items: center;
   justify-content: center;
   gap: 5vh; /* 공통 간격 */
+`;
+
+const ImageThree = styled.img`
+  margin-top: 4%;
+  margin-left: -30vw;
+  max-width: 37vw;
+  text-align: right;
+
+  /* 미디어 쿼리 적용 */
+  @media (max-width: 768px) {
+    max-width: 40vw;
+    margin-bottom: -7vh;
+  }
 `;
 
 const StyledImage = styled.img<{ customMargin: string }>`
