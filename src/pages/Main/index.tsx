@@ -3,10 +3,12 @@ import styled from "styled-components";
 import { calcResponsive } from "@common/styles/theme";
 import MyPlannerCardList from "@components/cardList/MyPlannerCardList";
 import StartPlannerCard from "@components/card/StartPlannerCard";
+import Header from "@components/header/Header";
 
 const Main = () => {
   return (
     <>
+      <Header />
       <Container>
         <MyPlannerCardList items={mock} onEmptyCardClick={() => {}} />
         <StartPlannerCard onClickPlanner={() => {}} onSubmit={() => {}} />
@@ -17,11 +19,16 @@ const Main = () => {
 
 const Container = styled.div`
   display: flex;
+  position: fixed;
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  top: 0;
+  left: 0;
+  min-width: 100%;
   min-height: 100vh;
   gap: ${calcResponsive({ value: 250, dimension: "width" })};
+  z-index: 0;
 `;
 
 export default Main;
