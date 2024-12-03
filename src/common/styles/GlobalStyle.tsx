@@ -72,6 +72,10 @@ export const GlobalStyle = createGlobalStyle`
         isolation: isolate;
     }
 
+    html {
+        font-size: 16px;  /* 기준값 설정 */
+    }
+
     body {
     /* 기본 텍스트 렌더링 최적화 */
     -webkit-font-smoothing: antialiased;

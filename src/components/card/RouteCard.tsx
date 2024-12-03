@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { FC } from "react";
-import { calcVwFromPx } from "@common/styles/theme";
+
+import { calcResponsive } from "@common/styles/theme";
 import CloseIcon from "@components/assets/icons/CloseIcon";
 
 interface RouteCardProps {
@@ -43,8 +44,8 @@ const OuterContainer = styled.div`
   display: flex;
   flex-direction: column;
   user-select: none;
-  width: ${calcVwFromPx(460)};
-  min-width: 460px;
+  /* min-width: calcResponsiveWidth(460); */
+  min-width: ${calcResponsive({ value: 460 })};
   min-height: 130px;
   height: 130px;
   background-color: ${({ theme }) => theme.colors.primary.subtle};

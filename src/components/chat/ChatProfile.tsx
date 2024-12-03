@@ -1,12 +1,12 @@
 import { ElementType, FC } from "react";
 import styled, { css } from "styled-components";
 
-import { CustomTheme } from "@common/styles/theme";
+import { calcResponsive, CustomTheme } from "@common/styles/theme";
 import extractNumber from "@common/utils/extractNumber";
-import calculateProportionalSize from "@common/utils/calculateProportionalSize";
 import CloseIcon from "@components/assets/icons/CloseIcon";
 import commonCircleStyle from "@common/styles/circleStyle";
 import HostIcon from "@components/assets/icons/HostIcon";
+import scaleByContainer from "@common/utils/scaleByContainer";
 
 type ShadowTypes = keyof (CustomTheme["shadows"] & { none: "string" });
 
@@ -164,7 +164,12 @@ const Base = {
     justify-content: center;
     align-items: center;
     color: ${({ theme }) => theme.colors.text.title};
-    font-size: ${({ theme }) => theme.typography.body.regular.fontSize};
+    font-size: ${({ theme }) =>
+      calcResponsive({
+        value: theme.typography.body.regular.fontSize,
+        dimension: "height",
+        minValue: 13,
+      })};
   `,
   Image: styled.img.attrs(() => ({ alt: "image-profile" }))`
     width: 100%;
@@ -211,15 +216,11 @@ const Base = {
 };
 
 const getDimensions = (size: number) => {
-  const getProportionalSize = (size: number, target: number) => {
-    return calculateProportionalSize(size, target, DEFAULTS.PROFILE_SIZE);
-  };
-
   return {
-    badgeDimension: getProportionalSize(size, DEFAULTS.BADGE_SIZE),
-    badgeIconDimension: getProportionalSize(size, DEFAULTS.ICON_SIZE),
-    x: getProportionalSize(size, DEFAULTS.HOST_POSITION.x),
-    y: getProportionalSize(size, DEFAULTS.HOST_POSITION.y),
+    badgeDimension: scaleByContainer(size, DEFAULTS.BADGE_SIZE, DEFAULTS.PROFILE_SIZE),
+    badgeIconDimension: scaleByContainer(size, DEFAULTS.ICON_SIZE, DEFAULTS.PROFILE_SIZE),
+    x: scaleByContainer(size, DEFAULTS.HOST_POSITION.x, DEFAULTS.PROFILE_SIZE),
+    y: scaleByContainer(size, DEFAULTS.HOST_POSITION.y, DEFAULTS.PROFILE_SIZE),
   };
 };
 

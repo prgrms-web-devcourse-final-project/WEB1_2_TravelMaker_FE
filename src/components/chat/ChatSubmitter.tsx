@@ -2,6 +2,7 @@ import { FC } from "react";
 import styled from "styled-components";
 
 import ChatInput from "./ChatInput";
+import { calcResponsive } from "@common/styles/theme";
 
 interface Props {
   onSubmit: () => void;
@@ -16,7 +17,9 @@ const ChatSubmitter: FC<Props> = ({ onSubmit }) => {
 };
 
 const ChatInputContainer = styled.div`
-  padding: 5px 20px 25px;
+  padding: ${calcResponsive({ value: 5 })}${calcResponsive({ value: 20 })}${calcResponsive({
+      value: 25,
+    })};
 `;
 
 export default ChatSubmitter;

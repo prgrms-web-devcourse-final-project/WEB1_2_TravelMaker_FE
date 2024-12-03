@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { FC } from "react";
-import { calcVwFromPx } from "@common/styles/theme";
+import { calcResponsive } from "@common/styles/theme";
 
 interface InfoCardProps {
   label: string;
@@ -24,9 +24,9 @@ const OuterContainer = styled.div`
   user-select: none;
   /* width: 460px; */
   /* height: 130px; */
-  width: ${calcVwFromPx(460)};
-  min-width: 460px;
-  min-height: 130px;
+  width: ${calcResponsive({ value: 460, dimension: "width" })};
+  min-width: 320px;
+  min-height: ${calcResponsive({ value: 130, dimension: "height" })};
   background-color: ${({ theme }) => theme.colors.primary.subtle};
   border-radius: ${({ theme }) => theme.cornerRadius.large};
   border: ${({ theme: { strokeWidth, colors } }) =>
@@ -35,17 +35,21 @@ const OuterContainer = styled.div`
 `;
 
 const InnerContainer = styled.div`
-  width: 370px;
-  height: 80px;
+  /* width: ${calcResponsive({ value: 320, dimension: "width" })}; */
+  /* height: ${calcResponsive({ value: 80, dimension: "height" })}; */
   flex: 1;
   display: flex;
   align-items: center; /* 수직 중앙 정렬 */
   justify-content: center; /* 수평 중앙 정렬 */
   flex-direction: column;
-  margin-top: 22px;
+  /* margin-top: ${calcResponsive({ value: 22, dimension: "height" })}; */
 
   span {
-    font-size: ${({ theme }) => theme.typography.heading.h2.fontSize};
+    font-size: ${({ theme }) =>
+      calcResponsive({
+        value: theme.typography.heading.h2.fontSize,
+        dimension: "height",
+      })};
     color: ${({ theme }) => theme.colors.text.body}; /* 텍스트 색상 */
     font-family: ${({ theme }) => theme.typography.fontFamily.main};
     white-space: pre-wrap;

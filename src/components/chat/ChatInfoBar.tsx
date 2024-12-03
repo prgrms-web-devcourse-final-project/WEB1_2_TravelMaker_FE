@@ -2,6 +2,9 @@ import { FC, useState } from "react";
 import styled from "styled-components";
 
 import Profile from "./ChatProfile";
+import { calcResponsive, calcResponsiveValue } from "@common/styles/theme";
+import { hideScrollbar } from "@common/styles/hideScrollbar";
+import useWindowSize from "@common/hooks/useWindowSize";
 
 export const CHAT_INFO_BAR_HEADER_HEIGHT = 85;
 
@@ -67,12 +70,19 @@ const ChatInfoBar: FC<Props> = ({ url, profiles: initialProfiles }) => {
     currentProfile.onClick();
   };
 
+  const { width, height } = useWindowSize();
+  const profileSize = calcResponsiveValue({
+    window: { width, height },
+    value: PROFILE_CONSTANTS.SIZE,
+    dimension: "height",
+  });
+
   return (
     <InfoBarContainer>
       <ProfileContainer>
         {/* 메인 프로필 영역 */}
         <MyProfileContainer>
-          <Profile.Image size={PROFILE_CONSTANTS.SIZE} url={url} stroke />
+          <Profile.Image size={profileSize} url={url} stroke />
         </MyProfileContainer>
         {/* 스크롤 가능한 프로필 리스트 영역 */}
         <ScrollableArea>
@@ -83,7 +93,7 @@ const ChatInfoBar: FC<Props> = ({ url, profiles: initialProfiles }) => {
                   <Profile.ClickableImage
                     stroke
                     key={index}
-                    size={PROFILE_CONSTANTS.SIZE}
+                    size={profileSize}
                     url={profile.url}
                     onClick={() => handleProfileClick(index)}
                     isHost={profile.isHost}
@@ -93,7 +103,7 @@ const ChatInfoBar: FC<Props> = ({ url, profiles: initialProfiles }) => {
                 <Profile.ClickableLabel
                   stroke
                   text={`+${profiles.length}`}
-                  size={PROFILE_CONSTANTS.SIZE}
+                  size={profileSize}
                   shadow={PROFILE_CONSTANTS.SHADOW}
                   onClick={() => setIsExpanded(false)}
                 />
@@ -102,7 +112,7 @@ const ChatInfoBar: FC<Props> = ({ url, profiles: initialProfiles }) => {
               <Profile.ClickableLabel
                 stroke
                 text={`+${profiles.length}`}
-                size={PROFILE_CONSTANTS.SIZE}
+                size={profileSize}
                 shadow={PROFILE_CONSTANTS.SHADOW}
                 onClick={() => setIsExpanded(true)}
               />
@@ -118,8 +128,8 @@ const InfoBarContainer = styled.div`
   position: absolute;
   z-index: 1;
   width: 100%;
-  height: ${CHAT_INFO_BAR_HEADER_HEIGHT}px;
-  padding: 20px;
+  height: ${calcResponsive({ value: CHAT_INFO_BAR_HEADER_HEIGHT, dimension: "height" })};
+  padding: ${calcResponsive({ value: 20, dimension: "height" })};
   background-color: ${({ theme }) => `${theme.colors.background.neutral3}99`};
   backdrop-filter: saturate(180%) blur(20px);
   border-bottom: ${({ theme: { strokeWidth, colors } }) =>
@@ -132,7 +142,7 @@ const ProfileContainer = styled.div`
   display: flex;
   width: 100%;
   min-height: 50px;
-  gap: 10px;
+  gap: ${calcResponsive({ value: 10, dimension: "width" })};
 `;
 
 const MyProfileContainer = styled.div`
@@ -145,18 +155,14 @@ const ScrollableArea = styled.div`
   padding-top: 5px;
   transform: translateY(-5px);
   overflow-x: scroll;
-  &::-webkit-scrollbar {
-    display: none;
-  }
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+  ${hideScrollbar}
 `;
 
 const ProfileListContainer = styled.div`
   display: flex;
   position: relative;
-  padding: 5px 0 10px;
-  gap: 5px;
+  padding: ${calcResponsive({ value: 5 })} 0 ${calcResponsive({ value: 10 })};
+  gap: ${calcResponsive({ value: 5 })};
   flex-shrink: 0;
 `;
 

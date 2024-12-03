@@ -1,6 +1,7 @@
-import { calcResponsiveByPercent } from "@common/styles/theme";
 import React from "react";
 import styled from "styled-components";
+
+import { calcResponsive } from "@common/styles/theme";
 
 export interface ButtonProps {
   /** 버튼 내부 텍스트 */
@@ -17,12 +18,14 @@ const StyledButton = styled.button<{ $fullWidth?: boolean }>`
   position: relative; /* 아이콘 위치를 조정하기 위해 relative */
   display: flex;
   align-items: center;
-  justify-content: center; /* 텍스트를 버튼의 가운데 정렬 */
+  justify-content: space-evenly;
   gap: 8px;
-  width: ${({ $fullWidth }) => ($fullWidth ? "100%" : calcResponsiveByPercent(-25, 500))};
-  height: ${calcResponsiveByPercent(-15, 70)};
+  width: ${({ $fullWidth }) =>
+    $fullWidth ? "100%" : calcResponsive({ value: 500, dimension: "width" })};
+  height: ${calcResponsive({ value: 70, dimension: "height" })};
   padding: 0;
-  font-size: ${({ theme }) => theme.typography.heading.h2.fontSize};
+  font-size: ${({ theme }) =>
+    calcResponsive({ value: theme.typography.heading.h2.fontSize, dimension: "height" })};
   font-weight: ${({ theme }) => theme.typography.fontWeight.regular};
   border-radius: ${({ theme }) => theme.cornerRadius.large};
   border: ${({ theme: { strokeWidth, colors } }) =>
@@ -40,16 +43,17 @@ const StyledButton = styled.button<{ $fullWidth?: boolean }>`
     background-color: ${({ theme }) => theme.colors.background.neutral1};
     transform: scale(1.01);
   }
-  svg {
-    position: absolute;
-    left: 11px; /* 버튼 왼쪽 끝에서 11px 떨어진 위치 */
-  }
 `;
 
+const IconItem = styled.div``;
+
 const SmallStyledButton = styled(StyledButton)`
-  width: ${calcResponsiveByPercent(-25, 150)};
-  height: ${calcResponsiveByPercent(-15, 55)};
-  font-size: ${({ theme }) => theme.typography.heading.h3.fontSize};
+  width: ${calcResponsive({ value: 150, dimension: "width" })};
+  height: ${calcResponsive({ value: 55, dimension: "height" })};
+  min-width: 80px;
+  min-height: 35px;
+  font-size: ${({ theme }) =>
+    calcResponsive({ value: theme.typography.heading.h3.fontSize, dimension: "height" })};
 `;
 
 const Button: React.FC<ButtonProps> = ({
@@ -60,11 +64,23 @@ const Button: React.FC<ButtonProps> = ({
   fullWidth = false,
 }) => {
   const ButtonComponent = type === "small" ? SmallStyledButton : StyledButton;
+  const width = calcResponsive({ value: 48, dimension: "width" });
+  const height = calcResponsive({ value: 48, dimension: "height" });
 
   return (
     <ButtonComponent onClick={onClick} $fullWidth={fullWidth}>
-      {Icon && <Icon width={48} height={48} />}
-      <span>{label}</span> {/* 텍스트는 버튼 중앙에 위치 */}
+      {Icon && (
+        <IconItem>
+          <Icon width={width} height={height} />
+        </IconItem>
+      )}
+      <span>{label}</span>
+      {/* 간격 조정용 */}
+      {Icon && (
+        <IconItem style={{ visibility: "hidden" }}>
+          <Icon width={width} height={height} />
+        </IconItem>
+      )}
     </ButtonComponent>
   );
 };

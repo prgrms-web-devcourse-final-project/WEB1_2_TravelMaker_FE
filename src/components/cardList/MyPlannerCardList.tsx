@@ -1,7 +1,9 @@
-import { calcResponsive, calcVhFromPx } from "@common/styles/theme";
-import MyPlannerCard from "@components/card/MyPlannerCard";
-import { ComponentProps, FC } from "react";
 import styled from "styled-components";
+import { ComponentProps, FC } from "react";
+
+import { calcResponsive } from "@common/styles/theme";
+import MyPlannerCard from "@components/card/MyPlannerCard";
+import { hideScrollbar } from "@common/styles/hideScrollbar";
 
 interface Props {
   items: ComponentProps<typeof MyPlannerCard>[];
@@ -34,20 +36,23 @@ const MyPlannerCardList: FC<Props> = ({ onEmptyCardClick, items = [] }) => {
 };
 
 const HeaderTitle = styled.h1`
-  font-size: 36px;
+  font-size: ${calcResponsive({ value: 36, dimension: "height" })};
   font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
   color: ${({ theme }) => theme.colors.text.body};
 `;
 
 const CardListContainer = styled.div`
-  padding: ${calcResponsive(25, 50)} ${calcResponsive(10, 20)};
+  ${hideScrollbar}
+  padding: ${calcResponsive({ value: 25, dimension: "height" })}${calcResponsive({
+    value: 10,
+    dimension: "width",
+  })};
   display: flex;
   flex-direction: column;
-  gap: ${calcResponsive(15, 30)};
-  max-height: ${calcResponsive(335, 670)};
+  gap: ${calcResponsive({ value: 30, dimension: "height" })};
+  max-height: ${calcResponsive({ value: 670, dimension: "height" })};
   overflow: scroll;
   overflow-x: hidden;
-  min-height: ${calcVhFromPx(670)};
   border-radius: ${({ theme }) => theme.cornerRadius.large};
   border: ${({ theme: { strokeWidth, colors } }) =>
     `${strokeWidth.regular} solid ${colors.secondary.strong}`};

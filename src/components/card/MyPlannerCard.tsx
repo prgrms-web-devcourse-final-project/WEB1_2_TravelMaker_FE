@@ -1,8 +1,7 @@
 import styled, { keyframes } from "styled-components";
 import { FC, useState } from "react";
 
-import EmptyBox from "@common/styles/EmptyBox";
-import { calcVwFromPx } from "@common/styles/theme";
+import { calcResponsive } from "@common/styles/theme";
 import PlaneIcon, { PlaneIcon2 } from "@components/assets/icons/Plane";
 
 interface MyPlannerCardProps {
@@ -34,14 +33,16 @@ const MyPlannerCard: FC<MyPlannerCardProps> = ({ onClick, title, country, startD
       <InnerContainer>
         {/* 상단 블록 */}
         <TopContainer>
-          <PlaneIcon />
+          <PlaneIcon width={icon.top} height={icon.top} />
           <Label>{title ?? "MY TRIP"}</Label>
-          <EmptyBox width={30} />
+          <div style={{ visibility: "hidden" }}>
+            <PlaneIcon width={icon.top} height={icon.top} />
+          </div>
         </TopContainer>
         <ContentContainer>
           {/* 아이콘 블록 */}
           <IconContainer $isAnimating={isAnimating} onAnimationEnd={onAnimationEndHandler}>
-            <PlaneIcon2 />
+            <PlaneIcon2 width={icon.main.width} height={icon.main.height} />
           </IconContainer>
           {/* 국가 라벨 블록 */}
           <CountryLabelContainer $isAnimating={isAnimating}>
@@ -58,6 +59,14 @@ const MyPlannerCard: FC<MyPlannerCardProps> = ({ onClick, title, country, startD
       </InnerContainer>
     </OuterContainer>
   );
+};
+
+const icon = {
+  top: calcResponsive({ value: 30, dimension: "height" }),
+  main: {
+    width: calcResponsive({ value: 70, dimension: "width" }),
+    height: calcResponsive({ value: 49, dimension: "height" }),
+  },
 };
 
 const flyAnimation = keyframes`
@@ -81,9 +90,8 @@ const OuterContainer = styled.div`
   display: flex;
   cursor: pointer;
   user-select: none;
-  width: ${calcVwFromPx(480)};
-  min-width: 350px;
-  min-height: 120px;
+  min-width: ${calcResponsive({ value: 480, dimension: "width" })};
+  min-height: ${calcResponsive({ value: 120, dimension: "height" })};
   background-color: ${({ theme }) => theme.colors.background.neutral1};
   border-radius: ${({ theme }) => theme.cornerRadius.medium};
   border: ${({ theme: { strokeWidth, colors } }) =>
@@ -98,7 +106,7 @@ const InnerContainer = styled.div`
 `;
 
 const TopContainer = styled.div`
-  padding: 0 10px;
+  padding: 0 ${calcResponsive({ value: 10, dimension: "width" })};
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -110,12 +118,12 @@ const ContentContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 ${calcVwFromPx(15)};
+  padding: 0 ${calcResponsive({ value: 15, dimension: "width" })};
   position: relative;
 `;
 
 const IconContainer = styled.div<{ $isAnimating: boolean }>`
-  padding-left: clamp(25px, calc(2vw), 50px);
+  padding-left: ${calcResponsive({ value: 50, dimension: "width" })};
   animation: ${({ $isAnimating }) => ($isAnimating ? flyAnimation : "none")} 1s forwards;
 `;
 
@@ -142,20 +150,27 @@ const TicketingFont = styled.p`
 `;
 
 const Label = styled(TicketingFont)`
-  font-size: ${({ theme }) => theme.typography.heading.h3.fontSize};
+  font-size: ${({ theme }) =>
+    calcResponsive({
+      value: theme.typography.heading.h3.fontSize,
+      dimension: "width",
+      minValue: 17,
+    })};
   color: ${({ theme }) => theme.colors.background.neutral1};
   text-align: center;
   justify-self: center;
 `;
 
 const CountryLabel = styled(TicketingFont)`
-  font-size: clamp(24px, ${calcVwFromPx(32)}, 32px);
+  font-size: ${({ theme }) =>
+    calcResponsive({ value: theme.typography.heading.h1.fontSize, dimension: "height" })};
   color: ${({ theme }) => theme.colors.text.title};
 `;
 
 const DateLabel = styled(TicketingFont)`
   text-align: right;
-  font-size: ${({ theme }) => theme.typography.caption.fontSize};
+  font-size: ${({ theme }) =>
+    calcResponsive({ value: theme.typography.caption.fontSize, dimension: "width", minValue: 9 })};
   color: ${({ theme }) => theme.colors.text.title};
 `;
 

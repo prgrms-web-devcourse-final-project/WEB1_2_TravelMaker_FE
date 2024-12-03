@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
 import LoginButton from "../button/Button"; // 수정된 Button 컴포넌트
-import Icon from "../assets/icons/GoogleIcon";
-import Icon1 from "../assets/icons/KakaoIcon";
+import GoogleIcon from "../assets/icons/GoogleIcon";
+import KakaoIcon from "../assets/icons/KakaoIcon";
 import { fn } from "@storybook/test";
 
 const meta = {
@@ -34,7 +34,7 @@ export const CustomButton: Story = {
 export const WithIcon: Story = {
   args: {
     label: "구글로 로그인",
-    icon: Icon, // 첫 번째 아이콘 사용
+    icon: GoogleIcon, // 첫 번째 아이콘 사용
     onClick: () => alert("아이콘 버튼 클릭!"),
   },
 };
@@ -42,7 +42,7 @@ export const WithIcon: Story = {
 export const WithIcon2: Story = {
   args: {
     label: "계정으로 로그인",
-    icon: Icon1, // 두 번째 아이콘 사용
+    icon: KakaoIcon, // 두 번째 아이콘 사용
     onClick: () => alert("다른 아이콘 버튼 클릭!"),
   },
 };

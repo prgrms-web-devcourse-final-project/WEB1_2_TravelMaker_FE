@@ -4,6 +4,7 @@ import { FC } from "react";
 import EmptyBox from "@common/styles/EmptyBox";
 import { ReceiverMessage, SenderMessage } from "./ChatMessage";
 import { CHAT_INFO_BAR_HEADER_HEIGHT } from "./ChatInfoBar";
+import { calcResponsive } from "@common/styles/theme";
 
 interface Props {
   dataList: {
@@ -16,7 +17,7 @@ interface Props {
 const ChatList: FC<Props> = ({ dataList = [] }) => {
   return (
     <Container>
-      <EmptyBox fullWidth height={CHAT_INFO_BAR_HEADER_HEIGHT} />
+      <EmptyBox fullWidth height={CHAT_INFO_BAR_HEADER_HEIGHT} isResponsive />
       {dataList.map(({ type, text, url }, index) => {
         if (type === "sender") {
           return <SenderMessage key={index} text={text} />;
@@ -32,8 +33,8 @@ const Container = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
-  padding: 0 20px;
-  gap: 25px;
+  padding: 0 ${calcResponsive({ value: 20, dimension: "width" })};
+  gap: ${calcResponsive({ value: 25, dimension: "height" })};
   overflow-y: scroll;
 `;
 
