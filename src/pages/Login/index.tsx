@@ -8,6 +8,7 @@ import { useLocation } from "react-router-dom";
 import { sendAuthorizationCode } from "@pages/Login/LoginApi";
 
 const Login: React.FC = () => {
+  
   const location = useLocation();
 
   useEffect(() => {
@@ -26,7 +27,7 @@ const Login: React.FC = () => {
         "http://wayfarer-develop-env.eba-s3bm7efv.ap-northeast-2.elasticbeanstalk.com/auth/login/google";
     } else if (provider === "kakao") {
       window.location.href =
-        "https://kauth.kakao.com/oauth/authorize?client_id=ecf4fa7ba5b7c3dd0aecf41e4f30163c&redirect_uri=http://localhost:8080/auth/kakao/callback&response_type=code";
+        "https://kauth.kakao.com/oauth/authorize?client_id=ecf4fa7ba5b7c3dd0aecf41e4f30163c&redirect_uri=http://wayfarer-develop-env.eba-s3bm7efv.ap-northeast-2.elasticbeanstalk.com/auth/kakao/callback&response_type=code";
     }
   };
 
