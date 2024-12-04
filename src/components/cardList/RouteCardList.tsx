@@ -30,10 +30,15 @@ export default RouteCardList;
 
 // 스타일 정의
 const CardListContainer = styled.div`
-  padding: 0px;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 20px;
-  height: 730px;
-  overflow-y: scroll; /* 스크롤 설정 */
+  height: calc(92vh - 200px); /* 화면 전체 높이에서 상하 여백 빼기 */
+  overflow-y: auto; /* 스크롤 활성화 */
+
+  @media (max-width: 1500px) {
+    width: 380px;
+    gap: 15px;
+  }
 `;

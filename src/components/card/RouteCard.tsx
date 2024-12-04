@@ -1,7 +1,5 @@
 import styled from "styled-components";
 import { FC } from "react";
-
-import { calcResponsive } from "@common/styles/theme";
 import CloseIcon from "@components/assets/icons/CloseIcon";
 
 interface RouteCardProps {
@@ -40,26 +38,39 @@ const RouteCard: FC<RouteCardProps> = ({ marker_id, title = "제목 없음", add
 
 export default RouteCard;
 
-const OuterContainer = styled.div`
+// 공통 스타일 정의
+const FlexBox = styled.div`
   display: flex;
+  align-items: center;
+`;
+
+const TextEllipsis = styled.div`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+const OuterContainer = styled.div`
+  ${FlexBox};
   flex-direction: column;
   user-select: none;
-  /* min-width: calcResponsiveWidth(460); */
-  min-width: ${calcResponsive({ value: 460 })};
   min-height: 130px;
-  height: 130px;
+  min-width: 460px;
   background-color: ${({ theme }) => theme.colors.primary.subtle};
   border-radius: ${({ theme }) => theme.cornerRadius.large};
   border: ${({ theme: { strokeWidth, colors } }) =>
     `${strokeWidth.thick} solid ${colors.stroke.neutral3}`};
   overflow: hidden;
+
+  @media (max-width: 1500px) {
+    min-width: 350px;
+    min-height: 100px;
+  }
 `;
 
-const TopContainer = styled.div`
-  margin-left: 10px;
-  display: flex;
+const TopContainer = styled(FlexBox)`
   justify-content: space-between;
-  align-items: center;
+  margin-left: 10px;
 `;
 
 const Index = styled.div`
@@ -69,8 +80,7 @@ const Index = styled.div`
 `;
 
 const CloseButton = styled.button`
-  margin-right: 10px;
-  margin-top: 10px;
+  margin: 10px;
   background: none;
   border: none;
   cursor: pointer;
@@ -80,44 +90,36 @@ const CloseButton = styled.button`
   }
 `;
 
-const InnerContainer = styled.div`
-  margin-left: 18px;
-  display: flex;
+const InnerContainer = styled(FlexBox)`
   flex-direction: column;
+  margin-left: 18px;
 `;
 
-const TitleSection = styled.div`
+const TitleSection = styled(TextEllipsis)`
   width: 350px;
   margin-top: -10px;
   font-size: ${({ theme }) => theme.typography.heading.h2.fontSize};
   color: ${({ theme }) => theme.colors.text.body};
   font-family: ${({ theme }) => theme.typography.fontFamily.main};
   font-weight: 500;
-
-  /* 말줄임표 설정 */
-  white-space: nowrap; /* 한 줄로 제한 */
-  overflow: hidden; /* 넘친 내용 숨김 */
-  text-overflow: ellipsis; /* 말줄임표 표시 */
 `;
 
-const LocationSection = styled.div`
+const LocationSection = styled(TextEllipsis)`
   width: 330px;
   margin-top: 5px;
   font-size: ${({ theme }) => theme.typography.body.regular.fontSize};
   color: ${({ theme }) => theme.colors.text.body};
   font-family: ${({ theme }) => theme.typography.fontFamily.main};
   font-weight: 500;
-
-  /* 말줄임표 설정 */
-  white-space: nowrap; /* 한 줄로 제한 */
-  overflow: hidden; /* 넘친 내용 숨김 */
-  text-overflow: ellipsis; /* 말줄임표 표시 */
 `;
 
-const BottomContainer = styled.div`
-  margin: -10px;
-  display: flex;
+const BottomContainer = styled(FlexBox)`
   justify-content: flex-end;
+  margin: -10px;
+
+  @media (max-width: 1500px) {
+    margin: -35px -8px 0 0;
+  }
 `;
 
 const DetailButton = styled.button`
