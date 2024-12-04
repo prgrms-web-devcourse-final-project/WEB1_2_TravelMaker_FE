@@ -9,14 +9,11 @@ import FormField from "@components/field/FormField";
 interface Props {
   onClickPlanner: () => void;
   onSubmit: (code: string) => void;
+  placeholder?: string;
 }
 
-const StartPlannerCard: FC<Props> = ({ onClickPlanner, onSubmit }) => {
+const StartPlannerCard: FC<Props> = ({ onClickPlanner, onSubmit, placeholder }) => {
   const [code, setCode] = useState("");
-
-  const onSubmitHandler = () => {
-    return onSubmit(code);
-  };
 
   return (
     <Container>
@@ -28,8 +25,13 @@ const StartPlannerCard: FC<Props> = ({ onClickPlanner, onSubmit }) => {
       <Button label="플래너 시작하기" fullWidth onClick={onClickPlanner} />
       <Divider />
       <SubmitContainer>
-        <FormField.Input label={code} onChange={setCode} />
-        <Button label="참여하기" type="small" onClick={onSubmitHandler} />
+        <FormField.Input label={code} onChange={setCode} placeholder={placeholder} />
+        <Button
+          label="참여하기"
+          type="small"
+          onClick={() => onSubmit(code)}
+          disabled={code.length <= 0}
+        />
       </SubmitContainer>
     </Container>
   );
