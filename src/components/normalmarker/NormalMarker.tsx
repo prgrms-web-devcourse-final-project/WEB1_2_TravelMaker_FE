@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import MarkerIcon from "../assets/images/NormalMarkerImage";
+import Profile from "@components/chat/ChatProfile";
 
 interface NormalMarkerProps {
   profileImage: string;
@@ -20,8 +21,8 @@ export const NormalMarker: React.FC<NormalMarkerProps> = ({
   return (
     <MarkerWrapper $size={size} $isSelected={isSelected} onClick={onClick}>
       <MarkerIcon />
-      <ProfileWrapper $profileSize={profileSize}>
-        <ProfileImage src={profileImage} alt="Profile" />
+      <ProfileWrapper>
+        <Profile.Image url={profileImage} size={profileSize} />
       </ProfileWrapper>
     </MarkerWrapper>
   );
@@ -41,11 +42,9 @@ const MarkerWrapper = styled.div<{ $size: number; $isSelected: boolean }>`
   cursor: pointer;
 `;
 
-const ProfileWrapper = styled.div<{ $profileSize: number }>`
-  width: ${({ $profileSize }) => $profileSize}px;
-  height: ${({ $profileSize }) => $profileSize}px;
+const ProfileWrapper = styled.div`
   position: absolute;
-  top: -3px;
+  top: -5px;
   transform: translateX(-50%, 20%);
   background-color: ${({ theme }) => theme.colors.background.neutral0};
   border-radius: 50%;
@@ -54,11 +53,4 @@ const ProfileWrapper = styled.div<{ $profileSize: number }>`
   transition: all 0.3s ease;
 `;
 
-const ProfileImage = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.3s ease;
-`;
-
-export default NormalMarker;
+export default React.memo(NormalMarker);

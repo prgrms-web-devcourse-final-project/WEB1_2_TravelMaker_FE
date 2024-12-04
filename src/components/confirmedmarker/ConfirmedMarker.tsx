@@ -70,4 +70,4 @@ const IndexText = styled.span`
   color: ${({ theme }) => theme.colors.text.title};
 `;
 
-export default ConfirmedMarker;
+export default React.memo(ConfirmedMarker);
