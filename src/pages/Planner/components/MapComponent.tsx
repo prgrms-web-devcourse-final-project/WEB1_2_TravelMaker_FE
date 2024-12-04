@@ -83,50 +83,85 @@ const MapComponent = () => {
 
     const location = { lat, lng };
 
-    geocoderRef.current.geocode({ location }, (results, status) => {
-      if (status === "OK" && results && results.length > 0) {
+    try {
+      const results = await new Promise<google.maps.GeocoderResult[]>((resolve, reject) => {
+        geocoderRef.current!.geocode({ location }, (res, status) => {
+          if (status === "OK" && res) resolve(res);
+          else reject(status);
+        });
+      });
+
+      if (results.length > 0) {
         const formattedAddress = results[0]?.formatted_address || "Unknown Location";
-        const placeName = results[0]?.address_components?.[0]?.short_name || "Unnamed Place";
 
-        const service = new window.google.maps.places.PlacesService(mapRef.current!);
-        const placeRequest = {
-          location,
-          rankBy: google.maps.places.RankBy.DISTANCE,
-        };
+        try {
+          const placeResults = await new Promise<google.maps.places.PlaceResult[]>(
+            (resolve, reject) => {
+              const service = new window.google.maps.places.PlacesService(mapRef.current!);
+              const placeRequest = {
+                location,
+                radius: 10,
+                type: "point_of_interest",
+                language: "ko",
+              };
 
-        service.nearbySearch(placeRequest, (placeResults, placeStatus) => {
-          let photoUrl = "https://via.placeholder.com/100x70";
+              service.nearbySearch(placeRequest, (res, status) => {
+                if (status === window.google.maps.places.PlacesServiceStatus.OK && res)
+                  resolve(res);
+                else reject(status);
+              });
+            }
+          );
 
-          if (placeStatus === window.google.maps.places.PlacesServiceStatus.OK && placeResults) {
+          if (placeResults.length > 0) {
             const firstPlace = placeResults[0];
+            const placeName = firstPlace.name || "Unnamed Place";
+            const photoUrl = firstPlace?.photos?.[0]?.getUrl({ maxWidth: 100 }) || NoImage;
 
-            photoUrl = firstPlace?.photos?.[0]?.getUrl({ maxWidth: 100 }) || photoUrl;
+            await addMarker({
+              lat,
+              lng,
+              title: placeName,
+              address: formattedAddress,
+              imageSrc: photoUrl,
+            });
           }
-
-          addMarker({
+        } catch {
+          await addMarker({
             lat,
             lng,
-            title: placeName,
+            title: "Unnamed Place",
             address: formattedAddress,
-            imageSrc: photoUrl,
+            imageSrc: NoImage,
           });
-        });
+        }
       }
-    });
+    } catch {
+      await addMarker({
+        lat,
+        lng,
+        title: "Unknown Place",
+        address: "Unknown Location",
+        imageSrc: NoImage,
+      });
+    }
   };
 
   const onUnmount = () => {
     mapRef.current = null;
   };
 
-  const handleMarkerClick = (marker: { lat: number; lng: number }, index: number) => {
-    const clickedMarker = markers.find((m) => m.lat === marker.lat && m.lng === marker.lng);
+  const handleMarkerClick = useCallback(
+    (marker: { lat: number; lng: number }, index: number) => {
+      const clickedMarker = markers.find((m) => m.lat === marker.lat && m.lng === marker.lng);
 
-    if (clickedMarker) {
-      setSelectedMarker(clickedMarker);
-    }
-    setActiveMarker(index);
-  };
+      if (clickedMarker) {
+        setSelectedMarker(clickedMarker);
+      }
+      setActiveMarker(index);
+    },
+    [markers]
+  );
 
   const handleModalClose = () => {
     setSelectedMarker(null);
@@ -219,9 +254,19 @@ const MapComponent = () => {
     });
   };
 
+  const handleZoomChanged = () => {
+    if (mapRef.current) {
+      const newZoom = mapRef.current.getZoom();
+
+      if (newZoom !== undefined && newZoom !== currentZoom) {
+        setCurrentZoom(newZoom);
+      }
+    }
+  };
+
   const handleZoomIn = () => {
-    if (mapRef.current && currentZoom < 18) {
-      const newZoom = currentZoom + 1;
+    if (mapRef.current) {
+      const newZoom = Math.min(currentZoom + 1, mapOptions.maxZoom || 18);
 
       setCurrentZoom(newZoom);
       mapRef.current.setZoom(newZoom);
@@ -229,8 +274,8 @@ const MapComponent = () => {
   };
 
   const handleZoomOut = () => {
-    if (mapRef.current && currentZoom > 4) {
-      const newZoom = currentZoom - 1;
+    if (mapRef.current) {
+      const newZoom = Math.max(currentZoom - 1, mapOptions.minZoom || 4);
 
       setCurrentZoom(newZoom);
       mapRef.current.setZoom(newZoom);
@@ -249,7 +294,7 @@ const MapComponent = () => {
   };
 
   const addMarker = useCallback(
-    (newMarker: {
+    async (newMarker: {
       lat: number;
       lng: number;
       title?: string;
@@ -318,6 +363,7 @@ const MapComponent = () => {
             zoom={currentZoom}
             onLoad={onLoad}
             onUnmount={onUnmount}
+            onZoomChanged={handleZoomChanged}
             options={mapOptions}
             onClick={handleModalClose}>
             <Polyline
@@ -335,29 +381,31 @@ const MapComponent = () => {
                 ],
               }}
             />
-            {markers.map((marker, index) => (
-              <OverlayView key={index} position={marker} mapPaneName="floatPane">
-                <div
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    if (!marker.isConfirmed) {
-                      handleMarkerClick(marker, index);
-                    }
-                  }}
-                  style={{ transform: "translate(-20px, -100%)" }}>
-                  {marker.isConfirmed ? (
-                    <ConfirmedMarker index={marker.index!} size={50} />
-                  ) : (
-                    <NormalMarker
-                      profileImage="https://via.placeholder.com/150"
-                      size={28}
-                      profileSize={28}
-                      isSelected={activeMarker === index}
-                    />
-                  )}
-                </div>
-              </OverlayView>
-            ))}
+            {isLoaded &&
+              mapRef.current &&
+              markers.map((marker, index) => (
+                <OverlayView key={index} position={marker} mapPaneName="floatPane">
+                  <div
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (!marker.isConfirmed) {
+                        handleMarkerClick(marker, index);
+                      }
+                    }}
+                    style={{ transform: "translate(-20px, -100%)" }}>
+                    {marker.isConfirmed ? (
+                      <ConfirmedMarker index={marker.index!} size={50} />
+                    ) : (
+                      <NormalMarker
+                        profileImage="https://via.placeholder.com/150"
+                        size={28}
+                        profileSize={28}
+                        isSelected={activeMarker === index}
+                      />
+                    )}
+                  </div>
+                </OverlayView>
+              ))}
           </GoogleMap>
           {selectedMarker && (
             <DetailsWrapper onClick={(e) => e.stopPropagation()}>
