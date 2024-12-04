@@ -12,10 +12,12 @@ export interface ButtonProps {
   onClick?: () => void;
   type?: "small" | "medium";
   fullWidth?: boolean;
+  /** 버튼 비활성화 여부 */
+  disabled?: boolean;
 }
 
 const StyledButton = styled.button<{ $fullWidth?: boolean }>`
-  position: relative; /* 아이콘 위치를 조정하기 위해 relative */
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-evenly;
@@ -43,6 +45,18 @@ const StyledButton = styled.button<{ $fullWidth?: boolean }>`
     background-color: ${({ theme }) => theme.colors.background.neutral1};
     transform: scale(1.01);
   }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    background-color: ${({ theme }) => theme.colors.background.neutral2};
+    transform: none;
+
+    &:hover {
+      background-color: ${({ theme }) => theme.colors.background.neutral2};
+      transform: none;
+    }
+  }
 `;
 
 const IconItem = styled.div``;
@@ -62,20 +76,20 @@ const Button: React.FC<ButtonProps> = ({
   onClick,
   type = "medium",
   fullWidth = false,
+  disabled = false,
 }) => {
   const ButtonComponent = type === "small" ? SmallStyledButton : StyledButton;
   const width = calcResponsive({ value: 48, dimension: "width" });
   const height = calcResponsive({ value: 48, dimension: "height" });
 
   return (
-    <ButtonComponent onClick={onClick} $fullWidth={fullWidth}>
+    <ButtonComponent onClick={onClick} $fullWidth={fullWidth} disabled={disabled}>
       {Icon && (
         <IconItem>
           <Icon width={width} height={height} />
         </IconItem>
       )}
       <span>{label}</span>
-      {/* 간격 조정용 */}
       {Icon && (
         <IconItem style={{ visibility: "hidden" }}>
           <Icon width={width} height={height} />
