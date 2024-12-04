@@ -71,6 +71,14 @@ const ContentWrapper = styled.div`
   align-items: center;
   justify-content: center;
   margin-top: 50px;
+
+  @media (max-width: 1550px) {
+    margin-top: 0px;
+  }
+
+  @media (max-width: 768px) {
+    margin-top: 30px;
+  }
 `;
 
 const ButtonWrapper = styled.div`
@@ -79,6 +87,16 @@ const ButtonWrapper = styled.div`
   flex-direction: column;
   margin-top: 50px;
   gap: 40px;
+
+  @media (max-width: 1550px) {
+    margin-top: 0px;
+    gap: 30px;
+  }
+
+  @media (max-width: 768px) {
+    margin-top: -10px;
+    gap: 30px;
+  }
 `;
 
 export default My;
