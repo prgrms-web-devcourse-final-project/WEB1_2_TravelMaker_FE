@@ -1,7 +1,6 @@
 import axios from "axios";
 
 export const setupAxiosInterceptors = (initialToken?: string) => {
-
   if (initialToken) {
     axios.defaults.headers.common.Authorization = `Bearer ${initialToken}`;
   }
