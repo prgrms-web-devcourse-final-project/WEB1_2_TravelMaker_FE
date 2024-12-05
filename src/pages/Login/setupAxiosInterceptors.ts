@@ -1,6 +1,11 @@
 import axios from "axios";
 
-export const setupAxiosInterceptors = () => {
+export const setupAxiosInterceptors = (initialToken?: string) => {
+
+  if (initialToken) {
+    axios.defaults.headers.common.Authorization = `Bearer ${initialToken}`;
+  }
+
   axios.interceptors.response.use(
     (response) => {
       // 성공 응답은 그대로 반환

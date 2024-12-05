@@ -5,8 +5,7 @@ import Google from "@components/assets/icons/GoogleIcon";
 import Kakao from "@components/assets/icons/KakaoIcon";
 import LargeLogo from "@components/assets/images/LargeLogo"; // LargeLogo 컴포넌트 경로
 import { useLocation } from "react-router-dom";
-import { sendAuthorizationCode } from "@pages/Login/LoginApi";
-import { setupAxiosInterceptors } from "./setupAxiosInterceptors"; // 인터셉터 설정 함수
+import { setupAxiosInterceptors } from "@pages/Login/setupAxiosInterceptors"; 
 import { baseURL } from "@api/fetch";
 
 const Login: React.FC = () => {
@@ -17,12 +16,17 @@ const Login: React.FC = () => {
 
     // 현재 URL에서 Authorization Code를 추출
     const params = new URLSearchParams(location.search); // 쿼리 문자열 파싱
-    const authorizationCode = params.get("code"); // "code" 파라미터 값 가져오기
-    const provider = location.pathname.includes("google") ? "google" : "kakao";
+    const accessToken = params.get("accessToken"); 
 
-    // Authorization Code가 있는 경우 서버로 전송
-    if (authorizationCode) {
-      sendAuthorizationCode(authorizationCode, provider);
+    if (accessToken) {
+      // 로컬 스토리지에 저장
+      localStorage.setItem("accessToken", accessToken);
+  
+      // Axios 기본 헤더에 토큰 추가
+      setupAxiosInterceptors(accessToken);
+  
+      // 리다이렉트로 URL 클리어 (토큰 노출 방지)
+      window.history.replaceState({}, document.title, "/"); // URL에서 쿼리 파라미터 제거
     }
   }, [location]);
 
