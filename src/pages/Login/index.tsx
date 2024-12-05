@@ -12,6 +12,7 @@ const Login: React.FC = () => {
   const location = useLocation();
 
   useEffect(() => {
+    
     setupAxiosInterceptors();
 
     // 현재 URL에서 Authorization Code를 추출
