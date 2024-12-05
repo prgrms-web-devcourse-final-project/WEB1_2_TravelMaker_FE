@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import styled from "styled-components";
+import { calcResponsive } from "@common/styles/theme";
 
 interface NormalMarkerDetailsProps {
   title: string;
@@ -70,11 +71,11 @@ export const NormalMarkerDetails: React.FC<NormalMarkerDetailsProps> = ({
 };
 
 const DetailsContainer = styled.div`
-  width: 460px;
-  height: 165px;
-  padding: 25px;
+  width: ${calcResponsive({ value: 460, dimension: "width" })};
+  height: ${calcResponsive({ value: 165, dimension: "height" })};
+  padding: ${calcResponsive({ value: 25, dimension: "width" })};
   display: flex;
-  gap: 10px;
+  gap: ${calcResponsive({ value: 10, dimension: "width" })};
   border: ${({ theme }) => theme.strokeWidth.thick} dashed
     ${({ theme }) => theme.colors.text.bodySubtle};
   border-radius: ${({ theme }) => theme.cornerRadius.extraLarge};
@@ -84,8 +85,8 @@ const DetailsContainer = styled.div`
 `;
 
 const ImageWrapper = styled.div`
-  width: 100px;
-  height: 70px;
+  width: ${calcResponsive({ value: 100, dimension: "width" })};
+  height: ${calcResponsive({ value: 70, dimension: "height" })};
   border-radius: ${({ theme }) => theme.cornerRadius.medium};
   overflow: hidden;
 `;
@@ -102,17 +103,17 @@ const ContentWrapper = styled.div`
   flex-direction: column;
   justify-content: space-between;
   overflow: hidden;
-  max-width: 200px;
+  max-width: ${calcResponsive({ value: 200, dimension: "width" })};
 `;
 
 const Content = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: ${calcResponsive({ value: 10, dimension: "width" })};
 `;
 
 const Title = styled.h2`
-  font-size: ${({ theme }) => theme.typography.heading.h2.fontSize};
+  font-size: ${calcResponsive({ value: 18, dimension: "width", minValue: 12 })};
   font-weight: ${({ theme }) => theme.typography.body.regular.fontWeight};
   color: ${({ theme }) => theme.colors.text.title};
   white-space: nowrap;
@@ -122,7 +123,7 @@ const Title = styled.h2`
 `;
 
 const Address = styled.p`
-  font-size: ${({ theme }) => theme.typography.body.regular.fontSize};
+  font-size: ${calcResponsive({ value: 14, dimension: "width", minValue: 10 })};
   color: ${({ theme }) => theme.colors.text.body};
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -134,12 +135,12 @@ const Address = styled.p`
 
 const Tooltip = styled.div`
   position: absolute;
-  bottom: -25px;
-  left: 70px;
+  bottom: ${calcResponsive({ value: -25, dimension: "height" })};
+  left: ${calcResponsive({ value: 0, dimension: "width" })};
   background-color: ${({ theme }) => theme.colors.background.neutral0};
   color: ${({ theme }) => theme.colors.text.title};
-  font-size: ${({ theme }) => theme.typography.caption.fontSize};
-  padding: 5px 10px;
+  font-size: ${calcResponsive({ value: 12, dimension: "height", minValue: 8 })};
+  padding: ${calcResponsive({ value: 5, dimension: "height" })};
   border-radius: ${({ theme }) => theme.cornerRadius.medium};
   box-shadow: ${({ theme }) => theme.shadows.small};
   white-space: nowrap;
@@ -148,11 +149,11 @@ const Tooltip = styled.div`
 
 const ButtonWrapper = styled.div`
   display: flex;
-  width: 80px;
-  height: 40px;
+  width: ${calcResponsive({ value: 80, dimension: "width" })};
+  height: ${calcResponsive({ value: 40, dimension: "height" })};
   position: absolute;
-  bottom: 25px;
-  right: 25px;
+  bottom: ${calcResponsive({ value: 25, dimension: "height" })};
+  right: ${calcResponsive({ value: 25, dimension: "width" })};
   border: ${({ theme }) => theme.strokeWidth.thin} solid
     ${({ theme }) => theme.colors.background.neutral0};
   border-radius: ${({ theme }) => theme.cornerRadius.large};
@@ -161,7 +162,7 @@ const ButtonWrapper = styled.div`
 
 const ActionButton = styled.button<{ isRight?: boolean }>`
   flex: 1;
-  font-size: ${({ theme }) => theme.typography.heading.h4.fontSize};
+  font-size: ${calcResponsive({ value: 14, dimension: "height", minValue: 10 })};
   color: ${({ theme }) => theme.colors.primary.subtle};
   background-color: ${({ theme }) => theme.colors.text.title};
   border: none;

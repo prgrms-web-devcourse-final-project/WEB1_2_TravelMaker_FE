@@ -10,7 +10,8 @@ interface Props {
   myProfile: string;
   profiles: ComponentProps<typeof ChatInfoBar>["profiles"];
   chatList: ComponentProps<typeof ChatList>["dataList"];
-  onSubmit: ComponentProps<typeof ChatSubmitter>["onSubmit"];
+  // 수정된 타입
+  onSubmit: (message: string) => void; // onSubmit에 message 인자를 받도록 타입 변경
 }
 
 const Chat: FC<Props> = ({ myProfile, chatList, profiles, onSubmit }) => {

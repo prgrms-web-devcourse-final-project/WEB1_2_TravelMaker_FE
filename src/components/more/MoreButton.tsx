@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import PlusIcon from "../assets/icons/PlusIcon";
+import PlusIcon from "../assets/icons/PlusIcon.svg";
+import { calcResponsive } from "@common/styles/theme";
 
 interface MoreButtonProps {
   onClick?: () => void;
@@ -11,7 +12,7 @@ export const MoreButton: React.FC<MoreButtonProps> = ({ onClick, label = "더보
   return (
     <Button onClick={onClick}>
       <IconWrapper>
-        <PlusIcon />
+        <img src={PlusIcon} alt="PlusIcon" />
       </IconWrapper>
       {label}
     </Button>
@@ -19,13 +20,13 @@ export const MoreButton: React.FC<MoreButtonProps> = ({ onClick, label = "더보
 };
 
 const Button = styled.button`
-  width: 160px;
-  height: 40px;
+  width: ${calcResponsive({ value: 160, dimension: "width" })};
+  height: ${calcResponsive({ value: 40, dimension: "height" })};
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 5px 30px;
-  font-size: ${({ theme }) => theme.typography.heading.h3.fontSize};
+  padding: ${calcResponsive({ value: 5 })} ${calcResponsive({ value: 30 })};
+  font-size: ${calcResponsive({ value: 20, dimension: "width" })};
   font-weight: ${({ theme }) => theme.typography.body.regular.fontWeight};
   color: ${({ theme }) => theme.colors.text.body};
   background-color: transparent;
@@ -43,9 +44,11 @@ const Button = styled.button`
 `;
 
 const IconWrapper = styled.div`
-  margin-right: 10px;
+  margin-right: ${calcResponsive({ value: 10, dimension: "width" })};
   display: flex;
   align-items: center;
+  width: ${calcResponsive({ value: 30, dimension: "width" })};
+  height: ${calcResponsive({ value: 30, dimension: "height" })};
 `;
 
 export default MoreButton;

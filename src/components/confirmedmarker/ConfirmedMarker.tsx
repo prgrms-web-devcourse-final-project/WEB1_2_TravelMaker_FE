@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import ConfirmedMarkerImage from "../assets/images/ConfirmedMarkerImage";
+import ConfirmedMarkerImage from "@components/assets/images/ConfirmedMarkerImage.svg";
+import { calcResponsive } from "@common/styles/theme";
 
 interface ConfirmedMarkerProps {
   index: number;
@@ -11,10 +12,10 @@ export const ConfirmedMarker: React.FC<ConfirmedMarkerProps> = ({ index, size = 
   return (
     <MarkerWrapper size={size}>
       <IconWrapper>
-        <StyledConfirmedMarkerImage />
+        <StyledConfirmedMarkerImage src={ConfirmedMarkerImage} alt="Confirmed Marker" />
       </IconWrapper>
-      <IndexWrapper>
-        <IndexText>{index}</IndexText>
+      <IndexWrapper size={size}>
+        <IndexText size={size}>{index}</IndexText>
       </IndexWrapper>
     </MarkerWrapper>
   );
@@ -22,8 +23,8 @@ export const ConfirmedMarker: React.FC<ConfirmedMarkerProps> = ({ index, size = 
 
 const MarkerWrapper = styled.div<{ size: number }>`
   position: relative;
-  width: ${({ size }) => size}px;
-  height: ${({ size }) => size}px;
+  width: ${({ size }) => calcResponsive({ value: size, dimension: "width" })};
+  height: ${({ size }) => calcResponsive({ value: size, dimension: "width" })};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -43,18 +44,18 @@ const IconWrapper = styled.div`
   background: transparent;
 `;
 
-const StyledConfirmedMarkerImage = styled(ConfirmedMarkerImage)`
+const StyledConfirmedMarkerImage = styled.img`
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
 `;
 
-const IndexWrapper = styled.div`
+const IndexWrapper = styled.div<{ size: number }>`
   position: absolute;
   bottom: 0;
   right: 0;
-  width: 20px;
-  height: 20px;
+  width: ${({ size }) => calcResponsive({ value: size * 0.4, dimension: "width" })};
+  height: ${({ size }) => calcResponsive({ value: size * 0.4, dimension: "width" })};
   border-radius: ${({ theme }) => theme.cornerRadius.circular};
   background-color: ${({ theme }) => theme.colors.background.neutral0};
   border: ${({ theme }) => theme.strokeWidth.thin} solid ${({ theme }) => theme.colors.text.body};
@@ -64,10 +65,10 @@ const IndexWrapper = styled.div`
   box-shadow: ${({ theme }) => theme.shadows.small};
 `;
 
-const IndexText = styled.span`
-  font-size: ${({ theme }) => theme.typography.caption.fontSize};
+const IndexText = styled.span<{ size: number }>`
+  font-size: ${calcResponsive({ value: 12, dimension: "height", minValue: 10 })};
   font-weight: ${({ theme }) => theme.typography.body.bold.fontWeight};
   color: ${({ theme }) => theme.colors.text.title};
 `;
 
-export default React.memo(ConfirmedMarker);
+export default ConfirmedMarker;

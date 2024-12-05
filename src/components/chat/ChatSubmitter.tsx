@@ -5,7 +5,7 @@ import ChatInput from "./ChatInput";
 import { calcResponsive } from "@common/styles/theme";
 
 interface Props {
-  onSubmit: () => void;
+  onSubmit: (message: string) => void;
 }
 
 const ChatSubmitter: FC<Props> = ({ onSubmit }) => {
