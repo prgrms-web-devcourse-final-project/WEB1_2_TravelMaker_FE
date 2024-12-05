@@ -1,5 +1,12 @@
+import RoomCreateModalContainer from "./containers/RoomCreateModalContainer";
+import ModalLayout from "@components/modal/ModalLayout";
+
 const RoomCreateModal = () => {
-  return <div>RoomCreateModal</div>;
+  return (
+    <ModalLayout>
+      <RoomCreateModalContainer />
+    </ModalLayout>
+  );
 };
 
 export default RoomCreateModal;
