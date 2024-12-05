@@ -1,7 +1,6 @@
 import axios from "axios";
-// import { useToken } from "@common/hooks/useToken";
 
-export const setupAxiosInterceptors = (setToken: (token: string) => void) => {
+export const setupAxiosInterceptors = () => {
   axios.interceptors.response.use(
     (response) => {
       // 성공 응답은 그대로 반환
@@ -17,8 +16,8 @@ export const setupAxiosInterceptors = (setToken: (token: string) => void) => {
       ) {
         const newAccessToken = error.response.data.accessToken;
 
-        // 새로운 액세스 토큰 저장
-        setToken(newAccessToken);
+        // 새로운 액세스 토큰을 로컬 스토리지에 저장
+        localStorage.setItem("accessToken", newAccessToken);
 
         // Axios 헤더에 새로운 토큰 설정
         axios.defaults.headers.common.Authorization = `Bearer ${newAccessToken}`;
