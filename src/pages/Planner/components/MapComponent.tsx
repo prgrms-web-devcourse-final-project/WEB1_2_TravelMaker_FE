@@ -1,6 +1,7 @@
 import React, { useRef, useState, useCallback } from "react";
 import { GoogleMap, useJsApiLoader, OverlayView, Polyline } from "@react-google-maps/api";
 import styled from "styled-components";
+import { calcResponsive } from "@common/styles/theme";
 import NormalMarker from "@components/normalmarker/NormalMarker";
 import NormalMarkerDetails from "@components/markerdetails/NormalMarkerDetails";
 import ConfirmedMarker from "@components/confirmedmarker/ConfirmedMarker";
@@ -454,15 +455,15 @@ const Container = styled.div`
 
 const SearchContainer = styled.div`
   position: absolute;
-  top: 25px;
-  left: 40px;
+  top: ${calcResponsive({ value: 25, dimension: "height" })};
+  left: ${calcResponsive({ value: 560, dimension: "width" })};
   z-index: 10;
 `;
 
 const ZoomContainer = styled.div`
   position: absolute;
-  bottom: 25px;
-  right: 25px;
+  bottom: ${calcResponsive({ value: 25, dimension: "height" })};
+  right: ${calcResponsive({ value: 25, dimension: "width" })};
   z-index: 10;
 `;
 
@@ -473,16 +474,13 @@ const MapContainer = styled.div`
 
 const ResultsContainer = styled.div`
   position: absolute;
-  top: 90px;
-  left: 40px;
+  top: ${calcResponsive({ value: 90, dimension: "height" })};
+  left: ${calcResponsive({ value: 560, dimension: "width" })};
   z-index: 10;
-  width: 400px;
-  max-height: 80vh;
-  overflow-y: auto;
 `;
 
 const DetailsWrapper = styled.div`
   position: fixed;
-  bottom: 25px;
-  left: 40px;
+  bottom: ${calcResponsive({ value: 25, dimension: "height" })};
+  left: ${calcResponsive({ value: 560, dimension: "width" })};
 `;

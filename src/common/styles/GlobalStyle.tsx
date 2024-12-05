@@ -119,8 +119,5 @@ export const GlobalStyle = createGlobalStyle`
         }
     }
 
-    /* Firefox */
-    scrollbar-width: thin;
-    scrollbar-color: rgba(159, 202, 241, 0.5) transparent;
     }
 `;

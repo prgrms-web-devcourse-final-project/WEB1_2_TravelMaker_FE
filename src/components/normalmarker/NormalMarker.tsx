@@ -1,7 +1,8 @@
 import React from "react";
 import styled from "styled-components";
-import MarkerIcon from "../assets/images/NormalMarkerImage";
+import MarkerImage from "../assets/images/NormalMarkerImage.svg";
 import Profile from "@components/chat/ChatProfile";
+import { calcResponsive } from "@common/styles/theme";
 
 interface NormalMarkerProps {
   profileImage: string;
@@ -20,8 +21,8 @@ export const NormalMarker: React.FC<NormalMarkerProps> = ({
 }) => {
   return (
     <MarkerWrapper $size={size} $isSelected={isSelected} onClick={onClick}>
-      <MarkerIcon />
-      <ProfileWrapper>
+      <img src={MarkerImage} alt="Marker Image" />
+      <ProfileWrapper size={profileSize}>
         <Profile.Image url={profileImage} size={profileSize} />
       </ProfileWrapper>
     </MarkerWrapper>
@@ -29,12 +30,12 @@ export const NormalMarker: React.FC<NormalMarkerProps> = ({
 };
 
 const MarkerWrapper = styled.div<{ $size: number; $isSelected: boolean }>`
-  position: relative;
-  width: ${({ $size }) => $size * 1.6}px;
-  height: ${({ $size }) => $size * 1.6}px;
+  width: ${({ $size }) => calcResponsive({ value: $size * 1.6, dimension: "width" })};
+  height: ${({ $size }) => calcResponsive({ value: $size * 2, dimension: "width" })};
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   transform: ${({ $isSelected }) => ($isSelected ? "scale(1.2)" : "scale(1)")};
   transition:
     transform 0.3s ease,
@@ -42,10 +43,9 @@ const MarkerWrapper = styled.div<{ $size: number; $isSelected: boolean }>`
   cursor: pointer;
 `;
 
-const ProfileWrapper = styled.div`
+const ProfileWrapper = styled.div<{ size: number }>`
   position: absolute;
-  top: -5px;
-  transform: translateX(-50%, 20%);
+  top: 4px;
   background-color: ${({ theme }) => theme.colors.background.neutral0};
   border-radius: 50%;
   border: 1px solid ${({ theme }) => theme.colors.text.title};

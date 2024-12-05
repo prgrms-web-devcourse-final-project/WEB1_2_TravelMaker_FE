@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import styled, { keyframes } from "styled-components";
-import SmallPing from "../assets/images/SmallPing";
+import SmallPing from "../assets/images/SmallPing.svg";
+import { calcResponsive } from "@common/styles/theme";
 
 interface SearchResultCardProps {
   imageSrc: string;
@@ -74,7 +75,7 @@ export const SearchResultCard: React.FC<SearchResultCardProps> = ({
       </Content>
       <AnimatedPing className={animate ? "animate" : ""}>
         <LocationIconWrapper onClick={handlePingClick}>
-          <SmallPing />
+          <img src={SmallPing} alt="SmallPing" />
         </LocationIconWrapper>
       </AnimatedPing>
     </Container>
@@ -103,12 +104,12 @@ const fadeOut = keyframes`
 `;
 
 const Container = styled.div`
-  width: 360px;
-  height: 100px;
+  width: ${calcResponsive({ value: 360, dimension: "width" })};
+  height: ${calcResponsive({ value: 100, dimension: "height" })};
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 15px;
+  padding: ${calcResponsive({ value: 15, dimension: "width" })};
   border-radius: ${({ theme }) => theme.cornerRadius.large};
   background-color: ${({ theme }) => theme.colors.primary.subtle};
   border: ${({ theme }) => theme.strokeWidth.regular} solid ${({ theme }) => theme.colors.text.body};
@@ -117,10 +118,10 @@ const Container = styled.div`
 
 const ImageWrapper = styled.div<{ $animate: boolean }>`
   flex-shrink: 0;
-  width: 100px;
-  height: 70px;
+  width: ${calcResponsive({ value: 100, dimension: "width" })};
+  height: ${calcResponsive({ value: 70, dimension: "height" })};
   border-radius: ${({ theme }) => theme.cornerRadius.medium};
-  margin-left: 5px;
+  margin-left: ${calcResponsive({ value: 5, dimension: "width" })};
   background-color: ${({ theme }) => theme.colors.background.neutral0};
   overflow: hidden;
   animation: ${({ $animate }) => ($animate ? fadeOut : "none")} 0.5s forwards;
@@ -134,7 +135,7 @@ const Image = styled.img`
 
 const Content = styled.div<{ $animate: boolean }>`
   flex: 1;
-  margin-left: 20px;
+  margin-left: ${calcResponsive({ value: 20, dimension: "width" })};
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -142,39 +143,39 @@ const Content = styled.div<{ $animate: boolean }>`
 `;
 
 const Title = styled.h3`
-  font-size: ${({ theme }) => theme.typography.heading.h4.fontSize};
+  font-size: ${calcResponsive({ value: 18, dimension: "height" })};
   font-weight: ${({ theme }) => theme.typography.heading.h4.fontWeight};
   color: ${({ theme }) => theme.colors.text.title};
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 160px;
+  max-width: ${calcResponsive({ value: 160, dimension: "width" })};
 `;
 
 const Address = styled.p`
-  font-size: ${({ theme }) => theme.typography.caption.fontSize};
+  font-size: ${calcResponsive({ value: 14, dimension: "height" })};
   color: ${({ theme }) => theme.colors.text.body};
-  margin: 15px 0 0;
+  margin: ${calcResponsive({ value: 5 })} 0 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 180px;
+  max-width: ${calcResponsive({ value: 180, dimension: "width" })};
 `;
 
 const Tooltip = styled.div`
-  position: absolute;
-  bottom: -25px;
-  left: 0;
+  position: fixed;
+  bottom: ${calcResponsive({ value: 200, dimension: "height" })};
+  left: ${calcResponsive({ value: 580, dimension: "width" })};
   background-color: ${({ theme }) => theme.colors.background.neutral0};
   color: ${({ theme }) => theme.colors.text.title};
-  font-size: ${({ theme }) => theme.typography.caption.fontSize};
-  padding: 5px 10px;
+  font-size: ${calcResponsive({ value: 12, dimension: "height" })};
+  padding: ${calcResponsive({ value: 5, dimension: "width" })};
   border-radius: ${({ theme }) => theme.cornerRadius.medium};
   box-shadow: ${({ theme }) => theme.shadows.small};
-  white-space: nowrap;
+  width: ${calcResponsive({ value: 360, dimension: "width" })};
   z-index: 10;
 `;
 
@@ -182,8 +183,8 @@ const LocationIconWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: ${calcResponsive({ value: 28, dimension: "width" })};
+  height: ${calcResponsive({ value: 28, dimension: "width" })};
   background-color: ${({ theme }) => theme.colors.background.neutral0};
   border-radius: ${({ theme }) => theme.cornerRadius.circular};
   border: ${({ theme }) => theme.strokeWidth.regular} solid
@@ -193,8 +194,8 @@ const LocationIconWrapper = styled.div`
 
 const AnimatedPing = styled.div`
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: ${calcResponsive({ value: 10, dimension: "height" })};
+  right: ${calcResponsive({ value: 10, dimension: "width" })};
   &.animate {
     animation: ${growAndCenter} 1s forwards;
   }
