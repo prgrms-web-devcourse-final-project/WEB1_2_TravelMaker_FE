@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = import.meta.env.VITE_API_URL;
+export const baseURL = import.meta.env.VITE_API_URL;
 
 export const httpClient = axios.create({
   baseURL: baseURL,
@@ -17,6 +17,7 @@ export const setDefaultsHeaderAuth = (token: string) => {
 };
 
 export const token = localStorage.getItem("accessToken");
+
 if (token) {
   httpClient.defaults.headers.common.Authorization = `Bearer ${token}`;
 }
