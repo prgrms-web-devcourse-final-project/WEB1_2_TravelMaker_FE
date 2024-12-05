@@ -49,6 +49,20 @@ export const mockSchedules: Schedule[] = [
         address: "Champ de Mars, Paris",
         content: "Iconic landmark of Paris.",
       },
+      {
+        schedule_id: 1,
+        marker_id: 5,
+        title: "Visit Eiffel Tower",
+        address: "Champ de Mars, Paris",
+        content: "Iconic landmark of Paris.",
+      },
+      {
+        schedule_id: 1,
+        marker_id: 6,
+        title: "Visit Eiffel Tower",
+        address: "Champ de Mars, Paris",
+        content: "Iconic landmark of Paris.",
+      },
     ],
   },
   {

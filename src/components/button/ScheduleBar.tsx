@@ -75,6 +75,10 @@ const Container = styled.div`
   display: flex;
   justify-content: space-between;
   gap: 25px;
+  @media (max-width: 1500px) {
+    width: 370px;
+    overflow: hidden;
+  }
 `;
 
 const Button = styled.button`

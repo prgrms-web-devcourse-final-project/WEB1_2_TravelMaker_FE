@@ -79,29 +79,57 @@ const ScheduleManager = () => {
   );
 };
 
-const Container = styled.div`
+const FlexColumn = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 16px;
-  width: 520px;
-  height: 1080px;
 `;
 
-const ScheduleBox = styled.div`
-  margin-top: 30px;
+const FlexEnd = styled(FlexColumn)`
+  align-items: flex-end;
+`;
+
+const Container = styled(FlexColumn)`
+  padding: 30px;
+  max-width: 520px;
+  max-height: 100vh;
+
+  // 로고를 항상 아래에 고정하기 위한 설정
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* 상단 요소와 하단 요소 사이 간격 생성 */
+  flex-grow: 1;
+
+  /* 오른쪽에만 dashed 선 추가 및 border-radius 설정 */
+  border-right: 2px dashed ${({ theme }) => theme.colors.stroke.neutral3};
+  border-top-right-radius: 16px;
+  border-bottom-right-radius: 16px;
+
+  @media (max-width: 1500px) {
+    padding: 16px;
+    max-width: 410px;
+  }
+`;
+
+const ScheduleBox = styled(FlexColumn)`
   align-items: center;
-  display: flex;
-  flex-direction: column;
   gap: 40px;
+  margin-top: 30px;
+  margin-bottom: 35px;
+
+  @media (max-height: 1060px) {
+    margin-top: 20px;
+    gap: 30px;
+    margin-bottom: 25px;
+  }
+  @media (max-height: 700px) {
+    margin-top: 30px;
+    gap: 20px;
+    margin-bottom: 10px;
+  }
 `;
 
-const LogoWrapper = styled.div`
-  align-items: end;
-  display: flex;
-  flex-direction: column;
-  margin-top: 65px;
-  margin-bottom: 30px;
-  margin-right: 30px;
+const LogoWrapper = styled(FlexEnd)`
+  /* margin-right: 10px; */
 `;
 
 export default ScheduleManager;
