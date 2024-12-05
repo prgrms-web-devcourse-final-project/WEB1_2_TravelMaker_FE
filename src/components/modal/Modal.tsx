@@ -49,7 +49,7 @@ interface ModalShareProps extends ModalHeaderProps {
 
 interface ModalEntryProps extends ModalHeaderProps {
   code?: string;
-  onEntry: (code: string) => void;
+  onEntry: (code: string, messageFn: HandleModalMessage) => Promise<void>;
 }
 
 interface ModalConfigProps extends ModalHeaderProps {
@@ -68,11 +68,17 @@ type ModalComponent = {
   Share: FC<ModalShareProps>;
 };
 
+export type HandleModalMessage = (
+  type: LabelTypes,
+  text: string,
+  asyncOperation?: Promise<unknown>
+) => Promise<void>;
+
 interface UseModalMessageReturn {
   showMessage: boolean;
   messageType: LabelTypes;
   message: string;
-  handleMessage: (type: LabelTypes, text: string) => void;
+  handleMessage: HandleModalMessage;
 }
 
 const MODAL_CONSTANTS = {
@@ -127,17 +133,8 @@ const Modal: ModalComponent = {
     const [code, setCode] = useState(initCode ?? "");
     const { showMessage, messageType, message, handleMessage } = useModalMessage();
 
-    const handleEntry = () => {
-      try {
-        onEntry(code);
-        handleMessage("default", "플래너 입장중...");
-      } catch {
-        handleMessage("danger", "잘못된 참여코드 입니다.");
-      }
-    };
-
     return (
-      <>
+      <div>
         <Modal.Layout>
           <Modal.Header title={title} showCloseIcon onModalClose={onModalClose} />
           <EmailFieldLayout>
@@ -147,13 +144,18 @@ const Modal: ModalComponent = {
               placeholder="입장 코드를 입력해 주세요."
               font={{ size: "small" }}
             />
-            <Button label="참여하기" type="small" onClick={handleEntry} />
+            <Button
+              label="참여하기"
+              type="small"
+              onClick={() => onEntry(code, handleMessage)}
+              disabled={code.length <= 0}
+            />
           </EmailFieldLayout>
         </Modal.Layout>
         <MessageOverlay $visible={showMessage}>
           <Modal.Message message={message} type={messageType} />
         </MessageOverlay>
-      </>
+      </div>
     );
   },
   // 플래너 생성, 수정
@@ -306,19 +308,20 @@ const Modal: ModalComponent = {
   },
 };
 
-const useModalMessage = (duration = 3000): UseModalMessageReturn => {
+const useModalMessage = (): UseModalMessageReturn => {
   const [showMessage, setShowMessage] = useState(false);
   const [messageType, setMessageType] = useState<LabelTypes>("default");
   const [message, setMessage] = useState("");
 
-  const handleMessage = (type: LabelTypes, text: string) => {
+  const handleMessage: HandleModalMessage = async (type, text, asyncOperation) => {
     setMessageType(type);
     setMessage(text);
     setShowMessage(true);
 
-    setTimeout(() => {
+    if (asyncOperation) {
+      await asyncOperation;
       setShowMessage(false);
-    }, duration);
+    }
   };
 
   return {
