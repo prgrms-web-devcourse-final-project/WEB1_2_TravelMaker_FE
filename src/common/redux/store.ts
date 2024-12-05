@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import counterReducer from "@pages/Main/features/counter/counterSlice";
+import tokenSlice from "@common/redux/tokenSlice";
 
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
+    token: tokenSlice, // token slice 추가
   },
 });
 

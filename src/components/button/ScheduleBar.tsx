@@ -75,8 +75,14 @@ const Container = styled.div`
   display: flex;
   justify-content: space-between;
   gap: 25px;
-  @media (max-width: 1500px) {
+
+  @media (max-width: 1550px) {
     width: 370px;
+    overflow: hidden;
+  }
+
+  @media (max-width: 1024px) {
+    width: 320px;
     overflow: hidden;
   }
 `;
@@ -97,6 +103,10 @@ const Button = styled.button`
   &:hover {
     background-color: ${({ theme }) => theme.colors.primary.hover || "#0056b3"};
   }
+
+  @media (max-width: 1550px) {
+    height: 50px;
+  }
 `;
 
 const DataContainer = styled.div`
@@ -113,4 +123,9 @@ const DataContainer = styled.div`
   font-family: ${({ theme }) => theme.typography.fontFamily.main};
   font-weight: 600;
   color: ${({ theme }) => theme.colors.text.body};
+
+  @media (max-width: 1550px) {
+    height: 50px;
+    font-size: ${({ theme }) => theme.typography.heading.h2.fontSize};
+  }
 `;

@@ -37,8 +37,13 @@ const CardListContainer = styled.div`
   height: calc(92vh - 200px); /* 화면 전체 높이에서 상하 여백 빼기 */
   overflow-y: auto; /* 스크롤 활성화 */
 
-  @media (max-width: 1500px) {
+  @media (max-width: 1550px) {
     width: 380px;
+    gap: 15px;
+  }
+
+  @media (max-width: 1024px) {
+    width: 330px;
     gap: 15px;
   }
 `;
