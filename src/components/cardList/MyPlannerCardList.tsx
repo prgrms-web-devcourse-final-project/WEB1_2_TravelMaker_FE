@@ -4,6 +4,7 @@ import { ComponentProps, FC } from "react";
 import { calcResponsive } from "@common/styles/theme";
 import MyPlannerCard from "@components/card/MyPlannerCard";
 import { hideScrollbar } from "@common/styles/hideScrollbar";
+import { formatDate } from "@common/utils/formatDate";
 
 interface Props {
   items: ComponentProps<typeof MyPlannerCard>[];
@@ -25,9 +26,9 @@ const MyPlannerCardList: FC<Props> = ({ onEmptyCardClick, items = [] }) => {
           <MyPlannerCard
             title="완벽한 여행, 시작해볼까요?"
             country="Travel now!"
-            endDate="yyyy.mm.dd"
+            startDate={formatDate(new Date())}
+            endDate={formatDate(new Date())}
             onClick={onEmptyCardClick}
-            startDate="yyyy.mm.dd"
           />
         )}
       </CardListContainer>
@@ -50,6 +51,7 @@ const CardListContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${calcResponsive({ value: 30, dimension: "height" })};
+  min-height: ${calcResponsive({ value: 670, dimension: "height" })};
   max-height: ${calcResponsive({ value: 670, dimension: "height" })};
   overflow: scroll;
   overflow-x: hidden;

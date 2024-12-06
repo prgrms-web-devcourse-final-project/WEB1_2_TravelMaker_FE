@@ -1,5 +1,5 @@
 import styled, { keyframes } from "styled-components";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 
 import { calcResponsive } from "@common/styles/theme";
 import PlaneIcon, { PlaneIcon2 } from "@components/assets/icons/Plane";
@@ -15,17 +15,23 @@ interface MyPlannerCardProps {
 const MyPlannerCard: FC<MyPlannerCardProps> = ({ onClick, title, country, startDate, endDate }) => {
   const [isAnimating, setIsAnimating] = useState(false);
 
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
+    if (isAnimating) {
+      timeoutId = setTimeout(() => {
+        setIsAnimating(false);
+        onClick();
+      }, 1000);
+    }
+
+    return () => clearTimeout(timeoutId);
+  }, [isAnimating, onClick]);
+
   const onClickHandler = () => {
     if (!isAnimating) {
       setIsAnimating(true);
-      setTimeout(() => {
-        setIsAnimating(false);
-      }, 1000);
     }
-  };
-
-  const onAnimationEndHandler = () => {
-    onClick();
   };
 
   return (
@@ -41,7 +47,7 @@ const MyPlannerCard: FC<MyPlannerCardProps> = ({ onClick, title, country, startD
         </TopContainer>
         <ContentContainer>
           {/* 아이콘 블록 */}
-          <IconContainer $isAnimating={isAnimating} onAnimationEnd={onAnimationEndHandler}>
+          <IconContainer $isAnimating={isAnimating}>
             <PlaneIcon2 width={icon.main.width} height={icon.main.height} />
           </IconContainer>
           {/* 국가 라벨 블록 */}
@@ -125,6 +131,7 @@ const ContentContainer = styled.div`
 const IconContainer = styled.div<{ $isAnimating: boolean }>`
   padding-left: ${calcResponsive({ value: 50, dimension: "width" })};
   animation: ${({ $isAnimating }) => ($isAnimating ? flyAnimation : "none")} 1s forwards;
+  animation-play-state: ${({ $isAnimating }) => ($isAnimating ? "running" : "paused")};
 `;
 
 const CountryLabelContainer = styled.div<{ $isAnimating: boolean }>`

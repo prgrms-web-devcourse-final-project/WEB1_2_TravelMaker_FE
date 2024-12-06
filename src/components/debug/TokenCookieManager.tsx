@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { withDevOnly } from "./withDevOnly";
+import { setDefaultsHeaderAuth } from "@api/fetch";
 
 interface TokenInputProps {
   style?: React.CSSProperties;
@@ -24,20 +25,9 @@ const TokenCookieManager: React.FC<TokenInputProps> = withDevOnly(({ style }) =>
       accessToken: currentAccessToken,
       refreshToken: currentRefreshToken,
     });
+
+    setDefaultsHeaderAuth(currentAccessToken);
   }, []);
-
-  const setCookie = (name: string, value: string) => {
-    document.cookie = `${name}=${value};`;
-  };
-
-  const getCookie = (name: string): string | null => {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-
-    if (parts.length === 2) return parts.pop()?.split(";").shift() || null;
-
-    return null;
-  };
 
   const handleTokenChange = (type: "accessToken" | "refreshToken", value: string) => {
     setTokenInputs((prev) => ({
@@ -159,5 +149,25 @@ const TokenCookieManager: React.FC<TokenInputProps> = withDevOnly(({ style }) =>
     </div>
   );
 });
+
+const setCookie = (name: string, value: string) => {
+  document.cookie = `${name}=${value};`;
+};
+
+const getCookie = (name: string): string | null => {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+
+  if (parts.length === 2) return parts.pop()?.split(";").shift() || null;
+
+  return null;
+};
+
+(() => {
+  // 초기 쿠키 값 로드
+  const currentAccessToken = getCookie("accessToken") || "";
+
+  setDefaultsHeaderAuth(currentAccessToken);
+})();
 
 export default TokenCookieManager;

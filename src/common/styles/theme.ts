@@ -362,8 +362,6 @@ export const calcResponsiveCore = (min: number, max: number, type?: "vw" | "vh")
  * @param percentage 최소값을 계산할 퍼센트
  * @param max 최대 픽셀 값
  * @returns `calcResponsive`를 호출하여 퍼센트 기반 최소값과 최대값으로 생성된 CSS 표현식
- *
- * @deprecated 사용안함
  */
 export const calcResponsiveByPercent = (percentage: number, max: number) => {
   return calcResponsiveCore(calcByPercent(max, percentage), max);

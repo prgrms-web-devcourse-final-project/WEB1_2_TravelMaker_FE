@@ -42,6 +42,7 @@ interface ProfileImageProps extends ProfileBaseProps {
   Icon?: ElementType<{ size?: number; color?: string }>;
   showBadge?: boolean;
   isHost?: boolean;
+  hasBackground?: boolean;
 }
 
 interface ProfileLabelProps extends ProfileBaseProps {
@@ -76,11 +77,15 @@ const DEFAULTS = {
 
 const Profile: ProfileComponent = {
   Image: ({ url, Icon = ProfileCloseIcon, ...styleProps }) => {
-    const { size, stroke, shadow, badgeColor, showBadge, isHost } = styleProps;
+    const { size, stroke, shadow, badgeColor, showBadge, isHost, hasBackground } = styleProps;
     const { badgeDimension, badgeIconDimension, x, y } = getDimensions(size);
 
     return (
-      <Base.ProfileContainer $size={size} $stroke={stroke} $shadow={shadow}>
+      <Base.ProfileContainer
+        $size={size}
+        $stroke={stroke}
+        $shadow={shadow}
+        $hasBackground={hasBackground}>
         <Base.Host $position={{ x, y }} $isHost={isHost}>
           <HostIcon size={badgeDimension} />
         </Base.Host>
@@ -130,18 +135,20 @@ const baseContentStyle = css<BaseContentStyleProps>`
 `;
 
 const Base = {
-  ProfileContainer: styled.div.attrs<BaseContentStyleProps>(
-    ({ $stroke = false, $shadow = "none" }) => ({
+  ProfileContainer: styled.div.attrs<BaseContentStyleProps & { $hasBackground?: boolean }>(
+    ({ $stroke = false, $shadow = "none", $hasBackground = true }) => ({
       $stroke,
       $shadow,
+      $hasBackground,
     })
-  )<BaseContentStyleProps>`
+  )`
     ${baseContentStyle}
-    background-color: ${({ theme }) => theme.colors.tertiary.disabled};
+    background-color: ${({ $hasBackground, theme }) =>
+      $hasBackground ? theme.colors.tertiary.disabled : "transparent"};
   `,
   TextContainer: styled.div.attrs<BaseContentStyleProps>(
     ({ $stroke = false, $shadow = "small" }) => ({ $stroke, $shadow })
-  )<BaseContentStyleProps>`
+  )`
     ${baseContentStyle}
     background-color: ${({ theme }) => theme.colors.background.neutral0};
   `,
