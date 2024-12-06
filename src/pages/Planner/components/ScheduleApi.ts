@@ -16,7 +16,7 @@ const sendMessage = (socket: WebSocket, path: string, message: object) => {
   if (socket.readyState === WebSocket.OPEN) {
     socket.send(JSON.stringify({ ...message, path }));
   } else {
-    console.error("WebSocket is not open");
+    // console.error("WebSocket is not open");
   }
 };
 
