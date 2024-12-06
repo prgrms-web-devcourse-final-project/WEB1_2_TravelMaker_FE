@@ -10,28 +10,11 @@ const router = createBrowserRouter([
   {
     element: <Header />,
     children: [
-      { path: ROUTES.MAIN, element: <Main /> },
-      { path: ROUTES.MY, element: <My /> },
+      { path: ROUTES.MAIN, element: <ProtectedRoute><Main /></ProtectedRoute> },
+      { path: ROUTES.MY, element: <ProtectedRoute><My /></ProtectedRoute> },
     ],
   },
-  {
-    path: ROUTES.MAIN,
-    element: (
-      <ProtectedRoute>
-        <Main />
-      </ProtectedRoute>
-    ),
-  },
   { path: ROUTES.LOGIN, element: <Login /> },
-  { path: ROUTES.PLANNER, element: <Planner /> },
-  {
-    path: ROUTES.MY,
-    element: (
-      <ProtectedRoute>
-        <My />
-      </ProtectedRoute>
-    ),
-  },
   {
     path: ROUTES.PLANNER,
     element: (
