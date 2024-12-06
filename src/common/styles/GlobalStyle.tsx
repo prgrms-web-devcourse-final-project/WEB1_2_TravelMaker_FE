@@ -26,6 +26,7 @@ export const GlobalStyle = createGlobalStyle`
     /* 2. Remove default margin */
     * {
         margin: 0;
+        
     }
 
     /* Typographic tweaks!

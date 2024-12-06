@@ -9,6 +9,9 @@ import SearchBar from "@components/search/SearchBar";
 import SearchResultList from "@components/searchresultlist/SearchResultList";
 import ZoomScreen from "@components/zoomscreen/ZoomScreen";
 import NoImage from "@components/assets/images/NoImage.svg";
+import ScheduleManager from "@components/section/ScheduleManager";
+import Chat from "@components/chat/Chat";
+import SettingButton from "@components/button/SettingButton";
 
 const MapComponent = () => {
   const containerStyle = {
@@ -156,6 +159,7 @@ const MapComponent = () => {
     (marker: { lat: number; lng: number }, index: number) => {
       const clickedMarker = markers.find((m) => m.lat === marker.lat && m.lng === marker.lng);
 
+      setIsSearchVisible(false);
       if (clickedMarker) {
         setSelectedMarker(clickedMarker);
       }
@@ -167,6 +171,7 @@ const MapComponent = () => {
   const handleModalClose = () => {
     setSelectedMarker(null);
     setActiveMarker(null);
+    setIsSearchVisible(false);
   };
 
   const handleConfirm = () => {
@@ -342,105 +347,132 @@ const MapComponent = () => {
     [mapRef, addMarker]
   );
 
+  const myProfile = "https://via.placeholder.com/150";
+  const profiles = [
+    { url: "https://via.placeholder.com/150", onClick: () => {} },
+    { url: "https://via.placeholder.com/150", onClick: () => {} },
+  ];
+  const chatList = [
+    { type: "sender" as const, text: "안녕!", url: "https://via.placeholder.com/150" },
+    { type: "receiver" as const, text: "우리 여행 어디로 가?", url: null },
+  ];
+  const handleChatSubmit = () => {};
+
   return (
     <Container>
-      <SearchContainer>
-        <SearchBar onSearch={handleSearch} />
-      </SearchContainer>
-      <ZoomContainer>
-        <ZoomScreen
-          currentZoom={currentZoom}
-          minZoom={4}
-          maxZoom={18}
-          onZoomIn={handleZoomIn}
-          onZoomOut={handleZoomOut}
-        />
-      </ZoomContainer>
-      {isLoaded ? (
-        <MapContainer>
-          <GoogleMap
-            mapContainerStyle={containerStyle}
-            center={mapCenter}
-            zoom={currentZoom}
-            onLoad={onLoad}
-            onUnmount={onUnmount}
-            onZoomChanged={handleZoomChanged}
-            options={mapOptions}
-            onClick={handleModalClose}>
-            <Polyline
-              path={getPolylinePath()}
-              options={{
-                strokeColor: "#323232",
-                strokeOpacity: 0,
-                strokeWeight: 2,
-                icons: [
-                  {
-                    icon: { path: "M 0,-1 0,1", strokeOpacity: 1 },
-                    offset: "0",
-                    repeat: "10px",
-                  },
-                ],
-              }}
-            />
-            {isLoaded &&
-              mapRef.current &&
-              markers.map((marker, index) => (
-                <OverlayView key={index} position={marker} mapPaneName="floatPane">
-                  <div
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (!marker.isConfirmed) {
-                        handleMarkerClick(marker, index);
-                      }
-                    }}
-                    style={{ transform: "translate(-20px, -100%)" }}>
-                    {marker.isConfirmed ? (
-                      <ConfirmedMarker index={marker.index!} size={50} />
-                    ) : (
-                      <NormalMarker
-                        profileImage="https://via.placeholder.com/150"
-                        size={28}
-                        profileSize={28}
-                        isSelected={activeMarker === index}
-                      />
-                    )}
-                  </div>
-                </OverlayView>
-              ))}
-          </GoogleMap>
-          {selectedMarker && (
-            <DetailsWrapper onClick={(e) => e.stopPropagation()}>
-              <NormalMarkerDetails
-                title={selectedMarker?.title || "No Name"}
-                address={selectedMarker?.address || "No Address"}
-                imageSrc={selectedMarker?.imageSrc || NoImage}
-                onDelete={() => {
-                  setMarkers((prev) =>
-                    prev.filter(
-                      (marker) =>
-                        marker.lat !== selectedMarker?.lat || marker.lng !== selectedMarker?.lng
-                    )
-                  );
-                  handleModalClose();
-                }}
-                onConfirm={handleConfirm}
-              />
-            </DetailsWrapper>
-          )}
-        </MapContainer>
-      ) : (
-        <div>로딩 중...</div>
-      )}
-      {isSearchVisible && searchResults.length > 0 && (
-        <ResultsContainer>
-          <SearchResultList
-            results={searchResults}
-            onResultClick={(lat, lng, title, address, imageSrc) =>
-              handleResultClick(lat, lng, title, address, imageSrc)
-            }
+      <MapSection>
+        <OverlayContainer>
+          <ScheduleManager />
+        </OverlayContainer>
+        <SearchContainer>
+          <SearchBar onSearch={handleSearch} />
+        </SearchContainer>
+        <ZoomContainer>
+          <ZoomScreen
+            currentZoom={currentZoom}
+            minZoom={4}
+            maxZoom={18}
+            onZoomIn={handleZoomIn}
+            onZoomOut={handleZoomOut}
           />
-        </ResultsContainer>
-      )}
+        </ZoomContainer>
+        {isLoaded ? (
+          <MapContainer>
+            <GoogleMap
+              mapContainerStyle={containerStyle}
+              center={mapCenter}
+              zoom={currentZoom}
+              onLoad={onLoad}
+              onUnmount={onUnmount}
+              onZoomChanged={handleZoomChanged}
+              options={mapOptions}
+              onClick={handleModalClose}>
+              <Polyline
+                path={getPolylinePath()}
+                options={{
+                  strokeColor: "#323232",
+                  strokeOpacity: 0,
+                  strokeWeight: 2,
+                  icons: [
+                    {
+                      icon: { path: "M 0,-1 0,1", strokeOpacity: 1 },
+                      offset: "0",
+                      repeat: "10px",
+                    },
+                  ],
+                }}
+              />
+              {isLoaded &&
+                mapRef.current &&
+                markers.map((marker, index) => (
+                  <OverlayView key={index} position={marker} mapPaneName="floatPane">
+                    <div
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (!marker.isConfirmed) {
+                          handleMarkerClick(marker, index);
+                        }
+                      }}
+                      style={{ transform: "translate(-20px, -100%)" }}>
+                      {marker.isConfirmed ? (
+                        <ConfirmedMarker index={marker.index!} size={50} />
+                      ) : (
+                        <NormalMarker
+                          profileImage="https://via.placeholder.com/150"
+                          size={28}
+                          profileSize={28}
+                          isSelected={activeMarker === index}
+                        />
+                      )}
+                    </div>
+                  </OverlayView>
+                ))}
+            </GoogleMap>
+            {selectedMarker && (
+              <DetailsWrapper onClick={(e) => e.stopPropagation()}>
+                <NormalMarkerDetails
+                  title={selectedMarker?.title || "No Name"}
+                  address={selectedMarker?.address || "No Address"}
+                  imageSrc={selectedMarker?.imageSrc || NoImage}
+                  onDelete={() => {
+                    setMarkers((prev) =>
+                      prev.filter(
+                        (marker) =>
+                          marker.lat !== selectedMarker?.lat || marker.lng !== selectedMarker?.lng
+                      )
+                    );
+                    handleModalClose();
+                  }}
+                  onConfirm={handleConfirm}
+                />
+              </DetailsWrapper>
+            )}
+          </MapContainer>
+        ) : (
+          <div>로딩 중...</div>
+        )}
+        {isSearchVisible && searchResults.length > 0 && (
+          <ResultsContainer>
+            <SearchResultList
+              results={searchResults}
+              onResultClick={(lat, lng, title, address, imageSrc) =>
+                handleResultClick(lat, lng, title, address, imageSrc)
+              }
+            />
+          </ResultsContainer>
+        )}
+      </MapSection>
+      <SettingSection>
+        <SettingButton />
+      </SettingSection>
+      <ChatSection>
+        <Chat
+          myProfile={myProfile}
+          profiles={profiles}
+          chatList={chatList}
+          onSubmit={handleChatSubmit}
+        />
+      </ChatSection>
     </Container>
   );
 };
@@ -448,21 +480,33 @@ const MapComponent = () => {
 export default React.memo(MapComponent);
 
 const Container = styled.div`
-  position: relative;
+  display: flex;
   width: 100vw;
   height: 100vh;
 `;
 
+const MapSection = styled.div`
+  flex: 1;
+  position: relative;
+`;
+
+const OverlayContainer = styled.div`
+  position: absolute;
+  left: ${calcResponsive({ value: 260, dimension: "width" })};
+  transform: translateX(-50%);
+  z-index: 10;
+`;
+
 const SearchContainer = styled.div`
   position: absolute;
-  top: ${calcResponsive({ value: 25, dimension: "height" })};
+  top: ${calcResponsive({ value: 25, dimension: "width" })};
   left: ${calcResponsive({ value: 560, dimension: "width" })};
   z-index: 10;
 `;
 
 const ZoomContainer = styled.div`
   position: absolute;
-  bottom: ${calcResponsive({ value: 25, dimension: "height" })};
+  bottom: ${calcResponsive({ value: 25, dimension: "width" })};
   right: ${calcResponsive({ value: 25, dimension: "width" })};
   z-index: 10;
 `;
@@ -474,13 +518,25 @@ const MapContainer = styled.div`
 
 const ResultsContainer = styled.div`
   position: absolute;
-  top: ${calcResponsive({ value: 90, dimension: "height" })};
+  top: ${calcResponsive({ value: 90, dimension: "width" })};
   left: ${calcResponsive({ value: 560, dimension: "width" })};
   z-index: 10;
 `;
 
 const DetailsWrapper = styled.div`
   position: fixed;
-  bottom: ${calcResponsive({ value: 25, dimension: "height" })};
+  bottom: ${calcResponsive({ value: 25, dimension: "width" })};
   left: ${calcResponsive({ value: 560, dimension: "width" })};
+`;
+
+const SettingSection = styled.div`
+  position: absolute;
+  top: ${calcResponsive({ value: 25, dimension: "width" })};
+  right: ${calcResponsive({ value: 25, dimension: "width" })};
+`;
+
+const ChatSection = styled.div`
+  position: absolute;
+  bottom: ${calcResponsive({ value: 160, dimension: "width" })};
+  right: ${calcResponsive({ value: 25, dimension: "width" })};
 `;

@@ -82,6 +82,7 @@ const ScheduleManager = () => {
 const FlexColumn = styled.div`
   display: flex;
   flex-direction: column;
+  background-color: ${({ theme }) => theme.colors.background.neutral0};
 `;
 
 const FlexEnd = styled(FlexColumn)`
@@ -100,17 +101,13 @@ const Container = styled(FlexColumn)`
   flex-grow: 1;
 
   /* 오른쪽에만 dashed 선 추가 및 border-radius 설정 */
-  border-right: 2px dashed ${({ theme }) => theme.colors.stroke.neutral3};
+  border-right: 4px dashed ${({ theme }) => theme.colors.stroke.neutral3};
   border-top-right-radius: 16px;
   border-bottom-right-radius: 16px;
 
-  @media (max-width: 1550px) {
-    padding: 20px;
+  @media (max-width: 1500px) {
+    padding: 16px;
     max-width: 410px;
-  }
-
-  @media (max-width: 1024px) {
-    max-width: 350px;
   }
 `;
 
@@ -118,7 +115,7 @@ const ScheduleBox = styled(FlexColumn)`
   align-items: center;
   gap: 40px;
   margin-top: 30px;
-  margin-bottom: 35px;
+  margin-bottom: 25px;
 
   @media (max-height: 1060px) {
     margin-top: 20px;
@@ -126,9 +123,9 @@ const ScheduleBox = styled(FlexColumn)`
     margin-bottom: 25px;
   }
   @media (max-height: 700px) {
-    /* margin-top: 30px; */
+    margin-top: 30px;
     gap: 20px;
-    margin-bottom: 25px;
+    margin-bottom: 10px;
   }
 `;
 
