@@ -18,7 +18,7 @@ const TokenCookieManager: React.FC<TokenInputProps> = withDevOnly(({ style }) =>
 
   useEffect(() => {
     // 초기 쿠키 값 로드
-    const currentAccessToken = getCookie("accessToken") || "";
+    const currentAccessToken = localStorage.getItem("accessToken") || "";
     const currentRefreshToken = getCookie("refreshToken") || "";
 
     setTokenInputs({
@@ -27,6 +27,7 @@ const TokenCookieManager: React.FC<TokenInputProps> = withDevOnly(({ style }) =>
     });
 
     setDefaultsHeaderAuth(currentAccessToken);
+    localStorage.setItem("accessToken", currentAccessToken);
   }, []);
 
   const handleTokenChange = (type: "accessToken" | "refreshToken", value: string) => {
@@ -47,6 +48,7 @@ const TokenCookieManager: React.FC<TokenInputProps> = withDevOnly(({ style }) =>
 
     if (tokenInputs.accessToken) {
       setCookie("accessToken", tokenInputs.accessToken);
+      localStorage.setItem("accessToken", tokenInputs.accessToken);
     }
 
     if (tokenInputs.refreshToken) {
@@ -63,6 +65,7 @@ const TokenCookieManager: React.FC<TokenInputProps> = withDevOnly(({ style }) =>
       accessToken: "",
       refreshToken: "",
     });
+    localStorage.removeItem("accessToken");
     alert("토큰이 삭제되었습니다.");
   };
 
@@ -165,9 +168,9 @@ const getCookie = (name: string): string | null => {
 
 (() => {
   // 초기 쿠키 값 로드
-  const currentAccessToken = getCookie("accessToken") || "";
+  const currentCookieToken = getCookie("accessToken") || "";
 
-  setDefaultsHeaderAuth(currentAccessToken);
+  setDefaultsHeaderAuth(currentCookieToken);
 })();
 
 export default TokenCookieManager;
