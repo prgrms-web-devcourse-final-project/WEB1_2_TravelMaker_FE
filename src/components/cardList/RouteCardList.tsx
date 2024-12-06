@@ -46,4 +46,35 @@ const CardListContainer = styled.div`
     width: 330px;
     gap: 15px;
   }
+
+  /* 스크롤바 스타일링 추가 */
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  /* 스크롤 동작을 부드럽게 만드는 속성*/
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+
+  /* y축 스크롤바 스타일링 */
+  &::-webkit-scrollbar {
+    width: 6px;
+    height: 0px;
+  }
+
+  // 스크롤바의 트랙(스크롤 손잡이가 움직이는 영역)
+  &::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: ${({ theme: { cornerRadius } }) => cornerRadius.extraLarge};
+  }
+
+  // #9FCAF1
+  // 스크롤바의 손잡이 부분
+  &::-webkit-scrollbar-thumb {
+    background: rgba(159, 202, 241, 0.5);
+    border-radius: ${({ theme: { cornerRadius } }) => cornerRadius.extraLarge};
+
+    &:hover {
+      background: rgba(159, 202, 241, 0.8);
+    }
+  }
 `;
