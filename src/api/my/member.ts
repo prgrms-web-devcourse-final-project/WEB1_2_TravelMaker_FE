@@ -16,7 +16,7 @@ export const fetchUserProfile = async (): Promise<UserProfile> => {
 
 // 회원 탈퇴 API
 export const deleteUserAccount = async (): Promise<void> => {
-  await httpClient.delete("/member");
+  await httpClient.delete("/api/member");
 };
 
 // 닉네임 업데이트 API
@@ -34,7 +34,7 @@ export const updateProfileImage = async (file: File): Promise<UserProfile> => {
 
   formData.append("image", file);
 
-  const response = await httpClient.put<UserProfile>("/member/profileImg", formData, {
+  const response = await httpClient.put<UserProfile>("/api/member/profileImg", formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
