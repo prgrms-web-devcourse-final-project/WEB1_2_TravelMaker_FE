@@ -5,29 +5,47 @@ import Google from "@components/assets/icons/GoogleIcon";
 import Kakao from "@components/assets/icons/KakaoIcon";
 import LargeLogo from "@components/assets/images/LargeLogo"; // LargeLogo 컴포넌트 경로
 import { useLocation } from "react-router-dom";
-import { sendAuthorizationCode } from "@pages/Login/LoginApi";
+import { setupAxiosInterceptors } from "@pages/Login/setupAxiosInterceptors";
+import { baseURL } from "@api/fetch";
 
 const Login: React.FC = () => {
   const location = useLocation();
 
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const authorizationCode = params.get("code");
-    const provider = location.pathname.includes("google") ? "google" : "kakao";
+    
+    setupAxiosInterceptors();
 
-    if (authorizationCode) {
-      sendAuthorizationCode(authorizationCode, provider);
+    // 현재 URL에서 Authorization Code를 추출
+    const params = new URLSearchParams(location.search); // 쿼리 문자열 파싱
+    const accessToken = params.get("accessToken");
+
+    if (accessToken) {
+      // 로컬 스토리지에 저장
+      localStorage.setItem("accessToken", accessToken);
+
+      // Axios 기본 헤더에 토큰 추가
+      setupAxiosInterceptors(accessToken);
+
+      // 리다이렉트로 URL 클리어 (토큰 노출 방지)
+      window.history.replaceState({}, document.title, "/"); // URL에서 쿼리 파라미터 제거
     }
   }, [location]);
 
+  /**
+   * 로그인 버튼 클릭 시 호출
+   * 사용자를 Google 또는 Kakao 인증 페이지로 리다이렉트
+   * @param provider - "google" 또는 "kakao" (로그인 제공자)
+   */
   const handleLogin = (provider: "google" | "kakao") => {
-    const apiUrl = import.meta.env.VITE_API_URL;
+    const redirectUri = `${baseURL}/auth/${provider}/callback`; // 리디렉션 URI 설정
 
-    if (provider === "google") {
-      window.location.href = `${apiUrl}/auth/login/google`;
-    } else if (provider === "kakao") {
-      window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=ecf4fa7ba5b7c3dd0aecf41e4f30163c&redirect_uri=${apiUrl}/auth/kakao/callback&response_type=code`;
-    }
+    const authUrls = {
+      google: `${baseURL}/auth/login/google?redirect_uri=${redirectUri}`,
+      kakao: `https://kauth.kakao.com/oauth/authorize?client_id=ecf4fa7ba5b7c3dd0aecf41e4f30163c&redirect_uri=${redirectUri}&response_type=code`,
+    };
+
+    // 제공자에 맞는 인증 URL로 리다이렉트
+    window.location.href = authUrls[provider];
   };
 
   return (
@@ -47,6 +65,7 @@ const Login: React.FC = () => {
 
 export default Login;
 
+// 스타일링
 const LoginPageWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -59,17 +78,19 @@ const LoginPageWrapper = styled.div`
 const LoginDiv = styled.div`
   width: 500px;
   height: 650px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
 `;
 
 const LogoWrapper = styled.div`
   margin-bottom: 40px; /* 로고 아래 간격 */
-  margin-left: 100px;
 `;
+
 const ButtonWrapper = styled.div`
   display: flex;
-  align-items: center;
   flex-direction: column;
+  align-items: center;
   margin-top: 150px;
   gap: 40px;
 `;

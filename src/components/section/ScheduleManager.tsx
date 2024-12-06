@@ -104,9 +104,13 @@ const Container = styled(FlexColumn)`
   border-top-right-radius: 16px;
   border-bottom-right-radius: 16px;
 
-  @media (max-width: 1500px) {
-    padding: 16px;
+  @media (max-width: 1550px) {
+    padding: 20px;
     max-width: 410px;
+  }
+
+  @media (max-width: 1024px) {
+    max-width: 350px;
   }
 `;
 
@@ -122,9 +126,9 @@ const ScheduleBox = styled(FlexColumn)`
     margin-bottom: 25px;
   }
   @media (max-height: 700px) {
-    margin-top: 30px;
+    /* margin-top: 30px; */
     gap: 20px;
-    margin-bottom: 10px;
+    margin-bottom: 25px;
   }
 `;
 

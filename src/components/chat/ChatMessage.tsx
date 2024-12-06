@@ -71,7 +71,10 @@ const Content = styled.div<{ $type: "sender" | "receiver" }>`
   max-width: 100%;
   min-width: 55px;
   min-height: ${calcResponsive({ value: 55, dimension: "height" })};
-  padding: ${calcResponsive({ value: 17.5, dimension: "height" })}${calcResponsive({ value: 22, dimension: "height" })};
+  padding: ${calcResponsive({ value: 17.5, dimension: "height" })}${calcResponsive({
+      value: 22,
+      dimension: "height",
+    })};
   border-radius: 25px;
   border-top-right-radius: ${({ $type }) => ($type === "sender" ? "0px" : null)};
   border-top-left-radius: ${({ $type }) => ($type === "receiver" ? "0px" : null)};

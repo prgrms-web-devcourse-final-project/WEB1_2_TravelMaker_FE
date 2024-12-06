@@ -48,6 +48,11 @@ const Container = styled.div`
   width: 226px;
   height: 30px;
   gap: 8px;
+
+  @media (max-width: 1024px) {
+    width: 200px;
+    margin-left: -15px;
+  }
 `;
 
 const Button = styled.button<{ isSelected: boolean }>`

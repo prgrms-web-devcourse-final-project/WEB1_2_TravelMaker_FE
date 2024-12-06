@@ -62,8 +62,13 @@ const OuterContainer = styled.div`
     `${strokeWidth.thick} solid ${colors.stroke.neutral3}`};
   overflow: hidden;
 
-  @media (max-width: 1500px) {
+  @media (max-width: 1550px) {
     min-width: 350px;
+    min-height: 100px;
+  }
+
+  @media (max-width: 1024px) {
+    min-width: 320px;
     min-height: 100px;
   }
 `;
@@ -102,6 +107,10 @@ const TitleSection = styled(TextEllipsis)`
   color: ${({ theme }) => theme.colors.text.body};
   font-family: ${({ theme }) => theme.typography.fontFamily.main};
   font-weight: 500;
+
+  @media (max-width: 1024px) {
+    width: 300px;
+  }
 `;
 
 const LocationSection = styled(TextEllipsis)`
@@ -111,13 +120,17 @@ const LocationSection = styled(TextEllipsis)`
   color: ${({ theme }) => theme.colors.text.body};
   font-family: ${({ theme }) => theme.typography.fontFamily.main};
   font-weight: 500;
+
+  @media (max-width: 1024px) {
+    width: 300px;
+  }
 `;
 
 const BottomContainer = styled(FlexBox)`
   justify-content: flex-end;
   margin: -10px;
 
-  @media (max-width: 1500px) {
+  @media (max-width: 1550px) {
     margin: -35px -8px 0 0;
   }
 `;
@@ -135,5 +148,11 @@ const DetailButton = styled.button`
 
   &:hover {
     background-color: ${({ theme }) => theme.colors.text.body};
+  }
+
+  @media (max-width: 1024px) {
+    width: 60px;
+    height: 25px;
+    font-size: 13px;
   }
 `;
