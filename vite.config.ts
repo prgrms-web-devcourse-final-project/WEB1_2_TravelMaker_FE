@@ -12,7 +12,17 @@ export default defineConfig(({ mode }) => {
       __VITE_GOOGLE_KEY__: JSON.stringify(env.VITE_GOOGLE_KEY),
       __VITE_API_URL__: JSON.stringify(env.VITE_API_URL),
       __VITE_MSW_ENABLED__: JSON.stringify(env.VITE_MSW_ENABLED),
+      __VITE_API_WS__: JSON.stringify(env.VITE_API_WS),
     },
     assetsInclude: ["./src/assets/fonts/Ticketing-Regular.otf"],
+    server: {
+      proxy: {
+        "/room": {
+          target: env.VITE_API_WS,
+          changeOrigin: true,
+          ws: true,
+        },
+      },
+    },
   };
 });

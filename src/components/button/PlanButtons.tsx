@@ -30,7 +30,7 @@ const PlanButtons: React.FC<PlanButtonsProps> = ({ currentPlan, onChangePlan }) 
         <Button
           key={plan}
           onClick={() => onChangePlan(plan)} // 클릭 시 선택된 플랜 변경
-          isSelected={currentPlan === plan} // 현재 선택된 플랜인지 확인
+          $isSelected={currentPlan === plan} // 현재 선택된 플랜인지 확인
         >
           {currentPlan === plan && <StyledCheckIcon />} {/* 선택된 경우 체크 아이콘 표시 */}
           {`Plan ${plan}`}
@@ -55,21 +55,21 @@ const Container = styled.div`
   }
 `;
 
-const Button = styled.button<{ isSelected: boolean }>`
+const Button = styled.button<{ $isSelected: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: ${({ isSelected }) => (isSelected ? "90px" : "60px")};
+  width: ${({ $isSelected }) => ($isSelected ? "90px" : "60px")};
   height: 30px;
   border: none;
-  background-color: ${({ isSelected }) => (isSelected ? "black" : "#E5E5E5")};
-  color: ${({ isSelected }) => (isSelected ? "white" : "black")};
+  background-color: ${({ $isSelected }) => ($isSelected ? "black" : "#E5E5E5")};
+  color: ${({ $isSelected }) => ($isSelected ? "white" : "black")};
   border-radius: ${({ theme }) => theme.cornerRadius.medium};
   cursor: pointer;
   transition: all 0.2s ease;
 
   &:hover {
-    background-color: ${({ isSelected }) => (isSelected ? "black" : "#D4D4D4")};
+    background-color: ${({ $isSelected }) => ($isSelected ? "black" : "#D4D4D4")};
   }
 `;
 
