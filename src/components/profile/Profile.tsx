@@ -1,20 +1,43 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import DefaultImage from "../assets/images/DefaultImage.svg";
 import CameraIcon from "../assets/icons/CameraIcon.svg";
 import EditIcon from "../assets/icons/EditIcon.svg";
+import { useUserContext } from "@pages/My/contexts/UserContext";
+
 interface ProfileWithInfoProps {
   src?: string;
   name: string;
   email: string;
   onCameraClick?: (file: File) => void;
+  onNameChange?: (newName: string) => void;
 }
 
-const ProfileWithInfo: React.FC<ProfileWithInfoProps> = ({ src, name, email, onCameraClick }) => {
+const ProfileWithInfo: React.FC<ProfileWithInfoProps> = ({
+  src,
+  name,
+  email,
+  onCameraClick,
+  onNameChange,
+}) => {
   const [isEditing, setIsEditing] = useState(false);
   const [currentName, setCurrentName] = useState(name);
-  const [profileImage, setProfileImage] = useState<string | null | undefined>(src);
+  const { profileImage, setProfileImage } = useUserContext();
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const savedProfileImage = localStorage.getItem("profileImage");
+
+    if (savedProfileImage) {
+      setProfileImage(savedProfileImage);
+    } else if (src) {
+      setProfileImage(src);
+    }
+  }, [src, setProfileImage]);
+
+  useEffect(() => {
+    setCurrentName(name);
+  }, [name]);
 
   const handleEditClick = () => {
     setIsEditing(true);
@@ -28,8 +51,16 @@ const ProfileWithInfo: React.FC<ProfileWithInfoProps> = ({ src, name, email, onC
     }
   };
 
-  const handleConfirmClick = () => {
-    setIsEditing(false);
+  const handleConfirmClick = async () => {
+    try {
+      setIsEditing(false);
+
+      if (onNameChange) {
+        await onNameChange(currentName);
+      }
+    } catch {
+      alert("닉네임 변경에 실패했습니다. 다시 시도해주세요.");
+    }
   };
 
   const handleFileUpload = () => {
@@ -40,20 +71,18 @@ const ProfileWithInfo: React.FC<ProfileWithInfoProps> = ({ src, name, email, onC
     const file = e.target.files?.[0];
 
     if (file) {
-      const reader = new FileReader();
+      const imageUrl = URL.createObjectURL(file);
 
-      reader.onload = () => {
-        const imageUrl = reader.result as string;
-
-        setProfileImage(imageUrl);
-        onCameraClick?.(file);
-      };
-      reader.readAsDataURL(file);
+      setProfileImage(imageUrl);
+      localStorage.setItem("profileImage", imageUrl);
+      onCameraClick?.(file);
     }
   };
 
   const handleResetToDefault = () => {
-    setProfileImage(null);
+    setProfileImage(DefaultImage);
+    localStorage.setItem("profileImage", DefaultImage);
+    alert("기본 프로필 이미지로 변경되었습니다.");
   };
 
   return (
@@ -154,17 +183,8 @@ const ProfileImageWrapper = styled.div`
   }
 
   img {
-    width: 280px;
-    height: auto;
-    object-fit: contain;
-
-    @media (max-width: 1550px) {
-      max-width: 150px;
-    }
-
-    @media (max-width: 768px) {
-      max-width: 130px;
-    }
+    width: 100%;
+    object-fit: cover;
   }
 `;
 
@@ -173,18 +193,10 @@ const ProfileImage = styled.img`
   height: 100%;
   border-radius: ${({ theme }) => theme.cornerRadius.circular};
   object-fit: cover;
-
-  @media (max-width: 1550px) {
-    max-width: 150px;
-  }
-
-  @media (max-width: 768px) {
-    max-width: 120px;
-  }
 `;
 
 const DefaultBackground = styled.div`
-  width: 100%;
+  width: 240px;
   height: 100%;
   border-radius: ${({ theme }) => theme.cornerRadius.circular};
   display: flex;
@@ -196,7 +208,7 @@ const DefaultBackground = styled.div`
   }
 
   @media (max-width: 768px) {
-    max-width: 120px;
+    max-width: 130px;
   }
 `;
 
@@ -281,7 +293,7 @@ const UserNameWrapper = styled.div`
   }
 
   @media (max-width: 768px) {
-    max-height: 14px;
+    max-height: 24px;
   }
 `;
 
@@ -308,7 +320,7 @@ const Input = styled.input`
   }
 
   @media (max-width: 768px) {
-    max-height: 14px;
+    max-height: 24px;
     font-size: 20px;
   }
 `;

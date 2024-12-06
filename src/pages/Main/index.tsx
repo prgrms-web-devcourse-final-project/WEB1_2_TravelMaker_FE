@@ -1,7 +1,6 @@
 import styled from "styled-components";
 
 import { calcResponsive } from "@common/styles/theme";
-import Header from "@components/header/Header";
 import StartPlannerCardContainer from "./containers/StartPlannerCardContainer";
 import MyPlannerCardListContainer from "./containers/MyPlannerCardListContainer";
 import TokenCookieManager from "@components/debug/TokenCookieManager";
@@ -9,7 +8,6 @@ import TokenCookieManager from "@components/debug/TokenCookieManager";
 const Main = () => {
   return (
     <>
-      <Header />
       <Container>
         <MyPlannerCardListContainer />
         <StartPlannerCardContainer />
