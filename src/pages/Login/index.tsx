@@ -28,7 +28,7 @@ const Login: React.FC = () => {
 
       // 리다이렉트로 URL 클리어 (토큰 노출 방지)
       window.history.replaceState({}, document.title, "/"); // URL에서 쿼리 파라미터 제거
-      navigate("/"); 
+      navigate("/");
     }
   }, [location, navigate]);
 

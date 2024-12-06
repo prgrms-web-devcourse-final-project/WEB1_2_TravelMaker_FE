@@ -16,7 +16,7 @@ type RoomListResponse = ApiResponse<paths[typeof path]["get"]>;
 // };
 
 export const getRoomList = async () => {
-  const token = localStorage.getItem("accessToken"); 
+  const token = localStorage.getItem("accessToken");
 
   if (!token) {
     throw new Error("No access token found");
