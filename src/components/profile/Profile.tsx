@@ -22,6 +22,7 @@ const ProfileWithInfo: React.FC<ProfileWithInfoProps> = ({
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [currentName, setCurrentName] = useState(name);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { profileImage, setProfileImage } = useUserContext();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -41,6 +42,7 @@ const ProfileWithInfo: React.FC<ProfileWithInfoProps> = ({
 
   const handleEditClick = () => {
     setIsEditing(true);
+    setErrorMessage(null);
   };
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,10 +50,17 @@ const ProfileWithInfo: React.FC<ProfileWithInfoProps> = ({
 
     if (inputValue.length <= 8) {
       setCurrentName(inputValue);
+      setErrorMessage(null);
     }
   };
 
   const handleConfirmClick = async () => {
+    if (!currentName || currentName.trim().length === 0) {
+      setErrorMessage("1자 이상 입력해주세요.");
+
+      return;
+    }
+
     try {
       setIsEditing(false);
 
@@ -67,15 +76,21 @@ const ProfileWithInfo: React.FC<ProfileWithInfoProps> = ({
     fileInputRef.current?.click();
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
 
     if (file) {
-      const imageUrl = URL.createObjectURL(file);
+      try {
+        if (onCameraClick) {
+          await onCameraClick(file);
+          const imageUrl = URL.createObjectURL(file);
 
-      setProfileImage(imageUrl);
-      localStorage.setItem("profileImage", imageUrl);
-      onCameraClick?.(file);
+          setProfileImage(imageUrl);
+          localStorage.setItem("profileImage", imageUrl);
+        }
+      } catch {
+        alert("프로필 이미지 변경에 실패했습니다.");
+      }
     }
   };
 
@@ -125,6 +140,7 @@ const ProfileWithInfo: React.FC<ProfileWithInfoProps> = ({
             </>
           )}
         </UserNameWrapper>
+        {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
         <Email>{email}</Email>
       </InfoWrapper>
     </Container>
@@ -349,6 +365,16 @@ const ConfirmButton = styled.button`
   @media (max-width: 768px) {
     font-size: ${({ theme }) => theme.typography.heading.h4.fontSize};
   }
+`;
+
+const ErrorMessage = styled.div`
+  position: absolute;
+  margin-top: 15px;
+  margin-left: 80px;
+  color: ${({ theme }) => theme.colors.danger.normal};
+  font-size: 12px;
+  caret-color: transparent;
+  z-index: 0;
 `;
 
 const UserName = styled.div`
