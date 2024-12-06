@@ -4,12 +4,13 @@ import Button from "@components/button/Button";
 import Google from "@components/assets/icons/GoogleIcon";
 import Kakao from "@components/assets/icons/KakaoIcon";
 import LargeLogo from "@components/assets/images/LargeLogo"; // LargeLogo 컴포넌트 경로
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { setupAxiosInterceptors } from "@pages/Login/setupAxiosInterceptors";
 import { baseURL } from "@api/fetch";
 
 const Login: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setupAxiosInterceptors();
@@ -27,8 +28,9 @@ const Login: React.FC = () => {
 
       // 리다이렉트로 URL 클리어 (토큰 노출 방지)
       window.history.replaceState({}, document.title, "/"); // URL에서 쿼리 파라미터 제거
+      navigate("/"); 
     }
-  }, [location]);
+  }, [location, navigate]);
 
   /**
    * 로그인 버튼 클릭 시 호출

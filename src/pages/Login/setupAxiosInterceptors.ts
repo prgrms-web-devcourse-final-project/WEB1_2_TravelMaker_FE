@@ -1,8 +1,12 @@
 import axios from "axios";
+import { httpClient } from "@api/fetch";
 
-export const setupAxiosInterceptors = (initialToken?: string) => {
-  if (initialToken) {
-    axios.defaults.headers.common.Authorization = `Bearer ${initialToken}`;
+export const setupAxiosInterceptors = (token?: string) => {
+  if (token) {
+    axios.defaults.headers.common.Authorization = `Bearer ${token}`;
+
+        // `httpClient` Axios 인스턴스의 Authorization 헤더 설정
+        httpClient.defaults.headers.common.Authorization = `Bearer ${token}`;
   }
 
   axios.interceptors.response.use(
@@ -36,3 +40,4 @@ export const setupAxiosInterceptors = (initialToken?: string) => {
     }
   );
 };
+
