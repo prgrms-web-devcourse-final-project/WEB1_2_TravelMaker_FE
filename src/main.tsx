@@ -11,7 +11,6 @@ import { setupAxiosInterceptors } from "@pages/Login/setupAxiosInterceptors.ts";
 
 // 로컬 스토리지에서 토큰 가져오기
 const token = localStorage.getItem("accessToken");
-
 if (token) {
   setDefaultsHeaderAuth(token); // Axios 기본 헤더에 토큰 추가
 }
