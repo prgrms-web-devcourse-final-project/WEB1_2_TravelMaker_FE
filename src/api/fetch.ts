@@ -15,9 +15,3 @@ export const httpClient = axios.create({
 export const setDefaultsHeaderAuth = (token: string) => {
   httpClient.defaults.headers.common.Authorization = `Bearer ${token}`;
 };
-
-export const token = localStorage.getItem("accessToken");
-
-if (token) {
-  setDefaultsHeaderAuth(token);
-}

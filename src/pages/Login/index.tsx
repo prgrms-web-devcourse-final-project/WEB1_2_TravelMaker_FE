@@ -5,30 +5,40 @@ import Google from "@components/assets/icons/GoogleIcon";
 import Kakao from "@components/assets/icons/KakaoIcon";
 import LargeLogo from "@components/assets/images/LargeLogo"; // LargeLogo 컴포넌트 경로
 import { useLocation, useNavigate } from "react-router-dom";
-import { setupAxiosInterceptors } from "@pages/Login/setupAxiosInterceptors";
 import { baseURL } from "@api/fetch";
+import { setDefaultsHeaderAuth } from "@api/fetch";
+
+const saveAuthData = (data: { accessToken?: string }) => {
+  const { accessToken } = data || {};
+
+  if (accessToken) {
+    // Axios 기본 헤더에 토큰 추가
+    setDefaultsHeaderAuth(accessToken);
+    // 로컬 스토리지에 토큰 저장
+    localStorage.setItem("accessToken", accessToken);
+
+    return true;
+  }
+
+  return false;
+};
 
 const Login: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
-    setupAxiosInterceptors();
-
     // 현재 URL에서 Authorization Code를 추출
-    const params = new URLSearchParams(location.search); // 쿼리 문자열 파싱
+    const params = new URLSearchParams(location.search);
     const accessToken = params.get("accessToken");
 
     if (accessToken) {
-      // 로컬 스토리지에 저장
-      localStorage.setItem("accessToken", accessToken);
-
-      // Axios 기본 헤더에 토큰 추가
-      setupAxiosInterceptors(accessToken);
-
-      // 리다이렉트로 URL 클리어 (토큰 노출 방지)
-      window.history.replaceState({}, document.title, "/"); // URL에서 쿼리 파라미터 제거
-      navigate("/");
+      // saveAuthData 함수 호출
+      if (saveAuthData({ accessToken })) {
+        // 리다이렉트로 URL 클리어 (토큰 노출 방지)
+        window.history.replaceState({}, document.title, "/");
+        navigate("/"); // 메인 페이지로 이동
+      }
     }
   }, [location, navigate]);
 
