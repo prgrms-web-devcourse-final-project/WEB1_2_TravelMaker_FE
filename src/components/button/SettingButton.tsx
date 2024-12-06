@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import  SettingIcon  from "@components/assets/icons/Settings.svg"; 
+import SettingIcon from "@components/assets/icons/Settings.svg";
 
 const SettingButton: React.FC = () => {
   const [showButtons, setShowButtons] = useState(false);
@@ -12,7 +12,7 @@ const SettingButton: React.FC = () => {
   return (
     <ButtonWrapper>
       {/* 설정 버튼 */}
-      <MainButton onClick={toggleButtons} >
+      <MainButton onClick={toggleButtons}>
         <IconWrapper>
           <img src={SettingIcon} alt="설정 아이콘" />
         </IconWrapper>

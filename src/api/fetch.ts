@@ -19,5 +19,5 @@ export const setDefaultsHeaderAuth = (token: string) => {
 export const token = localStorage.getItem("accessToken");
 
 if (token) {
-  httpClient.defaults.headers.common.Authorization = `Bearer ${token}`;
+  setDefaultsHeaderAuth(token);
 }
