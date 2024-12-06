@@ -11,6 +11,7 @@ import {
   updateProfileImage,
   UserProfile,
 } from "@api/my/member";
+import axios from "axios";
 
 const My = () => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -56,7 +57,12 @@ const My = () => {
   };
 
   const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+
+    delete axios.defaults.headers.common.Authorization;
+
     alert("로그아웃이 완료되었습니다.");
+    navigate("/landing");
   };
 
   const handleWithdraw = async () => {
@@ -66,7 +72,7 @@ const My = () => {
         alert("회원탈퇴가 완료되었습니다.");
         setProfile(null);
 
-        navigate("/login");
+        navigate("/landing");
       } catch {
         alert("회원탈퇴에 실패했습니다.");
       }
