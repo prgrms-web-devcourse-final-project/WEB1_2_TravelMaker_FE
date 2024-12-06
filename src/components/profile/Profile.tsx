@@ -1,23 +1,43 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import DefaultImage from "../assets/images/DefaultImage.svg";
 import CameraIcon from "../assets/icons/CameraIcon.svg";
 import EditIcon from "../assets/icons/EditIcon.svg";
+import { useUserContext } from "@pages/My/contexts/UserContext";
+
 interface ProfileWithInfoProps {
   src?: string;
   name: string;
   email: string;
   onCameraClick?: (file: File) => void;
+  onNameChange?: (newName: string) => void;
 }
 
-const ProfileWithInfo: React.FC<ProfileWithInfoProps> = ({ src, name, email, onCameraClick }) => {
+const ProfileWithInfo: React.FC<ProfileWithInfoProps> = ({
+  src,
+  name,
+  email,
+  onCameraClick,
+  onNameChange,
+}) => {
   const [isEditing, setIsEditing] = useState(false);
   const [currentName, setCurrentName] = useState(name);
-  const [profileImage, setProfileImage] = useState<string | null | undefined>(src);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const { profileImage, setProfileImage } = useUserContext();
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (src && profileImage !== src) {
+      setProfileImage(src);
+    }
+  }, [src, profileImage, setProfileImage]);
+
+  useEffect(() => {
+    setCurrentName(name);
+  }, [name]);
 
   const handleEditClick = () => {
     setIsEditing(true);
+    setErrorMessage(null);
   };
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,35 +45,47 @@ const ProfileWithInfo: React.FC<ProfileWithInfoProps> = ({ src, name, email, onC
 
     if (inputValue.length <= 8) {
       setCurrentName(inputValue);
+      setErrorMessage(null);
     }
   };
 
-  const handleConfirmClick = () => {
-    setIsEditing(false);
+  const handleConfirmClick = async () => {
+    if (!currentName || currentName.trim().length === 0) {
+      setErrorMessage("1자 이상 입력해주세요.");
+
+      return;
+    }
+
+    try {
+      setIsEditing(false);
+
+      if (onNameChange) {
+        await onNameChange(currentName);
+      }
+    } catch {
+      alert("닉네임 변경에 실패했습니다. 다시 시도해주세요.");
+    }
   };
 
   const handleFileUpload = () => {
     fileInputRef.current?.click();
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
 
     if (file) {
-      const reader = new FileReader();
+      try {
+        if (onCameraClick) {
+          await onCameraClick(file);
+          const imageUrl = URL.createObjectURL(file);
 
-      reader.onload = () => {
-        const imageUrl = reader.result as string;
-
-        setProfileImage(imageUrl);
-        onCameraClick?.(file);
-      };
-      reader.readAsDataURL(file);
+          setProfileImage(imageUrl);
+        }
+      } catch {
+        alert("프로필 이미지 변경에 실패했습니다.");
+      }
     }
-  };
-
-  const handleResetToDefault = () => {
-    setProfileImage(null);
   };
 
   return (
@@ -64,10 +96,9 @@ const ProfileWithInfo: React.FC<ProfileWithInfoProps> = ({ src, name, email, onC
             <ProfileImage src={profileImage} alt="Profile" />
           ) : (
             <DefaultBackground>
-              <img src={DefaultImage} alt="Default" />
+              <span>이미지 없음</span>
             </DefaultBackground>
           )}
-          <HoverText onClick={handleResetToDefault}>기본 프로필 이미지로 변경</HoverText>
         </ProfileImageWrapper>
         <CameraIconWrapper onClick={handleFileUpload}>
           <img src={CameraIcon} alt="CameraIcon" />
@@ -96,6 +127,7 @@ const ProfileWithInfo: React.FC<ProfileWithInfoProps> = ({ src, name, email, onC
             </>
           )}
         </UserNameWrapper>
+        {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
         <Email>{email}</Email>
       </InfoWrapper>
     </Container>
@@ -154,17 +186,8 @@ const ProfileImageWrapper = styled.div`
   }
 
   img {
-    width: 280px;
-    height: auto;
-    object-fit: contain;
-
-    @media (max-width: 1550px) {
-      max-width: 150px;
-    }
-
-    @media (max-width: 768px) {
-      max-width: 130px;
-    }
+    width: 100%;
+    object-fit: cover;
   }
 `;
 
@@ -173,18 +196,10 @@ const ProfileImage = styled.img`
   height: 100%;
   border-radius: ${({ theme }) => theme.cornerRadius.circular};
   object-fit: cover;
-
-  @media (max-width: 1550px) {
-    max-width: 150px;
-  }
-
-  @media (max-width: 768px) {
-    max-width: 120px;
-  }
 `;
 
 const DefaultBackground = styled.div`
-  width: 100%;
+  width: 240px;
   height: 100%;
   border-radius: ${({ theme }) => theme.cornerRadius.circular};
   display: flex;
@@ -196,28 +211,7 @@ const DefaultBackground = styled.div`
   }
 
   @media (max-width: 768px) {
-    max-width: 120px;
-  }
-`;
-
-const HoverText = styled.span`
-  position: absolute;
-  bottom: 35%;
-  background-color: ${({ theme }) => theme.colors.background.neutral1};
-  color: ${({ theme }) => theme.colors.text.body};
-  font-size: ${({ theme }) => theme.typography.heading.h3.fontSize};
-  padding: 5px 10px;
-  border-radius: ${({ theme }) => theme.cornerRadius.medium};
-  opacity: 0;
-  transition: opacity 0.3s ease-in-out;
-  cursor: pointer;
-
-  @media (max-width: 1550px) {
-    font-size: ${({ theme }) => theme.typography.body.regular.fontSize};
-  }
-
-  @media (max-width: 768px) {
-    font-size: ${({ theme }) => theme.typography.caption.fontSize};
+    max-width: 130px;
   }
 `;
 
@@ -281,7 +275,7 @@ const UserNameWrapper = styled.div`
   }
 
   @media (max-width: 768px) {
-    max-height: 14px;
+    max-height: 24px;
   }
 `;
 
@@ -308,7 +302,7 @@ const Input = styled.input`
   }
 
   @media (max-width: 768px) {
-    max-height: 14px;
+    max-height: 24px;
     font-size: 20px;
   }
 `;
@@ -337,6 +331,16 @@ const ConfirmButton = styled.button`
   @media (max-width: 768px) {
     font-size: ${({ theme }) => theme.typography.heading.h4.fontSize};
   }
+`;
+
+const ErrorMessage = styled.div`
+  position: absolute;
+  margin-top: 15px;
+  margin-left: 80px;
+  color: ${({ theme }) => theme.colors.danger.normal};
+  font-size: 12px;
+  caret-color: transparent;
+  z-index: 0;
 `;
 
 const UserName = styled.div`

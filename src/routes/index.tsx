@@ -3,11 +3,17 @@ import { createBrowserRouter } from "react-router-dom";
 import { Main, NotFound, Login, My, Planner, Landing } from "pages";
 import { ROUTES } from "./type";
 import { RoomCreateModal, RoomEnterModal } from "@pages/Modal";
+import Header from "@components/header/Header";
 
 const router = createBrowserRouter([
-  { path: ROUTES.MAIN, element: <Main /> },
+  {
+    element: <Header />,
+    children: [
+      { path: ROUTES.MAIN, element: <Main /> },
+      { path: ROUTES.MY, element: <My /> },
+    ],
+  },
   { path: ROUTES.LOGIN, element: <Login /> },
-  { path: ROUTES.MY, element: <My /> },
   { path: ROUTES.PLANNER, element: <Planner /> },
   { path: ROUTES.LANDING, element: <Landing /> },
   { path: ROUTES.CREATE_MODAL, element: <RoomCreateModal /> },

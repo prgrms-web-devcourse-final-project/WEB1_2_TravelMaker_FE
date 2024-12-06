@@ -1,53 +1,100 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { calcResponsiveByPercent } from "@common/styles/theme";
-import Header from "@components/header/Header";
 import ProfileWithInfo from "@components/profile/Profile";
 import Button from "@components/button/Button";
+import {
+  fetchUserProfile,
+  deleteUserAccount,
+  updateNickname,
+  updateProfileImage,
+  UserProfile,
+} from "@api/my/member";
+import axios from "axios";
 
 const My = () => {
-  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const navigate = useNavigate();
 
-  const handleCameraClick = (file: File) => {
-    const reader = new FileReader();
+  const getUserProfile = async () => {
+    try {
+      const data = await fetchUserProfile();
 
-    reader.onload = () => {
-      const imageUrl = reader.result as string;
+      setProfile(data);
+    } catch {
+      alert("사용자 정보를 불러오는데 실패했습니다.");
+    }
+  };
 
-      setProfileImage(imageUrl);
-    };
+  useEffect(() => {
+    getUserProfile();
+  }, []);
 
-    reader.readAsDataURL(file);
+  const handleCameraClick = async (file: File) => {
+    try {
+      const updatedProfile = await updateProfileImage(file);
+
+      setProfile(updatedProfile);
+      alert("프로필 이미지가 성공적으로 업데이트되었습니다.");
+    } catch {
+      alert("프로필 이미지 업데이트에 실패했습니다. 다시 시도해주세요.");
+    }
+  };
+
+  const handleNameChange = async (newName: string) => {
+    if (!profile) return;
+
+    try {
+      const updatedNickname = await updateNickname(newName);
+
+      setProfile((prev) => (prev ? { ...prev, nickname: updatedNickname } : prev));
+
+      alert("닉네임이 성공적으로 변경되었습니다.");
+    } catch {
+      alert("닉네임 변경에 실패했습니다. 다시 시도해주세요.");
+    }
   };
 
   const handleLogout = () => {
+    localStorage.removeItem("accessToken");
+
+    delete axios.defaults.headers.common.Authorization;
+
     alert("로그아웃이 완료되었습니다.");
+    navigate("/landing");
   };
 
-  const handleWithdraw = () => {
+  const handleWithdraw = async () => {
     if (window.confirm("정말 탈퇴하시겠습니까?")) {
-      alert("회원탈퇴가 완료되었습니다.");
+      try {
+        await deleteUserAccount();
+        alert("회원탈퇴가 완료되었습니다.");
+        setProfile(null);
+
+        navigate("/landing");
+      } catch {
+        alert("회원탈퇴에 실패했습니다.");
+      }
     }
   };
 
   return (
-    <>
-      <Header />
-      <PageContainer>
-        <ContentWrapper>
-          <ProfileWithInfo
-            src={profileImage || undefined}
-            name="김트메"
-            email="travelmaker@gmail.com"
-            onCameraClick={handleCameraClick}
-          />
-          <ButtonWrapper>
-            <Button label="로그아웃" onClick={handleLogout} type="medium" />
-            <Button label="회원탈퇴" onClick={handleWithdraw} type="medium" />
-          </ButtonWrapper>
-        </ContentWrapper>
-      </PageContainer>
-    </>
+    <PageContainer>
+      <ContentWrapper>
+        <ProfileWithInfo
+          src={profile?.profileImage || undefined}
+          name={profile?.nickname || "닉네임 없음"}
+          email={profile?.email || "이메일 없음"}
+          onCameraClick={handleCameraClick}
+          onNameChange={handleNameChange}
+        />
+        <ButtonWrapper>
+          <Button label="로그아웃" onClick={handleLogout} type="medium" />
+          <Button label="회원탈퇴" onClick={handleWithdraw} type="medium" />
+        </ButtonWrapper>
+      </ContentWrapper>
+    </PageContainer>
   );
 };
 
