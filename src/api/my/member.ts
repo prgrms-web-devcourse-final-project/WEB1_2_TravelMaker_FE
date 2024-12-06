@@ -1,4 +1,4 @@
-import apiClient from "./index";
+import { httpClient } from "@api/fetch";
 
 // 사용자 정보 타입 정의
 export interface UserProfile {
@@ -9,19 +9,19 @@ export interface UserProfile {
 
 // 사용자 정보를 가져오는 API
 export const fetchUserProfile = async (): Promise<UserProfile> => {
-  const response = await apiClient.get<UserProfile>("/member");
+  const response = await httpClient.get<UserProfile>("/api/member");
 
   return response.data;
 };
 
 // 회원 탈퇴 API
 export const deleteUserAccount = async (): Promise<void> => {
-  await apiClient.delete("/member");
+  await httpClient.delete("/member");
 };
 
 // 닉네임 업데이트 API
 export const updateNickname = async (newNickname: string): Promise<string> => {
-  const response = await apiClient.put<{ nickname: string }>("/member", {
+  const response = await httpClient.put<{ nickname: string }>("/api/member", {
     nickname: newNickname,
   });
 
@@ -34,7 +34,7 @@ export const updateProfileImage = async (file: File): Promise<UserProfile> => {
 
   formData.append("image", file);
 
-  const response = await apiClient.put<UserProfile>("/member/profileImg", formData, {
+  const response = await httpClient.put<UserProfile>("/member/profileImg", formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },

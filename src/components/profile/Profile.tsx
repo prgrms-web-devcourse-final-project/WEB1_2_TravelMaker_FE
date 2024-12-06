@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import DefaultImage from "../assets/images/DefaultImage.svg";
 import CameraIcon from "../assets/icons/CameraIcon.svg";
 import EditIcon from "../assets/icons/EditIcon.svg";
 import { useUserContext } from "@pages/My/contexts/UserContext";
@@ -27,14 +26,10 @@ const ProfileWithInfo: React.FC<ProfileWithInfoProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const savedProfileImage = localStorage.getItem("profileImage");
-
-    if (savedProfileImage) {
-      setProfileImage(savedProfileImage);
-    } else if (src) {
+    if (src && profileImage !== src) {
       setProfileImage(src);
     }
-  }, [src, setProfileImage]);
+  }, [src, profileImage, setProfileImage]);
 
   useEffect(() => {
     setCurrentName(name);
@@ -86,18 +81,11 @@ const ProfileWithInfo: React.FC<ProfileWithInfoProps> = ({
           const imageUrl = URL.createObjectURL(file);
 
           setProfileImage(imageUrl);
-          localStorage.setItem("profileImage", imageUrl);
         }
       } catch {
         alert("프로필 이미지 변경에 실패했습니다.");
       }
     }
-  };
-
-  const handleResetToDefault = () => {
-    setProfileImage(DefaultImage);
-    localStorage.setItem("profileImage", DefaultImage);
-    alert("기본 프로필 이미지로 변경되었습니다.");
   };
 
   return (
@@ -108,10 +96,9 @@ const ProfileWithInfo: React.FC<ProfileWithInfoProps> = ({
             <ProfileImage src={profileImage} alt="Profile" />
           ) : (
             <DefaultBackground>
-              <img src={DefaultImage} alt="Default" />
+              <span>이미지 없음</span>
             </DefaultBackground>
           )}
-          <HoverText onClick={handleResetToDefault}>기본 프로필 이미지로 변경</HoverText>
         </ProfileImageWrapper>
         <CameraIconWrapper onClick={handleFileUpload}>
           <img src={CameraIcon} alt="CameraIcon" />
@@ -225,27 +212,6 @@ const DefaultBackground = styled.div`
 
   @media (max-width: 768px) {
     max-width: 130px;
-  }
-`;
-
-const HoverText = styled.span`
-  position: absolute;
-  bottom: 35%;
-  background-color: ${({ theme }) => theme.colors.background.neutral1};
-  color: ${({ theme }) => theme.colors.text.body};
-  font-size: ${({ theme }) => theme.typography.heading.h3.fontSize};
-  padding: 5px 10px;
-  border-radius: ${({ theme }) => theme.cornerRadius.medium};
-  opacity: 0;
-  transition: opacity 0.3s ease-in-out;
-  cursor: pointer;
-
-  @media (max-width: 1550px) {
-    font-size: ${({ theme }) => theme.typography.body.regular.fontSize};
-  }
-
-  @media (max-width: 768px) {
-    font-size: ${({ theme }) => theme.typography.caption.fontSize};
   }
 `;
 

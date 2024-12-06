@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useCallback } from "react";
+import { fetchUserProfile } from "@api/my/member";
 
 interface UserProfile {
   profileImage: string | null;
@@ -15,31 +16,27 @@ const UserContext = createContext<UserContextProps | undefined>(undefined);
 
 export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [profileImage, setProfileImageState] = useState<string | null>(null);
 
-  useEffect(() => {
-    refreshProfile();
+  const refreshProfile = useCallback(async () => {
+    try {
+      const data = await fetchUserProfile();
+
+      setProfile(data);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error("프로필 데이터를 불러오는데 실패했습니다:", error);
+    }
   }, []);
 
-  const refreshProfile = () => {
-    const fetchedProfile: UserProfile = {
-      profileImage: localStorage.getItem("profileImage") || null,
-    };
-
-    setProfile(fetchedProfile);
-    setProfileImageState(fetchedProfile.profileImage);
-  };
-
   const setProfileImage = (image: string | null) => {
-    setProfileImageState(image);
-    localStorage.setItem("profileImage", image || "");
+    setProfile((prev) => (prev ? { ...prev, profileImage: image } : null));
   };
 
   return (
     <UserContext.Provider
       value={{
         profile,
-        profileImage,
+        profileImage: profile?.profileImage || null,
         setProfileImage,
         refreshProfile,
       }}>
