@@ -41,6 +41,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${calcResponsive({ value: 50, dimension: "width" })};
+  max-width: ${calcResponsive({ value: 500, dimension: "width" })};
 `;
 
 const SubmitContainer = styled.div`

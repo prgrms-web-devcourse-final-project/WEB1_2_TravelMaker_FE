@@ -89,15 +89,11 @@ export const GlobalStyle = createGlobalStyle`
     background-color: ${({ theme }) => theme.colors.background.neutral0};
     color: ${({ theme }) => theme.colors.text.title};
 
-    /* 스크롤바 스타일링 추가 */
+    /* 스크롤바 스타일링 추가
     overflow-x: hidden;
-    overflow-y: auto;
+    overflow-y: auto; */
 
-    /* 스크롤 동작을 부드럽게 만드는 속성*/
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-
-    /* y축 스크롤바 스타일링 */
+    /* y축 스크롤바 스타일링
     &::-webkit-scrollbar {
         width: 6px;
         height: 0px;
@@ -118,7 +114,7 @@ export const GlobalStyle = createGlobalStyle`
         &:hover {
         background: rgba(159, 202, 241, 0.8);
         }
-    }
+    } */
 
     }
 `;

@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { SearchResultCard } from "../searchresultcard/SearchResultCard";
 import { MoreButton } from "../more/MoreButton";
 import { calcResponsive } from "@common/styles/theme";
+import scrollbarStyle from "@common/styles/scrollbarStyle";
 
 interface SearchResultListProps {
   results: {
@@ -96,24 +97,7 @@ const List = styled.div`
   overflow-y: auto;
   overflow-x: hidden;
   margin-right: ${calcResponsive({ value: -25, dimension: "width" })};
-
-  &::-webkit-scrollbar {
-    width: ${calcResponsive({ value: 10, dimension: "width" })};
-  }
-
-  &::-webkit-scrollbar-track {
-    background: ${({ theme }) => theme.colors.background.neutral2};
-    border-radius: ${({ theme }) => theme.cornerRadius.large};
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => theme.colors.primary.hover};
-    border-radius: ${({ theme }) => theme.cornerRadius.large};
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
-    background: ${({ theme }) => theme.colors.primary.normal};
-  }
+  ${scrollbarStyle}
 `;
 
 const MoreWrapper = styled.div`

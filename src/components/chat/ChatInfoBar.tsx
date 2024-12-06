@@ -142,7 +142,7 @@ const ProfileContainer = styled.div`
   display: flex;
   width: 100%;
   min-height: 50px;
-  gap: ${calcResponsive({ value: 10, dimension: "width" })};
+  gap: 10px;
 `;
 
 const MyProfileContainer = styled.div`

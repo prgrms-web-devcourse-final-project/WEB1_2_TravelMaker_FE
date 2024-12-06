@@ -5,6 +5,7 @@ import EmptyBox from "@common/styles/EmptyBox";
 import { ReceiverMessage, SenderMessage } from "./ChatMessage";
 import { CHAT_INFO_BAR_HEADER_HEIGHT } from "./ChatInfoBar";
 import { calcResponsive } from "@common/styles/theme";
+import scrollbarStyle from "@common/styles/scrollbarStyle";
 
 interface Props {
   dataList: {
@@ -36,6 +37,7 @@ const Container = styled.div`
   padding: 0 ${calcResponsive({ value: 20, dimension: "width" })};
   gap: ${calcResponsive({ value: 25, dimension: "height" })};
   overflow-y: scroll;
+  ${scrollbarStyle}
 `;
 
 export default ChatList;
