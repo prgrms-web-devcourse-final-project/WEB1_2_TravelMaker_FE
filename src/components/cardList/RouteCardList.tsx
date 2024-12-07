@@ -1,4 +1,35 @@
 // import React from "react";
+// import styled from "styled-components";
+// import RouteCard from "@components/card/RouteCard";
+// import { ComponentProps, FC } from "react";
+// import InfoCard from "@components/card/InfoCard";
+
+// interface RouteCardListProps {
+//   items: ComponentProps<typeof RouteCard>[]; // RouteCard에서 받아올 Props 타입
+// }
+
+// const RouteCardList: FC<RouteCardListProps> = ({ items = [] }) => {
+//   return (
+//     <CardListContainer>
+//       {items.length > 0 ? (
+//         items.map((item, index) => (
+//           <RouteCard
+//             key={`${item.scheduleItemId}-${index}`}
+//             {...item}
+//             markerId={item.markerId ?? index + 1} // markerId가 없으면 index + 1로 설정
+//           />
+//         ))
+//       ) : (
+//         <InfoCard>
+//           <p>일반 마커를 확정하면</p> {/* 문구만 표시 */}
+//           <p>순서대로 일정이 추가됩니다.</p>
+//         </InfoCard>
+//       )}
+//     </CardListContainer>
+//   );
+// };
+
+// export default RouteCardList;
 import styled from "styled-components";
 import RouteCard from "@components/card/RouteCard";
 import { ComponentProps, FC } from "react";
@@ -9,10 +40,37 @@ interface RouteCardListProps {
 }
 
 const RouteCardList: FC<RouteCardListProps> = ({ items = [] }) => {
+  // 초기 데이터를 추가
+  const initialItems =
+    items.length === 0
+      ? [
+          {
+            scheduleItemId: 1,
+            markerId: 1,
+            name: "일정 1",
+            address: "서울",
+            content: "일정 내용 1",
+            createdAt: "2024-12-01",
+            updatedAt: "2024-12-01",
+            itemOrder: 1,
+          },
+          {
+            scheduleItemId: 2,
+            markerId: 2,
+            name: "일정 2",
+            address: "부산",
+            content: "일정 내용 2",
+            createdAt: "2024-12-02",
+            updatedAt: "2024-12-02",
+            itemOrder: 2,
+          },
+        ]
+      : items;
+
   return (
     <CardListContainer>
-      {items.length > 0 ? (
-        items.map((item, index) => (
+      {initialItems.length > 0 ? (
+        initialItems.map((item, index) => (
           <RouteCard
             key={`${item.scheduleItemId}-${index}`}
             {...item}

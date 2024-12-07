@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { FC, useState } from "react";
 import CloseIcon from "@components/assets/icons/CloseIcon";
+import closebutton from "@components/assets/icons/closebutton.svg";
 
 // API 응답에 맞춘 RouteCardProps 타입 정의
 interface RouteCardProps {
@@ -12,59 +13,27 @@ interface RouteCardProps {
   createdAt: string;
   updatedAt: string;
 }
-// 모달 Props 타입 정의
-interface EditModalProps {
-  name: string;
-  content: string;
-  onClose: () => void;
-  onSave: (updatedName: string, updatedContent: string) => void;
-}
-// 수정 모달 컴포넌트
-const EditModal: FC<EditModalProps> = ({ name, content, onClose, onSave }) => {
-  const [editedName, setEditedName] = useState(name);
-  const [editedContent, setEditedContent] = useState(content);
 
-  const handleSave = () => {
-    onSave(editedName, editedContent); // 부모로 변경된 값 전달
-    onClose(); // 모달 닫기
+const RouteCard: FC<RouteCardProps> = ({ markerId, name, address, content = "" }) => {
+  const [showDetails, setShowDetails] = useState(false); // 상세보기 상태 관리
+  const [isEditing, setIsEditing] = useState(false); // 수정 모드 상태 관리
+  const [editableName, setEditableName] = useState(name); // 수정 가능한 이름 상태
+  const [editableContent, setEditableContent] = useState(content); // 수정 가능한 내용 상태
+
+  const toggleDetails = () => {
+    setShowDetails(!showDetails); // 토글 상태 변경
+    setIsEditing(false); // 팝업을 닫을 때 수정 모드 해제
   };
 
-  return (
-    <ModalOverlay>
-      <ModalContent>
-        <h3>수정하기</h3>
-        <InputField
-          type="text"
-          value={editedName}
-          onChange={(e) => setEditedName(e.target.value)}
-          placeholder="제목을 입력하세요"
-        />
-        <TextArea
-          value={editedContent}
-          onChange={(e) => setEditedContent(e.target.value)}
-          placeholder="내용을 입력하세요"
-        />
-        <ButtonContainer>
-          <SaveButton onClick={handleSave}>저장</SaveButton>
-          <CancelButton onClick={onClose}>취소</CancelButton>
-        </ButtonContainer>
-      </ModalContent>
-    </ModalOverlay>
-  );
-};
-
-const RouteCard: FC<RouteCardProps> = ({ markerId, name = "제목 없음", address, content = "" }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentName, setCurrentName] = useState(name);
-  const [currentContent, setCurrentContent] = useState(content);
-
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
-
-  const handleSave = (updatedName: string, updatedContent: string) => {
-    setCurrentName(updatedName); // 변경된 이름 업데이트
-    setCurrentContent(updatedContent); // 변경된 내용 업데이트
+  const toggleEdit = () => {
+    setIsEditing(!isEditing); // 수정 모드 토글
   };
+
+  // const handleSave = () => {
+  //   setIsEditing(false); // 저장 후 수정 모드 해제
+  //   // 여기에서 변경된 이름과 내용에 대한 저장 작업을 진행합니다.
+  // };
+  //ESlint 때문에 주석처리함
 
   return (
     <OuterContainer>
@@ -84,16 +53,44 @@ const RouteCard: FC<RouteCardProps> = ({ markerId, name = "제목 없음", addre
 
       {/* 하단: 상세보기 버튼 */}
       <BottomContainer>
-        <DetailButton onClick={openModal}>상세보기</DetailButton>
+        <DetailButton onClick={toggleDetails}>
+          {showDetails ? "상세보기 닫기" : "상세보기"}
+        </DetailButton>
       </BottomContainer>
-      {/* 수정 모달 */}
-      {isModalOpen && (
-        <EditModal
-          name={currentName}
-          content={currentContent}
-          onClose={closeModal}
-          onSave={handleSave}
-        />
+
+      {/* 상세 정보 창 */}
+      {showDetails && (
+        <DetailPopup>
+          <ClosePopupButton onClick={toggleDetails}>
+            <img src={closebutton} alt="닫기" />
+          </ClosePopupButton>
+
+          <DetailContent>
+            <MarkerId>{markerId}</MarkerId>
+            <Name>
+              {isEditing ? (
+                <Input value={editableName} onChange={(e) => setEditableName(e.target.value)} />
+              ) : (
+                editableName
+              )}
+            </Name>
+            <Address>{address}</Address>
+            <Content>
+              {isEditing ? (
+                <TextArea
+                  value={editableContent}
+                  onChange={(e) => setEditableContent(e.target.value)}
+                />
+              ) : (
+                editableContent || "내용 없음"
+              )}
+            </Content>
+          </DetailContent>
+
+          <ButtonContainer>
+            <EditButton onClick={toggleEdit}>{isEditing ? "저장" : "수정"}</EditButton>
+          </ButtonContainer>
+        </DetailPopup>
       )}
     </OuterContainer>
   );
@@ -220,58 +217,85 @@ const DetailButton = styled.button`
   }
 `;
 
-const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+const DetailPopup = styled.div`
+  width: 460px;
+  height: 575px;
+  position: fixed; /* 화면에 고정되게 */
+  bottom: 0px; /* 화면 중간에 위치 */
+  left: 103%; /* 화면 중앙 */
+  background-color: #ffffff;
+  border: 3px dashed ${({ theme }) => theme.colors.stroke.neutral3};
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
+  z-index: 100; /* 다른 요소 위에 떠 있도록 */
 `;
 
-const ModalContent = styled.div`
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  max-width: 400px;
-  width: 100%;
+const ClosePopupButton = styled.button`
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  padding: 5px;
+  cursor: pointer;
 `;
 
-const InputField = styled.input`
-  width: 100%;
-  margin-bottom: 10px;
-  padding: 8px;
+const DetailContent = styled.div`
+  margin-top: 10px;
+`;
+
+const MarkerId = styled.div`
+  margin-left: 10px;
+  font-size: 32px;
+`;
+const Name = styled.div`
+  margin-left: 40px;
+  margin-top: -20px;
+  font-size: 24px;
+`;
+const Address = styled.div`
+  margin-left: 40px;
   font-size: 14px;
+  margin-bottom: 20px;
+`;
+
+const Content = styled.div`
+  margin-left: 35px;
+  width: 380px;
+  height: 375px;
+  background-color: ${({ theme }) => theme.colors.primary.subtle};
+  margin-bottom: 10px;
+`;
+
+const Input = styled.input`
+  width: 91%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 `;
 
 const TextArea = styled.textarea`
   width: 100%;
-  height: 100px;
-  margin-bottom: 10px;
-  padding: 8px;
-  font-size: 14px;
+  height: 100%;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  background-color: transparent;
 `;
 
 const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
+  position: absolute;
+  bottom: 20px;
+  left: 180px;
+
+  /* margin-top: 10px; */
+  text-align: center;
 `;
 
-const SaveButton = styled.button`
-  background: #4caf50;
+const EditButton = styled.button`
+  padding: 7px 25.5px;
   color: white;
-  padding: 8px 16px;
+  background-color: ${({ theme }) => theme.colors.text.title};
   border: none;
-  cursor: pointer;
-`;
-
-const CancelButton = styled.button`
-  background: #f44336;
-  color: white;
-  padding: 8px 16px;
-  border: none;
+  border-radius: 5px;
   cursor: pointer;
 `;
