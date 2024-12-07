@@ -1,154 +1,197 @@
 // mockSchedules.ts
 
+export interface ScheduleItem {
+  scheduleItemId: number;
+  markerId?: number;
+  name?: string;
+  address: string;
+  content?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Schedule {
-  schedule_id: number;
-  plan: string;
-  date: string;
-  room_id: string;
-  scheduleItem: {
-    schedule_id: number;
-    marker_id?: number;
-    title?: string;
-    address: string;
-    content: string;
-  }[];
+  scheduleId: number; // 고유 ID
+  plan: string; // 플랜 (예: "A", "B", "C")
+  date: string; // 날짜 (예: "11/20")
+  roomId: string; // 방 ID
+  scheduleItems: ScheduleItem[]; // 일정 아이템 목록 (필수)
 }
 
 export const mockSchedules: Schedule[] = [
   {
-    schedule_id: 1,
-    plan: "A",
+    scheduleId: 6,
     date: "11/27",
-    room_id: "room1",
-    scheduleItem: [
-      {
-        schedule_id: 1,
-        marker_id: 1,
-        title: "Visit Eiffel Tower",
-        address: "Champ de Mars, Paris",
-        content: "Iconic landmark of Paris.",
-      },
-      {
-        schedule_id: 1,
-        marker_id: 2,
-        title: "Visit Eiffel Tower",
-        address: "Champ de Mars, Paris",
-        content: "Iconic landmark of Paris.",
-      },
-      {
-        schedule_id: 1,
-        marker_id: 3,
-        title: "Visit Eiffel Tower",
-        address: "Champ de Mars, Paris",
-        content: "Iconic landmark of Paris.",
-      },
-      {
-        schedule_id: 1,
-        marker_id: 4,
-        title: "Visit Eiffel Tower",
-        address: "Champ de Mars, Paris",
-        content: "Iconic landmark of Paris.",
-      },
-      {
-        schedule_id: 1,
-        marker_id: 5,
-        title: "Visit Eiffel Tower",
-        address: "Champ de Mars, Paris",
-        content: "Iconic landmark of Paris.",
-      },
-      {
-        schedule_id: 1,
-        marker_id: 6,
-        title: "Visit Eiffel Tower",
-        address: "Champ de Mars, Paris",
-        content: "Iconic landmark of Paris.",
-      },
-    ],
-  },
-  {
-    schedule_id: 2,
     plan: "A",
-    date: "11/28",
-    room_id: "room1",
-    scheduleItem: [
+    roomId: "3232",
+    scheduleItems: [
       {
-        schedule_id: 2,
-        marker_id: 1,
-        title: "Visit Louvre Museum",
-        address: "Rue de Rivoli, Paris",
-        content: "World's largest art museum.",
+        scheduleItemId: 6,
+        markerId: 5,
+        name: "8G8CGCVP+62",
+        address: "8G8CGCVP+62",
+        content: "내용",
+        createdAt: "2024-11-26T10:33:04.596194",
+        updatedAt: "2024-11-26T10:33:04.596194",
       },
       {
-        schedule_id: 2,
-        marker_id: 2,
-        title: "Visit Eiffel Tower",
-        address: "Champ de Mars, Paris",
-        content: "Iconic landmark of Paris.",
+        scheduleItemId: 6,
+        markerId: 5,
+        name: "8G8CGCVP+62",
+        address: "8G8CGCVP+62",
+        content: "내용",
+        createdAt: "2024-11-26T10:33:04.596194",
+        updatedAt: "2024-11-26T10:33:04.596194",
       },
       {
-        schedule_id: 2,
-        marker_id: 3,
-        title: "Visit Eiffel Tower",
-        address: "Champ de Mars, Paris",
-        content: "Iconic landmark of Paris.",
-      },
-    ],
-  },
-  {
-    schedule_id: 3,
-    plan: "A",
-    date: "11/29",
-    room_id: "room1",
-    scheduleItem: [
-      {
-        schedule_id: 3,
-        marker_id: 1,
-        title: "Visit Statue of Liberty",
-        address: "Liberty Island, New York",
-        content: "Iconic symbol of freedom.",
+        scheduleItemId: 6,
+        markerId: 5,
+        name: "8G8CGCVP+62",
+        address: "8G8CGCVP+62",
+        content: "내용",
+        createdAt: "2024-11-26T10:33:04.596194",
+        updatedAt: "2024-11-26T10:33:04.596194",
       },
       {
-        schedule_id: 3,
-        marker_id: 2,
-        title: "Visit Eiffel Tower",
-        address: "Champ de Mars, Paris",
-        content: "Iconic landmark of Paris.",
-      },
-      {
-        schedule_id: 3,
-        marker_id: 3,
-        title: "Visit Eiffel Tower",
-        address: "Champ de Mars, Paris",
-        content: "Iconic landmark of Paris.",
+        scheduleItemId: 6,
+        markerId: 5,
+        name: "8G8CGCVP+62",
+        address: "8G8CGCVP+62",
+        content: "내용",
+        createdAt: "2024-11-26T10:33:04.596194",
+        updatedAt: "2024-11-26T10:33:04.596194",
       },
     ],
   },
   {
-    schedule_id: 4,
-    plan: "B",
+    scheduleId: 6,
     date: "11/27",
-    room_id: "room2",
-    scheduleItem: [
+    plan: "A",
+    roomId: "3232",
+    scheduleItems: [
       {
-        schedule_id: 4,
-        marker_id: 1,
-        title: "Visit Statue of Liberty",
-        address: "Liberty Island, New York",
-        content: "Iconic symbol of freedom.",
+        scheduleItemId: 6,
+        markerId: 5,
+        name: "8G8CGCVP+62",
+        address: "8G8CGCVP+62",
+        content: "내용",
+        createdAt: "2024-11-26T10:33:04.596194",
+        updatedAt: "2024-11-26T10:33:04.596194",
       },
       {
-        schedule_id: 4,
-        marker_id: 2,
-        title: "Visit Eiffel Tower",
-        address: "Champ de Mars, Paris",
-        content: "Iconic landmark of Paris.",
+        scheduleItemId: 6,
+        markerId: 5,
+        name: "8G8CGCVP+62",
+        address: "8G8CGCVP+62",
+        content: "내용",
+        createdAt: "2024-11-26T10:33:04.596194",
+        updatedAt: "2024-11-26T10:33:04.596194",
       },
       {
-        schedule_id: 4,
-        marker_id: 3,
-        title: "Visit Eiffel Tower",
-        address: "Champ de Mars, Paris",
-        content: "Iconic landmark of Paris.",
+        scheduleItemId: 6,
+        markerId: 5,
+        name: "8G8CGCVP+62",
+        address: "8G8CGCVP+62",
+        content: "내용",
+        createdAt: "2024-11-26T10:33:04.596194",
+        updatedAt: "2024-11-26T10:33:04.596194",
+      },
+      {
+        scheduleItemId: 6,
+        markerId: 5,
+        name: "8G8CGCVP+62",
+        address: "8G8CGCVP+62",
+        content: "내용",
+        createdAt: "2024-11-26T10:33:04.596194",
+        updatedAt: "2024-11-26T10:33:04.596194",
+      },
+    ],
+  },
+  {
+    scheduleId: 6,
+    date: "11/27",
+    roomId: "3232",
+    plan: "A",
+    scheduleItems: [
+      {
+        scheduleItemId: 6,
+        markerId: 5,
+        name: "8G8CGCVP+62",
+        address: "8G8CGCVP+62",
+        content: "내용",
+        createdAt: "2024-11-26T10:33:04.596194",
+        updatedAt: "2024-11-26T10:33:04.596194",
+      },
+      {
+        scheduleItemId: 6,
+        markerId: 5,
+        name: "8G8CGCVP+62",
+        address: "8G8CGCVP+62",
+        content: "내용",
+        createdAt: "2024-11-26T10:33:04.596194",
+        updatedAt: "2024-11-26T10:33:04.596194",
+      },
+      {
+        scheduleItemId: 6,
+        markerId: 5,
+        name: "8G8CGCVP+62",
+        address: "8G8CGCVP+62",
+        content: "내용",
+        createdAt: "2024-11-26T10:33:04.596194",
+        updatedAt: "2024-11-26T10:33:04.596194",
+      },
+      {
+        scheduleItemId: 6,
+        markerId: 5,
+        name: "8G8CGCVP+62",
+        address: "8G8CGCVP+62",
+        content: "내용",
+        createdAt: "2024-11-26T10:33:04.596194",
+        updatedAt: "2024-11-26T10:33:04.596194",
+      },
+    ],
+  },
+  {
+    scheduleId: 6,
+    date: "11/27",
+    plan: "A",
+    roomId: "3232",
+    scheduleItems: [
+      {
+        scheduleItemId: 6,
+        markerId: 5,
+        name: "8G8CGCVP+62",
+        address: "8G8CGCVP+62",
+        content: "내용",
+        createdAt: "2024-11-26T10:33:04.596194",
+        updatedAt: "2024-11-26T10:33:04.596194",
+      },
+      {
+        scheduleItemId: 6,
+        markerId: 5,
+        name: "8G8CGCVP+62",
+        address: "8G8CGCVP+62",
+        content: "내용",
+        createdAt: "2024-11-26T10:33:04.596194",
+        updatedAt: "2024-11-26T10:33:04.596194",
+      },
+      {
+        scheduleItemId: 6,
+        markerId: 5,
+        name: "8G8CGCVP+62",
+        address: "8G8CGCVP+62",
+        content: "내용",
+        createdAt: "2024-11-26T10:33:04.596194",
+        updatedAt: "2024-11-26T10:33:04.596194",
+      },
+      {
+        scheduleItemId: 6,
+        markerId: 5,
+        name: "8G8CGCVP+62",
+        address: "8G8CGCVP+62",
+        content: "내용",
+        createdAt: "2024-11-26T10:33:04.596194",
+        updatedAt: "2024-11-26T10:33:04.596194",
       },
     ],
   },

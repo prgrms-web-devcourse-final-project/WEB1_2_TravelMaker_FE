@@ -1,22 +1,76 @@
 import styled from "styled-components";
-import { FC } from "react";
+import { FC, useState } from "react";
 import CloseIcon from "@components/assets/icons/CloseIcon";
 
+// API 응답에 맞춘 RouteCardProps 타입 정의
 interface RouteCardProps {
-  schedule_id: number; // 스케줄 ID
-  marker_id?: number; // 카드의 순서
-  title?: string; // 제목 (기본값: "제목 없음")
+  scheduleItemId: number; // 스케줄 아이템 ID
+  markerId: number; // 카드의 순서
+  name?: string; // 제목
   address: string; // 주소
-  contents?: string; // 내용 (옵션)
+  content?: string; // 내용 (옵션)
+  createdAt: string;
+  updatedAt: string;
 }
+// 모달 Props 타입 정의
+interface EditModalProps {
+  name: string;
+  content: string;
+  onClose: () => void;
+  onSave: (updatedName: string, updatedContent: string) => void;
+}
+// 수정 모달 컴포넌트
+const EditModal: FC<EditModalProps> = ({ name, content, onClose, onSave }) => {
+  const [editedName, setEditedName] = useState(name);
+  const [editedContent, setEditedContent] = useState(content);
 
-// RouteCard 컴포넌트 정의
-const RouteCard: FC<RouteCardProps> = ({ marker_id, title = "제목 없음", address }) => {
+  const handleSave = () => {
+    onSave(editedName, editedContent); // 부모로 변경된 값 전달
+    onClose(); // 모달 닫기
+  };
+
+  return (
+    <ModalOverlay>
+      <ModalContent>
+        <h3>수정하기</h3>
+        <InputField
+          type="text"
+          value={editedName}
+          onChange={(e) => setEditedName(e.target.value)}
+          placeholder="제목을 입력하세요"
+        />
+        <TextArea
+          value={editedContent}
+          onChange={(e) => setEditedContent(e.target.value)}
+          placeholder="내용을 입력하세요"
+        />
+        <ButtonContainer>
+          <SaveButton onClick={handleSave}>저장</SaveButton>
+          <CancelButton onClick={onClose}>취소</CancelButton>
+        </ButtonContainer>
+      </ModalContent>
+    </ModalOverlay>
+  );
+};
+
+const RouteCard: FC<RouteCardProps> = ({ markerId, name = "제목 없음", address, content = "" }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentName, setCurrentName] = useState(name);
+  const [currentContent, setCurrentContent] = useState(content);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
+  const handleSave = (updatedName: string, updatedContent: string) => {
+    setCurrentName(updatedName); // 변경된 이름 업데이트
+    setCurrentContent(updatedContent); // 변경된 내용 업데이트
+  };
+
   return (
     <OuterContainer>
       {/* 상단: 인덱스와 닫기 버튼 */}
       <TopContainer>
-        <Index>{marker_id}</Index>
+        <Index>{markerId}</Index>
         <CloseButton>
           <CloseIcon />
         </CloseButton>
@@ -24,14 +78,23 @@ const RouteCard: FC<RouteCardProps> = ({ marker_id, title = "제목 없음", add
 
       {/* 중단: 제목과 위치 */}
       <InnerContainer>
-        <TitleSection>{title}</TitleSection>
+        <TitleSection>{name}</TitleSection>
         <LocationSection>{address}</LocationSection>
       </InnerContainer>
 
       {/* 하단: 상세보기 버튼 */}
       <BottomContainer>
-        <DetailButton>상세보기</DetailButton>
+        <DetailButton onClick={openModal}>상세보기</DetailButton>
       </BottomContainer>
+      {/* 수정 모달 */}
+      {isModalOpen && (
+        <EditModal
+          name={currentName}
+          content={currentContent}
+          onClose={closeModal}
+          onSave={handleSave}
+        />
+      )}
     </OuterContainer>
   );
 };
@@ -155,4 +218,60 @@ const DetailButton = styled.button`
     height: 25px;
     font-size: 13px;
   }
+`;
+
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ModalContent = styled.div`
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 400px;
+  width: 100%;
+`;
+
+const InputField = styled.input`
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 8px;
+  font-size: 14px;
+`;
+
+const TextArea = styled.textarea`
+  width: 100%;
+  height: 100px;
+  margin-bottom: 10px;
+  padding: 8px;
+  font-size: 14px;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const SaveButton = styled.button`
+  background: #4caf50;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  cursor: pointer;
+`;
+
+const CancelButton = styled.button`
+  background: #f44336;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  cursor: pointer;
 `;

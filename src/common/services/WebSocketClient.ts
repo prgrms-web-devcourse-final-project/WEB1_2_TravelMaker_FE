@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { httpClient } from "@api/fetch";
 import { Client } from "@stomp/stompjs";
 
@@ -11,19 +12,17 @@ interface WebSocketHandler {
   onError?: (error: unknown) => void;
 }
 
-/**
- * WebSocket 통신을 위한 클라이언트 클래스
- * 싱글톤 패턴으로 구현되어 애플리케이션 전역에서 하나의 인스턴스만 사용
- */
 export class WebSocketClient {
   private static instance: WebSocketClient;
   private client: Client | null = null;
   private handlers: Map<string, WebSocketHandler> = new Map();
   private roomId: string | null = null;
+  private onConnectCallback: (() => void) | null = null;
+  private isConnected: boolean = false;
+  private isSubscribed: boolean = false;
 
   private constructor() {}
 
-  // 싱글톤 처리
   static getInstance(): WebSocketClient {
     if (!this.instance) {
       this.instance = new WebSocketClient();
@@ -32,10 +31,6 @@ export class WebSocketClient {
     return this.instance;
   }
 
-  /**
-   * WebSocket 연결 설정
-   * @param roomId 연결할 방 ID
-   */
   connect(roomId: string): void {
     this.roomId = roomId;
     const WS_URL = "/room";
@@ -47,81 +42,98 @@ export class WebSocketClient {
 
     this.client = new Client({
       brokerURL: `${WS_URL}?access_token=${authorization}`,
-      onConnect: () => this.subscribeToChannels(),
-      // eslint-disable-next-line no-console
+      onConnect: () => {
+        this.isConnected = true;
+        this.subscribeToChannels();
+        this.onConnectCallback?.();
+      },
+      onDisconnect: () => {
+        console.log("연결 해제됨");
+        this.isConnected = false;
+        this.isSubscribed = false;
+      },
       debug: console.log,
-      // eslint-disable-next-line no-console
-      onDisconnect: () => console.log("연결 해제됨"),
       onStompError: (frame) => {
-        // eslint-disable-next-line no-console
         console.error("Stomp 에러:", frame);
+        this.isConnected = false;
       },
     });
 
     this.client.activate();
   }
 
-  /** 필요한 모든 채널 구독 설정 */
   private subscribeToChannels(): void {
-    if (!this.client || !this.roomId) return;
+    if (!this.client || !this.roomId) {
+      console.error("구독 실패: 클라이언트 또는 방 ID 없음");
 
-    const channels = [
-      `/user/queue/errors`,
-      `/topic/room/${this.roomId}`,
-      `/topic/room/${this.roomId}/map`,
-      `/topic/room/${this.roomId}/schedule`,
-    ];
+      return;
+    }
 
-    channels.forEach((channel) => {
-      this.client?.subscribe(channel, (message) => {
-        const handler = this.handlers.get(channel);
+    try {
+      const channels = [
+        `/user/queue/errors`,
+        `/topic/room/${this.roomId}`,
+        `/topic/room/${this.roomId}/member`,
+        `/topic/room/${this.roomId}/map`,
+        `/topic/room/${this.roomId}/schedule`,
+      ];
 
-        if (handler) {
+      channels.forEach((channel) => {
+        this.client?.subscribe(channel, (message) => {
+          const handler = this.handlers.get(channel);
+
+          if (!handler) {
+            console.warn(`채널 ${channel}에 대한 핸들러가 없습니다`);
+
+            return;
+          }
+
           try {
             const data = JSON.parse(message.body);
 
             handler.onMessage(data);
           } catch (error) {
+            console.error(`메시지 처리 중 에러 발생: ${channel}`, error);
             handler.onError?.(error);
           }
-        }
+        });
       });
-    });
 
-    // eslint-disable-next-line no-console
-    console.log("WebSocket 연결 성공!");
+      this.isSubscribed = true;
+      console.log("WebSocket 구독 완료!");
+    } catch (error) {
+      console.error("채널 구독 중 에러 발생:", error);
+      this.isSubscribed = false;
+    }
   }
 
-  /**
-   * 특정 채널에 대한 메시지 핸들러 등록
-   * @param channel 구독할 채널
-   * @param handler 메시지 처리 핸들러
-   */
+  setOnConnect(callback: () => void): void {
+    this.onConnectCallback = callback;
+  }
+
   subscribe(channel: string, handler: WebSocketHandler): void {
     this.handlers.set(channel, handler);
   }
 
-  /**
-   * WebSocket 메시지 전송
-   * @param destination 메시지를 보낼 채널
-   * @param message 전송할 메시지
-   */
   send(destination: string, message: WebSocketMessage): void {
-    if (!this.client) {
-      // eslint-disable-next-line no-console
-      console.error("웹소켓이 연결되지 않았습니다");
+    if (!this.client || !this.isConnected || !this.isSubscribed) {
+      console.error("메시지 전송 실패: 연결 상태 확인 필요");
 
       return;
     }
 
+    console.log("메시지 전송:", message);
     this.client.publish({
       destination,
       body: JSON.stringify(message),
     });
   }
 
-  /** WebSocket 연결 해제 및 상태 초기화 */
   disconnect(): void {
+    this.isConnected = false;
+    this.isSubscribed = false;
+    this.onConnectCallback = null;
+    this.roomId = null;
     this.client?.deactivate();
     this.client = null;
     this.handlers.clear();
