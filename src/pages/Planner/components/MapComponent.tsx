@@ -522,6 +522,6 @@ const SettingSection = styled.div`
 
 const ChatSection = styled.div`
   position: absolute;
-  bottom: ${calcResponsive({ value: 160, dimension: "width" })};
+  top: ${calcResponsive({ value: 170, dimension: "width" })};
   right: ${calcResponsive({ value: 25, dimension: "width" })};
 `;
