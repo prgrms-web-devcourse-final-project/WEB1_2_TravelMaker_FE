@@ -92,6 +92,7 @@ export const useScheduleWS = (roomId: string | undefined) => {
 
       const wsClient = WebSocketClient_.getInstance();
 
+      // `roomId`와 `data`만 전달하면 됩니다
       wsClient.send(`/app/room/${roomId}/schedule`, {
         action: "UPDATED_SCHEDULEITEM",
         data: { scheduleItemId, name, content, previousItemId, nextItemId },

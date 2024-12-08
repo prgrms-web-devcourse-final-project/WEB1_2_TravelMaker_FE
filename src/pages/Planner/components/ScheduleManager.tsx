@@ -7,6 +7,7 @@ import HorisontalLogo from "@components/assets/images/HorisontalLogo";
 import { useScheduleWS } from "../hooks/ScheduleWS";
 import { ROUTES } from "@routes/type";
 import { useTypedParams } from "@common/hooks/useTypedParams";
+// import { WebSocketClient } from "@common/services/WebSocketClient";
 
 // 전체 스케줄을 나타내는 타입 정의
 // interface Schedule {
@@ -16,7 +17,7 @@ import { useTypedParams } from "@common/hooks/useTypedParams";
 // }
 
 // 스케줄 아이템의 타입 정의
-interface ScheduleItem {
+export interface ScheduleItem {
   scheduleItemId: number;
   markerId: number;
   name?: string;
@@ -33,7 +34,14 @@ const ScheduleManager = () => {
 
   // WebSocket을 통한 스케줄 및 스케줄 아이템 데이터와 연결 상태 관리
   //scheduleItems 안쓰여서 뺌
-  const { schedules, isConnected, requestSchedules, requestScheduleItems } = useScheduleWS(roomId);
+  const {
+    schedules,
+    isConnected,
+    requestSchedules,
+    requestScheduleItems,
+    updateScheduleItem,
+    deleteScheduleItem,
+  } = useScheduleWS(roomId);
 
   // 현재 날짜 및 플랜을 관리하는 상태 변수
   const [currentDate, setCurrentDate] = useState(() => schedules[0]?.actualDate || "");
@@ -113,6 +121,34 @@ const ScheduleManager = () => {
     }
   }, [isConnected]);
 
+  const onSave = useCallback(
+    (scheduleItemId: number, name: string, content: string) => {
+      if (!scheduleItemId || !name || !content) {
+        // console.warn("스케줄 아이템 수정 실패: 필수 값 부족");
+
+        return;
+      }
+
+      // previousItemId와 nextItemId는 null로 설정하여 전달
+      const previousItemId = null;
+      const nextItemId = null;
+
+      // updateScheduleItem 호출
+      updateScheduleItem(scheduleItemId, name, content, previousItemId, nextItemId);
+    },
+    [updateScheduleItem]
+  );
+
+  const handleDelete = (scheduleItemId: number) => {
+    setLoading(true); // 삭제 시 로딩 상태 설정
+    deleteScheduleItem(scheduleItemId); // WebSocket을 통해 삭제 요청
+
+    // 삭제 후, 서버에서 최신 아이템 목록을 다시 요청하여 UI 업데이트
+    const scheduleId = findScheduleId(currentDate, currentPlan);
+
+    loadScheduleItems(scheduleId); // 삭제된 후에 다시 아이템을 로드
+  };
+
   return (
     <Container>
       {/* 플랜 버튼: 플랜 변경 시 해당 플랜에 맞는 일정 필터링 */}
@@ -126,14 +162,18 @@ const ScheduleManager = () => {
           onChangeDate={handleDateChange}
         />
         {/* 일정 카드 리스트: 선택된 날짜와 플랜에 맞는 스케줄 아이템을 리스트로 표시 */}
-        <RouteCardList items={currentScheduleItems} />
+        <RouteCardList
+          items={currentScheduleItems}
+          onSave={onSave}
+          deleteScheduleItem={handleDelete}
+        />
         {/* 상태로 관리된 scheduleItems 전달 */}
+        <button aria-hidden={loading}></button>
       </ScheduleBox>
 
       <LogoWrapper>
         {/* 로고 표시 */}
         <HorisontalLogo />
-        <button aria-hidden={loading}>작업 시작 </button>
       </LogoWrapper>
     </Container>
   );

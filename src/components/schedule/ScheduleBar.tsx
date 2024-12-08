@@ -20,14 +20,17 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentDate, schedules, onCha
 
   // 현재 날짜의 인덱스 찾기
   const currentIndex = schedules.findIndex((date) => date === currentDate);
+
   // 날짜를 MM/DD 형식으로 변환하는 함수
   const formatDate = (date: string) => {
-    // const [year, month, day] = date.split("-");
-    //ESlint 때문에 어쩔수없었어요... 아래 거 죽이고 위에 거 살려주세요 ㅜㅜ
-    const [month, day] = date.split("-");
+    if (!date) return "/"; // date가 유효하지 않으면 빈 문자열 반환
+
+    const [, month, day] = date.split("/");
 
     return `${month}/${day}`;
   };
+
+  <span>{` (${formatDate(currentDate)})`}</span>;
 
   const handlePrev = () => {
     const prevIndex = currentIndex > 0 ? currentIndex - 1 : schedules.length - 1;

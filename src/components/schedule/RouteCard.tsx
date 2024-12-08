@@ -1,77 +1,84 @@
 import styled from "styled-components";
-import { FC, useState } from "react";
+import { FC, useState, useMemo } from "react";
 import CloseIcon from "@components/assets/icons/CloseIcon";
 import DetailPopup from "./DetailPopup";
+import { ScheduleItem } from "@pages/Planner/components/ScheduleManager";
+import { useCallback } from "react";
 
 // API 응답에 맞춘 RouteCardProps 타입 정의
 interface RouteCardProps {
-  scheduleItemId: number; // 스케줄 아이템 ID
-  markerId: number; // 카드의 순서
-  name?: string; // 제목
-  address: string; // 주소
-  content?: string; // 내용 (옵션)
-  createdAt: string;
-  updatedAt: string;
+  item: ScheduleItem;
+  onSave: (scheduleItemId: number, name: string, content: string) => void;
+  deleteScheduleItem: (scheduleItemId: number) => void; // 삭제 함수 추가
 }
 
-const RouteCard: FC<RouteCardProps> = ({ markerId, name, address, content = "" }) => {
+const RouteCard: FC<RouteCardProps> = ({ item, onSave, deleteScheduleItem }) => {
   const [showDetails, setShowDetails] = useState(false); // 상세보기 상태 관리
   const [isEditing, setIsEditing] = useState(false); // 수정 모드 상태 관리
-  const [editableName, setEditableName] = useState(name); // 수정 가능한 이름 상태
-  const [editableContent, setEditableContent] = useState(content); // 수정 가능한 내용 상태
+  const [editableName, setEditableName] = useState(item.name); // 수정 가능한 이름 상태
+  const [editableContent, setEditableContent] = useState(item.content); // 수정 가능한 내용 상태
 
-  const toggleDetails = () => {
-    setShowDetails(!showDetails); // 토글 상태 변경
-    setIsEditing(false); // 팝업을 닫을 때 수정 모드 해제
+  const toggleDetails = useCallback(() => {
+    if (showDetails && isEditing) {
+      // 닫힐 때 수정 취소
+      setEditableName(item.name); // 초기 이름으로 복원
+      setEditableContent(item.content); // 초기 내용으로 복원
+      setIsEditing(false); // 수정 모드 해제
+    }
+    setShowDetails(!showDetails);
+  }, [showDetails, isEditing, item.name, item.content]); // 의존성 배열 추가
+
+  const toggleEdit = useCallback(() => {
+    setIsEditing((prev) => !prev);
+  }, []); // 의존성 배열이 비어 있어도 괜찮음 (상태를 토글하기만 함)
+
+  const handleSave = useCallback(() => {
+    onSave(item.scheduleItemId, editableName || "", editableContent || ""); // 기본값 제공
+    setIsEditing(false); // 저장 후 수정 모드 해제
+  }, [item.scheduleItemId, editableName, editableContent, onSave]); // 의존성 배열 추가
+
+  // CloseButton 클릭 시 아이템 삭제
+  const handleDelete = () => {
+    deleteScheduleItem(item.scheduleItemId); // 삭제 함수 호출
   };
 
-  const toggleEdit = () => {
-    setIsEditing(!isEditing); // 수정 모드 토글
-  };
-
-  // const handleSave = () => {
-  //   setIsEditing(false); // 저장 후 수정 모드 해제
-  //   // 여기에서 변경된 이름과 내용에 대한 저장 작업을 진행합니다.
-  // };
-  //ESlint 때문에 주석처리함
+  // DetailPopup props 최적화
+  const detailPopupProps = useMemo(
+    () => ({
+      scheduleItemId: item.scheduleItemId,
+      markerId: item.markerId,
+      address: item.address,
+      isEditing,
+      editableName: editableName || "", // 기본값 제공
+      editableContent: editableContent || "", // 기본값 제공
+      onToggleDetails: toggleDetails,
+      onToggleEdit: toggleEdit,
+      onNameChange: setEditableName,
+      onContentChange: setEditableContent,
+      onSave: handleSave,
+    }),
+    [item, editableName, editableContent, isEditing, handleSave, toggleDetails, toggleEdit] // 의존성 추가
+  );
 
   return (
     <OuterContainer>
-      {/* 상단: 인덱스와 닫기 버튼 */}
       <TopContainer>
-        <Index>{markerId}</Index>
-        <CloseButton>
+        <Index>{item.markerId}</Index>
+        <CloseButton onClick={handleDelete}>
           <CloseIcon />
         </CloseButton>
       </TopContainer>
 
-      {/* 중단: 제목과 위치 */}
       <InnerContainer>
-        <TitleSection>{name}</TitleSection>
-        <LocationSection>{address}</LocationSection>
+        <TitleSection>{editableName || "제목 없음"}</TitleSection>
+        <LocationSection>{item.address}</LocationSection>
       </InnerContainer>
 
-      {/* 하단: 상세보기 버튼 */}
       <BottomContainer>
-        <DetailButton onClick={toggleDetails}>{showDetails ? "상세보기" : "상세보기"}</DetailButton>
+        <DetailButton onClick={toggleDetails}>상세보기</DetailButton>
       </BottomContainer>
 
-      {/* 상세 정보 창 */}
-      {showDetails && (
-        <DetailPopup
-          markerId={markerId}
-          name={name}
-          address={address}
-          content={content}
-          isEditing={isEditing}
-          editableName={editableName || ""}
-          editableContent={editableContent}
-          onToggleDetails={toggleDetails}
-          onToggleEdit={toggleEdit}
-          onNameChange={setEditableName}
-          onContentChange={setEditableContent}
-        />
-      )}
+      {showDetails && <DetailPopup {...detailPopupProps} />}
     </OuterContainer>
   );
 };
