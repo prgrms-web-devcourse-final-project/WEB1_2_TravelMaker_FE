@@ -1,22 +1,45 @@
 import styled from "styled-components";
-import { FC } from "react";
+import { FC, useState } from "react";
 import CloseIcon from "@components/assets/icons/CloseIcon";
+import DetailPopup from "./DetailPopup";
 
+// API 응답에 맞춘 RouteCardProps 타입 정의
 interface RouteCardProps {
-  schedule_id: number; // 스케줄 ID
-  marker_id?: number; // 카드의 순서
-  title?: string; // 제목 (기본값: "제목 없음")
+  scheduleItemId: number; // 스케줄 아이템 ID
+  markerId: number; // 카드의 순서
+  name?: string; // 제목
   address: string; // 주소
-  contents?: string; // 내용 (옵션)
+  content?: string; // 내용 (옵션)
+  createdAt: string;
+  updatedAt: string;
 }
 
-// RouteCard 컴포넌트 정의
-const RouteCard: FC<RouteCardProps> = ({ marker_id, title = "제목 없음", address }) => {
+const RouteCard: FC<RouteCardProps> = ({ markerId, name, address, content = "" }) => {
+  const [showDetails, setShowDetails] = useState(false); // 상세보기 상태 관리
+  const [isEditing, setIsEditing] = useState(false); // 수정 모드 상태 관리
+  const [editableName, setEditableName] = useState(name); // 수정 가능한 이름 상태
+  const [editableContent, setEditableContent] = useState(content); // 수정 가능한 내용 상태
+
+  const toggleDetails = () => {
+    setShowDetails(!showDetails); // 토글 상태 변경
+    setIsEditing(false); // 팝업을 닫을 때 수정 모드 해제
+  };
+
+  const toggleEdit = () => {
+    setIsEditing(!isEditing); // 수정 모드 토글
+  };
+
+  // const handleSave = () => {
+  //   setIsEditing(false); // 저장 후 수정 모드 해제
+  //   // 여기에서 변경된 이름과 내용에 대한 저장 작업을 진행합니다.
+  // };
+  //ESlint 때문에 주석처리함
+
   return (
     <OuterContainer>
       {/* 상단: 인덱스와 닫기 버튼 */}
       <TopContainer>
-        <Index>{marker_id}</Index>
+        <Index>{markerId}</Index>
         <CloseButton>
           <CloseIcon />
         </CloseButton>
@@ -24,14 +47,31 @@ const RouteCard: FC<RouteCardProps> = ({ marker_id, title = "제목 없음", add
 
       {/* 중단: 제목과 위치 */}
       <InnerContainer>
-        <TitleSection>{title}</TitleSection>
+        <TitleSection>{name}</TitleSection>
         <LocationSection>{address}</LocationSection>
       </InnerContainer>
 
       {/* 하단: 상세보기 버튼 */}
       <BottomContainer>
-        <DetailButton>상세보기</DetailButton>
+        <DetailButton onClick={toggleDetails}>{showDetails ? "상세보기" : "상세보기"}</DetailButton>
       </BottomContainer>
+
+      {/* 상세 정보 창 */}
+      {showDetails && (
+        <DetailPopup
+          markerId={markerId}
+          name={name}
+          address={address}
+          content={content}
+          isEditing={isEditing}
+          editableName={editableName || ""}
+          editableContent={editableContent}
+          onToggleDetails={toggleDetails}
+          onToggleEdit={toggleEdit}
+          onNameChange={setEditableName}
+          onContentChange={setEditableContent}
+        />
+      )}
     </OuterContainer>
   );
 };

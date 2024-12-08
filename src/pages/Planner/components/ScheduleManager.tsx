@@ -1,83 +1,145 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import styled from "styled-components";
-import PlanButtons from "@components/button/PlanButtons";
-import RouteCardList from "@components/cardList/RouteCardList";
-import ScheduleBar from "@components/button/ScheduleBar";
-import { mockSchedules } from "@components/button/mockSchedule";
+import PlanButtons from "@components/schedule/PlanButtons";
+import RouteCardList from "@components/schedule/RouteCardList";
+import ScheduleBar from "@components/schedule/ScheduleBar";
 import HorisontalLogo from "@components/assets/images/HorisontalLogo";
+import { useScheduleWS } from "../hooks/ScheduleWS";
+import { ROUTES } from "@routes/type";
+import { useTypedParams } from "@common/hooks/useTypedParams";
 
-// 스케줄 아이템의 타입
+// 전체 스케줄을 나타내는 타입 정의
+// interface Schedule {
+//   scheduleId: number;
+//   planType: string;
+//   actualDate: string;
+// }
+
+// 스케줄 아이템의 타입 정의
 interface ScheduleItem {
-  schedule_id: number;
-  marker_id?: number; // 카드의 순서
-  title?: string;
+  scheduleItemId: number;
+  markerId: number;
+  name?: string;
   address: string;
-  content: string;
+  content?: string;
+  createdAt: string;
+  updatedAt: string;
+  itemOrder: number; // 추가된 필드
 }
+
 const ScheduleManager = () => {
-  // const [schedules, setSchedules] = useState(mockSchedules); // 더미 데이터
-  const schedules = mockSchedules; // 더미 데이터를 상수로 사용
-  const [currentDate, setCurrentDate] = useState("11/27");
+  // URL 파라미터로부터 방 ID를 받아오기
+  const { roomId } = useTypedParams<typeof ROUTES.ENTER_MODAL>();
+
+  // WebSocket을 통한 스케줄 및 스케줄 아이템 데이터와 연결 상태 관리
+  //scheduleItems 안쓰여서 뺌
+  const { schedules, isConnected, requestSchedules, requestScheduleItems } = useScheduleWS(roomId);
+
+  // 현재 날짜 및 플랜을 관리하는 상태 변수
+  const [currentDate, setCurrentDate] = useState(() => schedules[0]?.actualDate || "");
   const [currentPlan, setCurrentPlan] = useState("A");
-  const [scheduleItems, setScheduleItems] = useState<ScheduleItem[]>([]); // 초기 상태에 타입 명시
 
-  // 현재 날짜와 플랜을 기반으로 schedule_id를 찾는 함수
-  const findScheduleId = (date: string, plan: string) => {
-    const schedule = schedules.find((s) => s.date === date && s.plan === plan);
+  // 현재 선택된 날짜와 플랜에 해당하는 스케줄 아이템 상태 관리
+  const [currentScheduleItems, setCurrentScheduleItems] = useState<ScheduleItem[]>([]);
 
-    return schedule?.schedule_id || null;
-  };
+  const [loading, setLoading] = useState(false); // 로딩 상태 추가
 
-  // 스케줄 아이템 로드 (더미 데이터에서 가져옴)
-  const loadScheduleItems = (schedule_id: number | null) => {
-    if (!schedule_id) return setScheduleItems([]);
-    const schedule = schedules.find((s) => s.schedule_id === schedule_id);
+  // 모든 스케줄에서 날짜만 추출한 배열
+  const dateArray = schedules.map((schedule) => schedule.actualDate);
 
-    setScheduleItems(schedule?.scheduleItem || []);
-  };
+  // 주어진 날짜와 플랜에 해당하는 스케줄 ID를 찾아 반환하는 함수
+  const findScheduleId = useCallback(
+    (actualDate: string, planType: string): number | null => {
+      const schedule = schedules.find(
+        (s) => s.actualDate === actualDate && s.planType === planType
+      );
 
-  // 초기 로드
+      return schedule?.scheduleId || null;
+    },
+    [schedules]
+  );
+
+  // 선택된 스케줄 ID에 해당하는 스케줄 아이템을 로드하는 함수
+  const loadScheduleItems = useCallback(
+    (scheduleId: number | null) => {
+      if (!scheduleId) {
+        setCurrentScheduleItems([]); // scheduleId가 없으면 빈 배열로 초기화
+
+        return;
+      }
+
+      setLoading(true);
+      requestScheduleItems(scheduleId); // scheduleId로 아이템을 요청
+    },
+    [requestScheduleItems]
+  );
+
   useEffect(() => {
-    const initialScheduleId = findScheduleId(currentDate, currentPlan);
+    if (schedules.length > 0) {
+      const scheduleId = findScheduleId(currentDate, currentPlan);
+      // 현재 날짜와 플랜에 맞는 스케줄 ID 찾기
 
-    loadScheduleItems(initialScheduleId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+      loadScheduleItems(scheduleId);
+    }
+  }, [currentDate, currentPlan, schedules, findScheduleId, loadScheduleItems]);
 
-  // 플랜 변경
-  const handlePlanChange = (plan: string) => {
-    setCurrentPlan(plan);
-    const scheduleId = findScheduleId(currentDate, plan);
+  const handlePlanChange = (planType: string) => {
+    setCurrentPlan(planType); // 플랜 변경
+    const scheduleId = findScheduleId(currentDate, planType);
+    // 변경된 플랜에 맞는 스케줄 ID 찾기
+
+    loadScheduleItems(scheduleId);
+  };
+
+  // 날짜 변경 시 처리하는 함수
+  const handleDateChange = (actualDate: string) => {
+    setCurrentDate(actualDate); // 날짜 변경
+    const scheduleId = findScheduleId(actualDate, currentPlan);
+    // 변경된 날짜에 맞는 스케줄 ID 찾기
 
     loadScheduleItems(scheduleId);
   };
 
-  // 날짜 변경
-  const handleDateChange = (date: string) => {
-    setCurrentDate(date);
-    const scheduleId = findScheduleId(date, currentPlan);
+  // 컴포넌트가 마운트될 때 LIST_SCHEDULES 메시지를 서버로 전송하여 스케줄 목록을 요청하는 함수
+  useEffect(() => {
+    if (roomId) {
+      requestSchedules(); // 페이지 진입 시 스케줄 요청
+    }
+  }, [roomId, requestSchedules]);
 
-    loadScheduleItems(scheduleId);
-  };
+  useEffect(() => {
+    if (isConnected) {
+      setLoading(false); // 연결 성공 시 로딩 상태 해제
+    }
+  }, [isConnected]);
 
   return (
     <Container>
+      {/* 플랜 버튼: 플랜 변경 시 해당 플랜에 맞는 일정 필터링 */}
       <PlanButtons currentPlan={currentPlan} onChangePlan={handlePlanChange} />
+
       <ScheduleBox>
+        {/* 일정 바: 날짜 변경 시 해당 날짜에 맞는 일정 필터링 */}
         <ScheduleBar
           currentDate={currentDate}
-          schedules={schedules}
+          schedules={dateArray} // 날짜 배열만 전달
           onChangeDate={handleDateChange}
         />
-        <RouteCardList items={scheduleItems} />
+        {/* 일정 카드 리스트: 선택된 날짜와 플랜에 맞는 스케줄 아이템을 리스트로 표시 */}
+        <RouteCardList items={currentScheduleItems} />
+        {/* 상태로 관리된 scheduleItems 전달 */}
       </ScheduleBox>
 
       <LogoWrapper>
+        {/* 로고 표시 */}
         <HorisontalLogo />
+        <button aria-hidden={loading}>작업 시작 </button>
       </LogoWrapper>
     </Container>
   );
 };
+
+export default ScheduleManager;
 
 const FlexColumn = styled.div`
   display: flex;
@@ -132,5 +194,3 @@ const ScheduleBox = styled(FlexColumn)`
 const LogoWrapper = styled(FlexEnd)`
   /* margin-right: 10px; */
 `;
-
-export default ScheduleManager;

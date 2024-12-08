@@ -1,49 +1,44 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import PreviousIcon from "@components/assets/icons/PreviousIcon";
 import NextIcon from "@components/assets/icons/NextIcon";
 
-// 개별 스케줄 데이터의 타입 정의
-// 개별 스케줄 데이터의 타입 정의
-interface Schedule {
-  schedule_id: number; // 스케줄의 고유 ID
-  plan: string; // 플랜 (예: "A", "B", "C")
-  date: string; // 날짜 (예: "11/20")
-  room_id: string; // 방 ID
-  scheduleItem?: {
-    schedule_id: number;
-    marker_id?: number;
-    title?: string;
-    address: string;
-    content: string;
-  }[];
-}
-
+// API 응답에 맞춘 스케줄 데이터 타입 정의
 interface ScheduleBarProps {
-  schedules: Schedule[];
   currentDate: string; // 현재 선택된 날짜
+  schedules: string[]; // 날짜 배열
   onChangeDate: (date: string) => void; // 날짜 변경 핸들러
 }
 
-const ScheduleBar: React.FC<ScheduleBarProps> = ({ schedules, currentDate, onChangeDate }) => {
-  // 현재 날짜의 인덱스를 찾는 함수
-  const currentIndex = schedules.findIndex((s) => s.date === currentDate);
+const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentDate, schedules, onChangeDate }) => {
+  // 첫 렌더링 시 currentDate를 Day1으로 설정
+  useEffect(() => {
+    if (schedules.length > 0 && !currentDate) {
+      onChangeDate(schedules[0]); // schedules 배열의 첫 번째 값을 currentDate로 설정
+    }
+  }, [schedules, currentDate, onChangeDate]);
+
+  // 현재 날짜의 인덱스 찾기
+  const currentIndex = schedules.findIndex((date) => date === currentDate);
+  // 날짜를 MM/DD 형식으로 변환하는 함수
+  const formatDate = (date: string) => {
+    // const [year, month, day] = date.split("-");
+    //ESlint 때문에 어쩔수없었어요... 아래 거 죽이고 위에 거 살려주세요 ㅜㅜ
+    const [month, day] = date.split("-");
+
+    return `${month}/${day}`;
+  };
 
   const handlePrev = () => {
-    if (schedules.length > 0) {
-      // 이전 날짜가 없으면 마지막 날짜로 돌아가게 처리
-      const prevIndex = currentIndex > 0 ? currentIndex - 1 : schedules.length - 1;
+    const prevIndex = currentIndex > 0 ? currentIndex - 1 : schedules.length - 1;
 
-      onChangeDate(schedules[prevIndex].date); // 이전 날짜로 변경
-    }
+    onChangeDate(schedules[prevIndex]);
   };
 
   const handleNext = () => {
-    if (schedules.length > 0) {
-      const nextIndex = currentIndex < schedules.length - 1 ? currentIndex + 1 : 0;
+    const nextIndex = currentIndex < schedules.length - 1 ? currentIndex + 1 : 0;
 
-      onChangeDate(schedules[nextIndex].date); // 다음 날짜로 변경
-    }
+    onChangeDate(schedules[nextIndex]);
   };
 
   return (
@@ -52,14 +47,8 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ schedules, currentDate, onCha
         <PreviousIcon />
       </Button>
       <DataContainer>
-        {schedules.length > 0 && currentIndex !== -1 ? (
-          <>
-            <span>{`Day ${currentIndex + 1}`}</span>
-            <span>{` (${currentDate})`}</span>
-          </>
-        ) : (
-          <span>{`Day 1`}</span>
-        )}
+        <span>{`Day ${currentIndex + 1}`}</span>
+        <span>{` (${formatDate(currentDate)})`}</span>
       </DataContainer>
       <Button onClick={handleNext}>
         <NextIcon />
