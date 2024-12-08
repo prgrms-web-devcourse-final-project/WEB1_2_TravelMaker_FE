@@ -24,7 +24,6 @@ type ListScheduleItemsData = ScheduleItem[];
 type UpdateScheduleItemData = Partial<ScheduleItem> & { scheduleItemId: number };
 type DeleteScheduleItemData = { scheduleItemId: number; message: string };
 
-// ScheduleList와 ScheduleItem 인터페이스
 interface ScheduleList {
   actualDate: string;
   planType: string;
@@ -38,11 +37,10 @@ interface ScheduleItem {
   address: string;
   content: string;
   createdAt: string;
-  updatedAt: string; // 수정된 필드 이름
-  itemOrder: number; // 추가된 필드
+  updatedAt: string; 
+  itemOrder: number; 
 }
 
-// useScheduleWS 훅
 export const useScheduleWS = (roomId: string | undefined) => {
   const [schedules, setSchedules] = useState<ScheduleList[]>([]);
   const [scheduleItems, setScheduleItems] = useState<ScheduleItem[]>([]);

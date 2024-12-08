@@ -31,9 +31,9 @@
 
 // export default RouteCardList;
 import styled from "styled-components";
-import RouteCard from "@components/card/RouteCard";
+import RouteCard from "@components/schedule/RouteCard";
 import { ComponentProps, FC } from "react";
-import InfoCard from "@components/card/InfoCard";
+import InfoCard from "@components/schedule/InfoCard";
 
 interface RouteCardListProps {
   items: ComponentProps<typeof RouteCard>[]; // RouteCard에서 받아올 Props 타입
