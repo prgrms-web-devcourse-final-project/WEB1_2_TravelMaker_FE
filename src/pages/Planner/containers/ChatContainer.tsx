@@ -72,7 +72,11 @@ const ChatContainer = memo(() => {
       isHost={isHost}
       myProfile={userProfile?.profileImage ?? ""}
       chatList={transformedMessages}
-      onSubmit={sendChatMessage}
+      onSubmit={(message) => {
+        if (message.length > 0) {
+          sendChatMessage(message);
+        }
+      }}
       profiles={transformedMembers}
     />
   );
