@@ -2,24 +2,25 @@ import styled from "styled-components";
 import closebutton from "../assets/icons/closebutton.svg";
 import { FC } from "react";
 
+// DetailPopupProps 정의 수정
 interface DetailPopupProps {
+  scheduleItemId: number;
   markerId: number;
-  name?: string;
   address: string;
-  content: string;
   isEditing: boolean;
-  editableName: string;
-  editableContent: string;
+  editableName: string | undefined; // 수정: string | undefined로 타입 변경
+  editableContent: string | undefined;
   onToggleDetails: () => void;
   onToggleEdit: () => void;
-  onNameChange: (value: string) => void;
-  onContentChange: (value: string) => void;
+  onNameChange: (name: string) => void;
+  onContentChange: (content: string) => void;
+  onSave: (scheduleItemId: number, name: string, content: string) => void;
 }
+
 const DetailPopup: FC<DetailPopupProps> = ({
+  scheduleItemId,
   markerId,
-  // name,
   address,
-  // content,
   isEditing,
   editableName,
   editableContent,
@@ -27,33 +28,52 @@ const DetailPopup: FC<DetailPopupProps> = ({
   onToggleEdit,
   onNameChange,
   onContentChange,
+  onSave,
 }) => (
   <PopupContainer>
+    {/* 닫기 버튼 */}
     <ClosePopupButton onClick={onToggleDetails}>
       <img src={closebutton} alt="닫기" />
     </ClosePopupButton>
 
+    {/* 상세 내용 */}
     <DetailContent>
       <MarkerId>{markerId}</MarkerId>
       <Name>
         {isEditing ? (
-          <Input value={editableName} onChange={(e) => onNameChange(e.target.value)} />
+          <Input
+            value={editableName}
+            onChange={(e) => onNameChange(e.target.value)}
+            placeholder="이름을 입력하세요"
+          />
         ) : (
-          editableName
+          editableName || "이름 없음"
         )}
       </Name>
       <Address>{address}</Address>
       <Content>
         {isEditing ? (
-          <TextArea value={editableContent} onChange={(e) => onContentChange(e.target.value)} />
+          <TextArea
+            value={editableContent}
+            onChange={(e) => onContentChange(e.target.value)}
+            placeholder="내용을 입력하세요"
+          />
         ) : (
           editableContent || "내용 없음"
         )}
       </Content>
     </DetailContent>
 
+    {/* 버튼 컨테이너 */}
     <ButtonContainer>
-      <EditButton onClick={onToggleEdit}>{isEditing ? "저장" : "수정"}</EditButton>
+      {isEditing ? (
+        <EditButton
+          onClick={() => onSave(scheduleItemId, editableName as string, editableContent as string)}>
+          저장
+        </EditButton>
+      ) : (
+        <EditButton onClick={onToggleEdit}>수정</EditButton>
+      )}
     </ButtonContainer>
   </PopupContainer>
 );
