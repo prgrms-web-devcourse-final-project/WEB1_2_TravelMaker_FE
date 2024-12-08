@@ -2,12 +2,22 @@ import styled from "styled-components";
 import RouteCard from "@components/schedule/RouteCard";
 import { FC } from "react";
 import InfoCard from "@components/schedule/InfoCard";
-import { ScheduleItem } from "@pages/Planner/components/ScheduleManager"; // 경로 확인
 
 interface RouteCardListProps {
   items: ScheduleItem[]; // ScheduleItem[] 타입으로 수정
   onSave: (scheduleItemId: number, name: string, content: string) => void;
   deleteScheduleItem: (scheduleItemId: number) => void; // 삭제 함수 추가
+}
+
+export interface ScheduleItem {
+  scheduleItemId: number;
+  markerId: number;
+  name: string;
+  address: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+  itemOrder: number;
 }
 
 const RouteCardList: FC<RouteCardListProps> = ({ items, onSave, deleteScheduleItem }) => {

@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { FC, useState, useMemo } from "react";
 import CloseIcon from "@components/assets/icons/CloseIcon";
 import DetailPopup from "./DetailPopup";
-import { ScheduleItem } from "@pages/Planner/components/ScheduleManager";
+import { ScheduleItem } from "@components/schedule/RouteCardList";
 import { useCallback } from "react";
 
 // API 응답에 맞춘 RouteCardProps 타입 정의
