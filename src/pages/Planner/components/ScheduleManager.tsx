@@ -70,14 +70,13 @@ const ScheduleManager = () => {
 
       setLoading(true);
       requestScheduleItems(scheduleId); // scheduleId로 아이템을 요청
-
     },
     [requestScheduleItems]
   );
 
   useEffect(() => {
     if (schedules.length > 0) {
-      const scheduleId = findScheduleId(currentDate, currentPlan); 
+      const scheduleId = findScheduleId(currentDate, currentPlan);
       // 현재 날짜와 플랜에 맞는 스케줄 ID 찾기
 
       loadScheduleItems(scheduleId);
@@ -86,7 +85,7 @@ const ScheduleManager = () => {
 
   const handlePlanChange = (planType: string) => {
     setCurrentPlan(planType); // 플랜 변경
-    const scheduleId = findScheduleId(currentDate, planType); 
+    const scheduleId = findScheduleId(currentDate, planType);
     // 변경된 플랜에 맞는 스케줄 ID 찾기
 
     loadScheduleItems(scheduleId);
@@ -95,10 +94,10 @@ const ScheduleManager = () => {
   // 날짜 변경 시 처리하는 함수
   const handleDateChange = (actualDate: string) => {
     setCurrentDate(actualDate); // 날짜 변경
-    const scheduleId = findScheduleId(actualDate, currentPlan); 
+    const scheduleId = findScheduleId(actualDate, currentPlan);
     // 변경된 날짜에 맞는 스케줄 ID 찾기
 
-    loadScheduleItems(scheduleId); 
+    loadScheduleItems(scheduleId);
   };
 
   // 컴포넌트가 마운트될 때 LIST_SCHEDULES 메시지를 서버로 전송하여 스케줄 목록을 요청하는 함수
@@ -127,7 +126,7 @@ const ScheduleManager = () => {
           onChangeDate={handleDateChange}
         />
         {/* 일정 카드 리스트: 선택된 날짜와 플랜에 맞는 스케줄 아이템을 리스트로 표시 */}
-        <RouteCardList items={currentScheduleItems} /> 
+        <RouteCardList items={currentScheduleItems} />
         {/* 상태로 관리된 scheduleItems 전달 */}
       </ScheduleBox>
 

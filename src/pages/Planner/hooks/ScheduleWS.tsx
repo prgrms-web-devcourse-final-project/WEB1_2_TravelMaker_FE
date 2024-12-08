@@ -37,8 +37,8 @@ interface ScheduleItem {
   address: string;
   content: string;
   createdAt: string;
-  updatedAt: string; 
-  itemOrder: number; 
+  updatedAt: string;
+  itemOrder: number;
 }
 
 export const useScheduleWS = (roomId: string | undefined) => {
