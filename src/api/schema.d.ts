@@ -191,6 +191,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/room/forcedExit": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** 방 퇴장 */
+    delete: operations["forcedExit"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -284,6 +301,260 @@ export interface components {
        */
       roomCode: string;
     };
+    ApplicationContext: {
+      parent?: components["schemas"]["ApplicationContext"];
+      id?: string;
+      displayName?: string;
+      applicationName?: string;
+      /** Format: int64 */
+      startupDate?: number;
+      autowireCapableBeanFactory?: components["schemas"]["AutowireCapableBeanFactory"];
+      environment?: components["schemas"]["Environment"];
+      /** Format: int32 */
+      beanDefinitionCount?: number;
+      beanDefinitionNames?: string[];
+      parentBeanFactory?: components["schemas"]["BeanFactory"];
+      classLoader?: {
+        name?: string;
+        registeredAsParallelCapable?: boolean;
+        parent?: {
+          name?: string;
+          registeredAsParallelCapable?: boolean;
+          unnamedModule?: {
+            name?: string;
+            classLoader?: {
+              name?: string;
+              registeredAsParallelCapable?: boolean;
+              definedPackages?: {
+                name?: string;
+                annotations?: Record<string, never>[];
+                declaredAnnotations?: Record<string, never>[];
+                sealed?: boolean;
+                specificationTitle?: string;
+                specificationVersion?: string;
+                specificationVendor?: string;
+                implementationTitle?: string;
+                implementationVersion?: string;
+                implementationVendor?: string;
+              }[];
+              defaultAssertionStatus?: boolean;
+            };
+            descriptor?: {
+              open?: boolean;
+              automatic?: boolean;
+            };
+            named?: boolean;
+            annotations?: Record<string, never>[];
+            declaredAnnotations?: Record<string, never>[];
+            packages?: string[];
+            layer?: Record<string, never>;
+          };
+          definedPackages?: {
+            name?: string;
+            annotations?: Record<string, never>[];
+            declaredAnnotations?: Record<string, never>[];
+            sealed?: boolean;
+            specificationTitle?: string;
+            specificationVersion?: string;
+            specificationVendor?: string;
+            implementationTitle?: string;
+            implementationVersion?: string;
+            implementationVendor?: string;
+          }[];
+          defaultAssertionStatus?: boolean;
+        };
+        unnamedModule?: {
+          name?: string;
+          classLoader?: {
+            name?: string;
+            registeredAsParallelCapable?: boolean;
+            definedPackages?: {
+              name?: string;
+              annotations?: Record<string, never>[];
+              declaredAnnotations?: Record<string, never>[];
+              sealed?: boolean;
+              specificationTitle?: string;
+              specificationVersion?: string;
+              specificationVendor?: string;
+              implementationTitle?: string;
+              implementationVersion?: string;
+              implementationVendor?: string;
+            }[];
+            defaultAssertionStatus?: boolean;
+          };
+          descriptor?: {
+            open?: boolean;
+            automatic?: boolean;
+          };
+          named?: boolean;
+          annotations?: Record<string, never>[];
+          declaredAnnotations?: Record<string, never>[];
+          packages?: string[];
+          layer?: Record<string, never>;
+        };
+        definedPackages?: {
+          name?: string;
+          annotations?: Record<string, never>[];
+          declaredAnnotations?: Record<string, never>[];
+          sealed?: boolean;
+          specificationTitle?: string;
+          specificationVersion?: string;
+          specificationVendor?: string;
+          implementationTitle?: string;
+          implementationVersion?: string;
+          implementationVendor?: string;
+        }[];
+        defaultAssertionStatus?: boolean;
+      };
+    };
+    AutowireCapableBeanFactory: Record<string, never>;
+    BeanFactory: Record<string, never>;
+    Environment: {
+      activeProfiles?: string[];
+      defaultProfiles?: string[];
+    };
+    FilterRegistration: {
+      servletNameMappings?: string[];
+      urlPatternMappings?: string[];
+      name?: string;
+      className?: string;
+      initParameters?: {
+        [key: string]: string;
+      };
+    };
+    HttpStatusCode: {
+      error?: boolean;
+      is4xxClientError?: boolean;
+      is5xxServerError?: boolean;
+      is1xxInformational?: boolean;
+      is2xxSuccessful?: boolean;
+      is3xxRedirection?: boolean;
+    };
+    JspConfigDescriptor: {
+      taglibs?: components["schemas"]["TaglibDescriptor"][];
+      jspPropertyGroups?: components["schemas"]["JspPropertyGroupDescriptor"][];
+    };
+    JspPropertyGroupDescriptor: {
+      defaultContentType?: string;
+      buffer?: string;
+      elIgnored?: string;
+      errorOnELNotFound?: string;
+      pageEncoding?: string;
+      scriptingInvalid?: string;
+      isXml?: string;
+      includePreludes?: string[];
+      includeCodas?: string[];
+      deferredSyntaxAllowedAsLiteral?: string;
+      trimDirectiveWhitespaces?: string;
+      errorOnUndeclaredNamespace?: string;
+      urlPatterns?: string[];
+    };
+    RedirectView: {
+      applicationContext?: components["schemas"]["ApplicationContext"];
+      servletContext?: components["schemas"]["ServletContext"];
+      contentType?: string;
+      requestContextAttribute?: string;
+      staticAttributes?: {
+        [key: string]: Record<string, never>;
+      };
+      exposePathVariables?: boolean;
+      exposeContextBeansAsAttributes?: boolean;
+      exposedContextBeanNames?: string[];
+      beanName?: string;
+      url?: string;
+      contextRelative?: boolean;
+      http10Compatible?: boolean;
+      exposeModelAttributes?: boolean;
+      encodingScheme?: string;
+      statusCode?: components["schemas"]["HttpStatusCode"];
+      expandUriTemplateVariables?: boolean;
+      propagateQueryParams?: boolean;
+      hosts?: string[];
+      redirectView?: boolean;
+      propagateQueryProperties?: boolean;
+      attributes?: {
+        [key: string]: string;
+      };
+      attributesMap?: {
+        [key: string]: Record<string, never>;
+      };
+      attributesCSV?: string;
+    };
+    ServletContext: {
+      sessionCookieConfig?: components["schemas"]["SessionCookieConfig"];
+      virtualServerName?: string;
+      classLoader?: {
+        name?: string;
+        registeredAsParallelCapable?: boolean;
+        definedPackages?: {
+          name?: string;
+          annotations?: Record<string, never>[];
+          declaredAnnotations?: Record<string, never>[];
+          sealed?: boolean;
+          specificationTitle?: string;
+          specificationVersion?: string;
+          specificationVendor?: string;
+          implementationTitle?: string;
+          implementationVersion?: string;
+          implementationVendor?: string;
+        }[];
+        defaultAssertionStatus?: boolean;
+      };
+      /** Format: int32 */
+      majorVersion?: number;
+      /** Format: int32 */
+      minorVersion?: number;
+      attributeNames?: Record<string, never>;
+      contextPath?: string;
+      initParameterNames?: Record<string, never>;
+      sessionTrackingModes?: ("COOKIE" | "URL" | "SSL")[];
+      /** Format: int32 */
+      sessionTimeout?: number;
+      servletRegistrations?: {
+        [key: string]: components["schemas"]["ServletRegistration"];
+      };
+      filterRegistrations?: {
+        [key: string]: components["schemas"]["FilterRegistration"];
+      };
+      /** Format: int32 */
+      effectiveMajorVersion?: number;
+      /** Format: int32 */
+      effectiveMinorVersion?: number;
+      serverInfo?: string;
+      servletContextName?: string;
+      defaultSessionTrackingModes?: ("COOKIE" | "URL" | "SSL")[];
+      effectiveSessionTrackingModes?: ("COOKIE" | "URL" | "SSL")[];
+      jspConfigDescriptor?: components["schemas"]["JspConfigDescriptor"];
+      requestCharacterEncoding?: string;
+      responseCharacterEncoding?: string;
+    };
+    ServletRegistration: {
+      mappings?: string[];
+      runAsRole?: string;
+      name?: string;
+      className?: string;
+      initParameters?: {
+        [key: string]: string;
+      };
+    };
+    SessionCookieConfig: {
+      /** Format: int32 */
+      maxAge?: number;
+      domain?: string;
+      httpOnly?: boolean;
+      path?: string;
+      secure?: boolean;
+      name?: string;
+      attributes?: {
+        [key: string]: string;
+      };
+      /** @deprecated */
+      comment?: string;
+    };
+    TaglibDescriptor: {
+      taglibLocation?: string;
+      taglibURI?: string;
+    };
     RoomListDTO: {
       roomId?: string;
       /** @default OO여행!! */
@@ -310,6 +581,10 @@ export interface components {
        * @example 퇴장하였습니다.
        */
       message?: string;
+    };
+    MemberRoomForceDeleteDTO: {
+      deletingEmail?: string;
+      roomId?: string;
     };
   };
   responses: never;
@@ -567,6 +842,7 @@ export interface operations {
     parameters: {
       query: {
         code: string;
+        secretKey: string;
         url: string;
       };
       header?: never;
@@ -583,7 +859,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "*/*": Record<string, never>;
+          "*/*": components["schemas"]["RedirectView"];
         };
       };
     };
@@ -744,6 +1020,44 @@ export interface operations {
       };
       /** @description 방을 찾을 수 없습니다.
        *      다음 방장을 찾을 수 없습니다. */
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  forcedExit: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["MemberRoomForceDeleteDTO"];
+      };
+    };
+    responses: {
+      /** @description 강제퇴장하였습니다. */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["LeaveResponse"];
+        };
+      };
+      /** @description 권한이 없습니다 */
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+      /** @description 방을 찾을 수 없습니다 */
       404: {
         headers: {
           [name: string]: unknown;
