@@ -1,4 +1,4 @@
-import { FC, forwardRef, PropsWithChildren, useState } from "react";
+import { FC, forwardRef, PropsWithChildren, useEffect, useState } from "react";
 import styled from "styled-components";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -13,7 +13,7 @@ import CopyIcon from "@components/assets/icons/Copy";
 import DateIcon from "@components/assets/icons/Date";
 
 type LabelTypes = "default" | "danger";
-type InviteEmailHandler = (email: string) => void;
+// type InviteEmailHandler = (email: string) => void;
 type Schedule = { startDate: Date; endDate: Date };
 
 interface PlannerFormData {
@@ -43,8 +43,8 @@ interface ModalShareProps extends ModalHeaderProps {
   url: string;
   roomId: string;
   code: string;
-  email: string;
-  onInviteEmail: InviteEmailHandler;
+  // email: string;
+  // onInviteEmail: InviteEmailHandler;
 }
 
 interface ModalEntryProps extends ModalHeaderProps {
@@ -172,6 +172,12 @@ const Modal: ModalComponent = {
         }
     );
 
+    useEffect(() => {
+      if (plannerFormData) {
+        setFormData(plannerFormData);
+      }
+    }, [plannerFormData]);
+
     const DateClickable = forwardRef<HTMLDivElement, { value?: string; onClick?: () => void }>(
       ({ value, onClick }, ref) => (
         <div ref={ref}>
@@ -276,18 +282,19 @@ const Modal: ModalComponent = {
     );
   },
   // 플래너 공유
-  Share: ({ title, onInviteEmail, onModalClose, ...data }) => {
-    const { url, roomId, code, email } = data;
-    const { showMessage, messageType, message, handleMessage } = useModalMessage();
+  Share: ({ title, onModalClose, ...data }) => {
+    const { url, roomId, code } = data;
+    const { showMessage, messageType, message } = useModalMessage();
 
-    const handleInvite = () => {
-      try {
-        onInviteEmail(code);
-        handleMessage("default", "초대 메일이 발송되었습니다.");
-      } catch {
-        handleMessage("danger", "잘못된 참여코드 입니다.");
-      }
-    };
+    // 다음 버전에서 사용예정
+    // const handleInvite = () => {
+    //   try {
+    //     onInviteEmail(code);
+    //     handleMessage("default", "초대 메일이 발송되었습니다.");
+    //   } catch {
+    //     handleMessage("danger", "잘못된 참여코드 입니다.");
+    //   }
+    // };
 
     return (
       <>
@@ -297,7 +304,7 @@ const Modal: ModalComponent = {
             <CopyableField label="URL" value={url} />
             <CopyableField label="ROOM ID" value={roomId} />
             <CopyableField label="CODE" value={code} />
-            <InvitationField value={email} onInviteEmail={handleInvite} />
+            {/* <InvitationField value={email} onInviteEmail={handleInvite} /> */}
           </FormContainer>
         </Modal.Layout>
         <MessageOverlay $visible={showMessage}>
@@ -366,7 +373,14 @@ const MessageOverlay = styled.div<{ $visible: boolean }>`
 `;
 
 const CopyableField: FC<{ label: string; value: string }> = ({ label, value }) => {
-  const handleContentCopy = () => {};
+  const handleContentCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(value);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error("클립보드 복사 실패:", error);
+    }
+  };
   const RightIcon = {
     right: {
       Item: <CopyIcon />,
@@ -384,22 +398,22 @@ const CopyableField: FC<{ label: string; value: string }> = ({ label, value }) =
   );
 };
 
-const InvitationField: FC<{ value: string; onInviteEmail: InviteEmailHandler }> = ({
-  value,
-  onInviteEmail,
-}) => {
-  return (
-    <FieldLayout>
-      <LabelContainer>
-        <FieldLabel>Email</FieldLabel>
-      </LabelContainer>
-      <EmailFieldLayout>
-        <FormField.Label label={value} font={{ bold: true, size: "small" }} />
-        <Button label="초대" type="small" onClick={() => onInviteEmail(value)} />
-      </EmailFieldLayout>
-    </FieldLayout>
-  );
-};
+// const InvitationField: FC<{ value: string; onInviteEmail: InviteEmailHandler }> = ({
+//   value,
+//   onInviteEmail,
+// }) => {
+//   return (
+//     <FieldLayout>
+//       <LabelContainer>
+//         <FieldLabel>Email</FieldLabel>
+//       </LabelContainer>
+//       <EmailFieldLayout>
+//         <FormField.Label label={value} font={{ bold: true, size: "small" }} />
+//         <Button label="초대" type="small" onClick={() => onInviteEmail(value)} />
+//       </EmailFieldLayout>
+//     </FieldLayout>
+//   );
+// };
 
 const FormContainer = styled.div`
   display: flex;

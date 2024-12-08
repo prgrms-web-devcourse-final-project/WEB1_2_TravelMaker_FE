@@ -7,7 +7,7 @@ import Modal, { HandleModalMessage } from "@components/modal/Modal";
 import { ROUTES } from "@routes/type";
 import { enterRoom } from "../api/enterRoom";
 
-const RoomEnterModalContainer = () => {
+const EnterRoomContainer = () => {
   const title = "플래너 입장하기";
 
   const navigate = useTypedNavigate();
@@ -21,7 +21,7 @@ const RoomEnterModalContainer = () => {
 
     try {
       await handleMessage("default", "플래너 입장중...", enterRoom({ roomId, roomCode: code }));
-      navigate(`/planner/:roomId`, { roomId });
+      navigate(`/planner/:roomId`, { roomId }, { replace: true });
     } catch (error) {
       handleEntryError(error, handleMessage);
     }
@@ -57,4 +57,4 @@ const handleEntryError = async (error: unknown, handleMessage: HandleModalMessag
   }
 };
 
-export default RoomEnterModalContainer;
+export default EnterRoomContainer;

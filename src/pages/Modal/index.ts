@@ -1,2 +1,2 @@
-export { default as RoomCreateModal } from "./RoomCreateModal";
-export { default as RoomEnterModal } from "./RoomEnterModal";
+export { default as CreateRoomModal } from "./CreateRoomModal";
+export { default as EnterRoomModal } from "./EnterRoomModal";

@@ -7,7 +7,7 @@ import { createRoom } from "../api/createRoom";
 type ConfirmHandler = ComponentProps<typeof Modal.Config>["onConfirm"];
 type ConfirmData = Parameters<NonNullable<ConfirmHandler>>[0];
 
-const RoomCreateModalContainer = () => {
+const CreateRoomContainer = () => {
   const title = "플래너 시작하기";
 
   const navigate = useTypedNavigate();
@@ -34,4 +34,4 @@ const RoomCreateModalContainer = () => {
   );
 };
 
-export default RoomCreateModalContainer;
+export default CreateRoomContainer;
