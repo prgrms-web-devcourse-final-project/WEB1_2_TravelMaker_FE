@@ -49,17 +49,19 @@ type MemberServerMessage =
 export const useWebSocketMembers = (roomId?: string) => {
   const [members, setMembers] = useState<MemberData[]>([]);
   const { isConnected, sendMessage, subscribe } = useWebSocketClient();
+  const [userToKick, setUserToKick] = useState<string | null>(null);
 
-  const handleMessage = useCallback((data: MemberServerMessage) => {
-    switch (data.action) {
+  const handleMessage = useCallback(({ data, action }: MemberServerMessage) => {
+    switch (action) {
       case "LIST_MEMBERS":
-        setMembers(data.data);
+        setMembers(data);
         break;
       case "LEAVE_MESSAGE":
-        setMembers((prev) => prev.filter((member) => member.email !== data.data.message));
+        setMembers((prev) => prev.filter((member) => member.email !== data.message));
         break;
       case "FORCE_EXIT":
-        setMembers((prev) => prev.filter((member) => member.email !== data.data.message));
+        setUserToKick(data.message);
+        setMembers((prev) => prev.filter((member) => member.email !== data.message));
         break;
       case "DELETE_ROOM":
         setMembers([]);
@@ -101,6 +103,7 @@ export const useWebSocketMembers = (roomId?: string) => {
   }, [roomId, sendMessage]);
 
   return {
+    userToKick,
     members,
     requestMemberList,
     isConnected,

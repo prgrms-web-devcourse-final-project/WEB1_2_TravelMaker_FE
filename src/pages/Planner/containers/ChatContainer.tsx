@@ -1,4 +1,4 @@
-import { ComponentProps, memo, useMemo } from "react";
+import { ComponentProps, memo, useEffect, useMemo } from "react";
 
 import { useTypedParams } from "@common/hooks/useTypedParams";
 import Chat from "@components/chat/Chat";
@@ -10,6 +10,7 @@ import { useRoomInfo } from "../hooks/useRoomInfo";
 import { useRoomMemberRemoval } from "../hooks/useRoomMemberRemoval";
 import { useWebSocketChat } from "../hooks/useWebSocketChat";
 import { useWebSocketMembers } from "../hooks/useWebSocketMembers";
+import { useTypedNavigate } from "@common/hooks/useTypedNavigate";
 
 type ChatListProps = ComponentProps<typeof ChatList>["dataList"];
 type ChatInfoBarProps = ComponentProps<typeof ChatInfoBar>["profiles"];
@@ -19,10 +20,19 @@ const ChatContainer = memo(() => {
   const { userProfile } = useUserProfile();
   const { roomInfo } = useRoomInfo(roomId);
   const { messages, sendChatMessage } = useWebSocketChat(roomId);
-  const { members } = useWebSocketMembers(roomId);
+  const { members, userToKick } = useWebSocketMembers(roomId);
+  const navigate = useTypedNavigate();
 
   const { request } = useRoomMemberRemoval();
   const isHost = userProfile?.email === roomInfo?.hostEmail;
+
+  useEffect(() => {
+    if (userToKick && userProfile?.email === userToKick) {
+      window.alert("퇴장되었습니다.");
+      navigate("/", undefined, { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userProfile?.email, userToKick]);
 
   const transformedMessages: ChatListProps = useMemo(() => {
     return messages.map(({ message, sender, profileImage }) => ({
