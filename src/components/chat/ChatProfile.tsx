@@ -52,6 +52,7 @@ interface ProfileLabelProps extends ProfileBaseProps {
 interface ClickableProps {
   onClick: () => void;
   isInteractive?: boolean;
+  showCursor?: boolean;
 }
 
 interface ProfileClickableProps extends ProfileImageProps, ClickableProps {}
@@ -105,9 +106,12 @@ const Profile: ProfileComponent = {
       </Base.TextContainer>
     );
   },
-  ClickableImage: ({ onClick, isInteractive, ...otherProps }) => {
+  ClickableImage: ({ onClick, isInteractive, showCursor, ...otherProps }) => {
     return (
-      <Base.ClickableContainer onClick={onClick} $isInteractive={isInteractive}>
+      <Base.ClickableContainer
+        onClick={onClick}
+        $isInteractive={isInteractive}
+        $cursor={showCursor}>
         <Profile.Image {...otherProps} />
       </Base.ClickableContainer>
     );
@@ -152,13 +156,14 @@ const Base = {
     ${baseContentStyle}
     background-color: ${({ theme }) => theme.colors.background.neutral0};
   `,
-  ClickableContainer: styled.div.attrs<Pick<BadgeStyleProps, "$isInteractive">>(
-    ({ $isInteractive = true }) => ({
-      $isInteractive,
-    })
-  )`
+  ClickableContainer: styled.div.attrs<
+    Pick<BadgeStyleProps, "$isInteractive"> & { $cursor?: boolean }
+  >(({ $isInteractive = true, $cursor = true }) => ({
+    $isInteractive,
+    $cursor,
+  }))`
     flex: 1;
-    cursor: pointer;
+    cursor: ${({ $cursor }) => ($cursor ? "pointer" : "default")};
     transition: ${({ $isInteractive }) => ($isInteractive ? "transform 0.2s ease" : "none")};
     &:hover {
       transform: ${({ $isInteractive }) => ($isInteractive ? "translateY(-5px)" : "none")};

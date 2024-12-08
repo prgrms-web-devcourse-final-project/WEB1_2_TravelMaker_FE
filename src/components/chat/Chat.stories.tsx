@@ -57,10 +57,10 @@ export const DefaultChat: Story = {
       { type: "sender", text: "네, 감사합니다!", url: null },
     ],
     profiles: [
-      { url: "https://picsum.photos/200/300", onClick: fn() },
-      { url: "https://picsum.photos/200/300", onClick: fn() },
-      { url: "https://picsum.photos/200/300", onClick: fn(), isHost: true },
-      { url: "https://picsum.photos/200/300", onClick: fn() },
+      { url: "https://picsum.photos/200/300", onHostClick: fn() },
+      { url: "https://picsum.photos/200/300", onHostClick: fn() },
+      { url: "https://picsum.photos/200/300", onHostClick: fn(), isHost: true },
+      { url: "https://picsum.photos/200/300", onHostClick: fn() },
     ],
   },
 };

@@ -7,18 +7,19 @@ import ChatList from "./ChatList";
 import ChatSubmitter from "./ChatSubmitter";
 
 interface Props {
-  myProfile: string;
+  isHost?: boolean;
+  myProfile?: string;
   profiles: ComponentProps<typeof ChatInfoBar>["profiles"];
   chatList: ComponentProps<typeof ChatList>["dataList"];
   // 수정된 타입
   onSubmit: (message: string) => void; // onSubmit에 message 인자를 받도록 타입 변경
 }
 
-const Chat: FC<Props> = ({ myProfile, chatList, profiles, onSubmit }) => {
+const Chat: FC<Props> = ({ myProfile, isHost = false, chatList, profiles, onSubmit }) => {
   return (
     <ChatContainer>
       {/* 상단 */}
-      <ChatInfoBar url={myProfile} profiles={profiles} />
+      <ChatInfoBar url={myProfile ?? ""} isHost={isHost} profiles={profiles} />
       {/* 채팅 리스트 */}
       <ChatList dataList={chatList} />
       {/* 메시지 전송 */}

@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import styled from "styled-components";
 
 import Profile from "./ChatProfile";
@@ -16,23 +16,30 @@ const PROFILE_CONSTANTS = {
 
 interface ProfileProps {
   url: string;
-  onClick: () => void;
+  onHostClick: (removeUserProfile: () => void) => void;
   isHost?: boolean;
   showBadge?: boolean;
 }
 
 interface Props {
   url: string;
+  isHost?: boolean;
   profiles: ProfileProps[];
 }
 
-const ChatInfoBar: FC<Props> = ({ url, profiles: initialProfiles }) => {
+const ChatInfoBar: FC<Props> = ({ url, isHost, profiles: initialProfiles }) => {
   const [isExpanded, setIsExpanded] = useState(PROFILE_CONSTANTS.IS_EXPANDED);
   const [profiles, setProfiles] = useState(initialProfiles);
 
+  useEffect(() => {
+    if (initialProfiles?.length) {
+      setProfiles(initialProfiles);
+    }
+  }, [initialProfiles]);
+
   // Host 프로필 처리
-  const handleHostProfileClick = (profile: ProfileProps) => {
-    profile.onClick();
+  const handleHostProfileClick = (profile: ProfileProps, removeUserProfile: () => void) => {
+    profile.onHostClick(removeUserProfile);
   };
 
   // 프로필 삭제 처리
@@ -45,7 +52,7 @@ const ChatInfoBar: FC<Props> = ({ url, profiles: initialProfiles }) => {
     setProfiles((prev) => {
       return prev.map((profile, index) => ({
         ...profile,
-        showBadge: !profile.isHost && index === currentIndex,
+        showBadge: isHost && !profile.isHost && index === currentIndex,
       }));
     });
   };
@@ -54,20 +61,13 @@ const ChatInfoBar: FC<Props> = ({ url, profiles: initialProfiles }) => {
   const handleProfileClick = (currentIndex: number) => {
     const currentProfile = profiles[currentIndex];
 
-    if (currentProfile.isHost) {
-      handleHostProfileClick(currentProfile);
-
-      return;
-    }
-
     if (currentProfile.showBadge) {
-      handleProfileRemove(currentIndex);
+      handleHostProfileClick(currentProfile, () => handleProfileRemove(currentIndex));
 
       return;
     }
 
     handleBadgeActivation(currentIndex);
-    currentProfile.onClick();
   };
 
   const { width, height } = useWindowSize();
@@ -82,7 +82,7 @@ const ChatInfoBar: FC<Props> = ({ url, profiles: initialProfiles }) => {
       <ProfileContainer>
         {/* 메인 프로필 영역 */}
         <MyProfileContainer>
-          <Profile.Image size={profileSize} url={url} stroke />
+          <Profile.Image size={profileSize} url={url} stroke isHost={isHost} />
         </MyProfileContainer>
         {/* 스크롤 가능한 프로필 리스트 영역 */}
         <ScrollableArea>
@@ -98,6 +98,7 @@ const ChatInfoBar: FC<Props> = ({ url, profiles: initialProfiles }) => {
                     onClick={() => handleProfileClick(index)}
                     isHost={profile.isHost}
                     showBadge={profile.showBadge}
+                    showCursor={isHost}
                   />
                 ))}
                 <Profile.ClickableLabel
