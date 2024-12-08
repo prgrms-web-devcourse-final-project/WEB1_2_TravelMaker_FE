@@ -1,162 +1,140 @@
 /* eslint-disable no-console */
-import { useState, useCallback, useEffect } from "react";
+import { useWebSocketClient } from "@common/hooks/useWebSocketClient";
+import { useCallback, useEffect, useState } from "react";
+// types.ts
+type WebSocketAction =
+  | "ENTER_ROOM"
+  | "SEND_MESSAGE"
+  | "LIST_MESSAGES"
+  | "WELCOME_MESSAGE"
+  | "BROADCAST_MESSAGE";
 
-import { WebSocketClient } from "@common/services/WebSocketClient";
-import { UserProfile } from "@api/my/member";
+interface BaseMessage {
+  action: WebSocketAction;
+}
 
-type ChatAction = "BROADCAST_MESSAGE" | "ENTER_ROOM" | "SEND_MESSAGE" | "LIST_MEMBERS";
+interface MessageData {
+  profileImage?: string;
+  message: string;
+  timestamp: string;
+  sender: string;
+  nickname?: string;
+}
 
-interface ChatMessage {
-  action: ChatAction;
+interface SendMessagePayload extends BaseMessage {
+  action: "SEND_MESSAGE";
   data: {
-    sender: string;
-    nickname: string;
-    profileImage: string;
+    message: string;
+  };
+}
+
+interface EnterRoomPayload extends BaseMessage {
+  action: "ENTER_ROOM";
+}
+
+interface ListMessagesPayload extends BaseMessage {
+  action: "LIST_MESSAGES";
+}
+
+interface WelcomeMessagePayload extends BaseMessage {
+  action: "WELCOME_MESSAGE";
+  data: {
+    sender: "System";
     message: string;
     timestamp: string;
   };
 }
 
-type ChatMemberData = {
-  email: string;
-  nickname: string;
-  profileImage: string;
-};
-
-interface ChatMember {
-  action: ChatAction;
-  data: ChatMemberData[];
+interface BroadcastMessagePayload extends BaseMessage {
+  action: "BROADCAST_MESSAGE";
+  data: MessageData;
 }
 
-export const useWebSocketChat = (roomId: string | undefined, userProfile: UserProfile | null) => {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [members, setMembers] = useState<ChatMemberData[]>([]);
-  const [isConnected, setIsConnected] = useState(false);
+interface BroadcastMessageListPayload extends BaseMessage {
+  action: "LIST_MESSAGES";
+  data: MessageData[];
+}
 
-  const requestRoomMembers = useCallback(() => {
-    if (!roomId) {
-      console.warn("멤버 리스트 요청 실패: 방 ID 없음");
+type ServerMessage = WelcomeMessagePayload | BroadcastMessagePayload | BroadcastMessageListPayload;
 
-      return;
+export const useWebSocketChat = (roomId?: string) => {
+  const [messages, setMessages] = useState<MessageData[]>([]);
+  const { isConnected, sendMessage, subscribe } = useWebSocketClient();
+
+  const handleMessage = useCallback((data: ServerMessage) => {
+    if (data.action === "BROADCAST_MESSAGE") {
+      setMessages((prev) => [...prev, data.data as MessageData]);
     }
 
-    const wsClient = WebSocketClient.getInstance();
+    // 기능 보류
+    // if (data.action === "LIST_MESSAGES") {
+    //   setMessages(data.data as MessageData[]);
+    // }
+  }, []);
 
-    wsClient.send(`/app/room/${roomId}/member`, {
-      action: "LIST_MEMBERS",
-    });
-  }, [roomId]);
-
-  const notifyRoomEntry = useCallback(() => {
-    if (!roomId) {
-      console.warn("입장 알림 실패: 방 ID 없음");
-
-      return;
-    }
-
-    const wsClient = WebSocketClient.getInstance();
-
-    wsClient.send(`/app/room/${roomId}`, {
-      action: "ENTER_ROOM",
-    });
-  }, [roomId]);
-
-  const sendMessage = useCallback(
-    (message: string) => {
-      if (!roomId) {
-        console.warn("메시지 전송 실패: 방 ID 없음");
-
-        return;
-      }
-
-      const wsClient = WebSocketClient.getInstance();
-
-      wsClient.send(`/app/room/${roomId}`, {
-        action: "SEND_MESSAGE",
-        data: { message },
-      });
-    },
-    [roomId]
-  );
-
-  const connect = useCallback(() => {
-    if (!roomId || !userProfile) {
-      console.warn("웹소켓 연결 실패: 필수 정보 누락", { roomId, hasUserProfile: !!userProfile });
-
-      return;
-    }
-
-    const wsClient = WebSocketClient.getInstance();
-
-    wsClient.setOnConnect(() => {
-      console.log("채팅 웹소켓 연결됨");
-
-      try {
-        wsClient.subscribe(`/topic/room/${roomId}`, {
-          onMessage: (data) => {
-            const message = data as ChatMessage;
-
-            console.log("채팅 메시지 수신:", message);
-
-            if (message.action === "BROADCAST_MESSAGE") {
-              setMessages((prev) => [...prev, message]);
-            }
-          },
-          onError: (error) => {
-            console.error("채팅 메시지 구독 에러:", error);
-            setIsConnected(false);
-          },
-        });
-
-        wsClient.subscribe(`/topic/room/${roomId}/member`, {
-          onMessage: (data) => {
-            const message = data as ChatMember;
-
-            console.log("멤버 정보 수신:", message);
-
-            if (message.action === "LIST_MEMBERS") {
-              setMembers(message.data);
-            }
-          },
-          onError: (error) => {
-            console.error("멤버 정보 구독 에러:", error);
-            setIsConnected(false);
-          },
-        });
-
-        setIsConnected(true);
-
-        setTimeout(() => {
-          requestRoomMembers();
-          notifyRoomEntry();
-        }, 100);
-      } catch (error) {
-        console.error("웹소켓 초기화 중 에러 발생:", error);
-        setIsConnected(false);
-      }
-    });
-
-    wsClient.connect(roomId);
-
-    return () => {
-      console.log("웹소켓 연결 정리");
-      wsClient.disconnect();
-      setIsConnected(false);
-    };
-  }, [roomId, userProfile, requestRoomMembers, notifyRoomEntry]);
+  const handleError = useCallback((error: unknown) => {
+    console.error("메시지 수신 중 오류 발생:", error);
+  }, []);
 
   useEffect(() => {
-    const cleanup = connect();
+    if (isConnected && roomId) {
+      // 입장 메시지 요청
+      const enterMessage: EnterRoomPayload = {
+        action: "ENTER_ROOM",
+      };
 
-    return () => cleanup?.();
-  }, [connect]);
+      sendMessage(`/app/room/${roomId}`, enterMessage);
+
+      // 채팅 기록 요청 (기능 보류)
+      // const listMessage: ListMessagesPayload = {
+      //   action: "LIST_MESSAGES",
+      // };
+
+      // sendMessage(`/app/room/${roomId}`, listMessage);
+
+      // 메시지 구독
+      const unsubscribe = subscribe(`/topic/room/${roomId}`, {
+        onMessage: handleMessage,
+        onError: handleError,
+      });
+
+      return () => {
+        unsubscribe?.();
+      };
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isConnected, roomId]);
+
+  const sendChatMessage = useCallback(
+    (message: string) => {
+      if (!roomId) return;
+
+      const chatMessage: SendMessagePayload = {
+        action: "SEND_MESSAGE",
+        data: {
+          message,
+        },
+      };
+
+      sendMessage(`/app/room/${roomId}`, chatMessage);
+    },
+    [roomId, sendMessage]
+  );
+
+  const requestMessageList = useCallback(() => {
+    if (!roomId) return;
+
+    const listMessage: ListMessagesPayload = {
+      action: "LIST_MESSAGES",
+    };
+
+    sendMessage(`/app/room/${roomId}`, listMessage);
+  }, [roomId, sendMessage]);
 
   return {
-    members,
     messages,
+    sendChatMessage,
+    requestMessageList,
     isConnected,
-    sendMessage,
-    requestRoomMembers,
-    notifyRoomEntry,
   };
 };
