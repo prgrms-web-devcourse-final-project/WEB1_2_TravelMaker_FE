@@ -1,15 +1,14 @@
-import { ComponentProps, useEffect } from "react";
+import { ComponentProps } from "react";
 
 import { useTypedNavigate } from "@common/hooks/useTypedNavigate";
 import MyPlannerCardList from "@components/cardList/MyPlannerCardList";
-import { getRoomList } from "../api/getRoomList";
-import useFetch from "@common/hooks/useFetch";
 import { formatDate } from "@common/utils/formatDate";
+import { useRoomList } from "../hooks/useRoomList";
 
 type MyPlannerCardListProps = ComponentProps<typeof MyPlannerCardList>["items"];
 
 const MyPlannerCardListContainer = () => {
-  const { request, state } = useFetch(getRoomList);
+  const { roomList } = useRoomList();
   const navigate = useTypedNavigate();
 
   const handlePlannerCardClick = (roomId?: string) => {
@@ -22,12 +21,7 @@ const MyPlannerCardListContainer = () => {
     navigate("/createModalRoom");
   };
 
-  useEffect(() => {
-    request();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const cardList: MyPlannerCardListProps = (state.data ?? []).map((card) => {
+  const cardList: MyPlannerCardListProps = (roomList ?? []).map((card) => {
     return {
       country: card.country,
       title: card.title,
