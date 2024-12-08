@@ -3,7 +3,7 @@ import BackgroundModal from "@components/modal/BackgroundModal";
 
 const CreateRoomModal = () => {
   return (
-    <BackgroundModal showBackgroundImage>
+    <BackgroundModal showBackgroundImage useZIndex={false}>
       <CreateRoomContainer />
     </BackgroundModal>
   );
