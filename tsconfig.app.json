@@ -14,6 +14,8 @@
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
+    // TODO: 타입
+    "noUncheckedIndexedAccess": false,
 
     /* Linting */
     "strict": true,

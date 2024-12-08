@@ -1,6 +1,7 @@
 import type { SVGProps } from "react";
+
 const Icon1 = (props: SVGProps<SVGSVGElement>) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width={48} height={48} fill="none" {...props}>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" {...props}>
     <circle cx={24} cy={24} r={24} fill="#FEE500" />
     <path
       fill="#392020"

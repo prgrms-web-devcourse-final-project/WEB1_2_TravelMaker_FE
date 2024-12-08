@@ -2,6 +2,10 @@ import "styled-components";
 import { DefaultTheme } from "styled-components";
 
 import calcByPercent from "@common/utils/calcByPercent";
+import {
+  createResponsiveClampCalculator,
+  createViewportSizeCalculator,
+} from "@common/utils/createResponsiveCalculator";
 
 declare module "styled-components" {
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
@@ -342,27 +346,16 @@ export const darkTheme: DefaultTheme = {
 };
 
 /**
- * 주어진 픽셀(px) 값을 뷰포트 너비(vw) 단위로 변환합니다.
- * @param px 변환할 픽셀 값
- * @returns 최소값(`min`)으로 픽셀(px) 값과 뷰포트 너비(vw) 값을 반환하는 CSS 표현식
- */
-export const calcVwFromPx = (px: number) => `min(${px}px, calc(${px} / 1920 * 100vw))`;
-
-/**
- * 주어진 픽셀(px) 값을 뷰포트 높이(vh) 단위로 변환합니다.
- * @param px 변환할 픽셀 값
- * @returns 최소값(`min`)으로 픽셀(px) 값과 뷰포트 높이(vh) 값을 반환하는 CSS 표현식
- */
-export const calcVhFromPx = (px: number) => `min(${px}px, calc(${px} / 1080 * 100vh))`;
-
-/**
  * 주어진 최소값과 최대값 범위에서, 뷰포트 너비(vw)에 따라 반응형 값을 계산합니다.
  * @param min 최소 픽셀 값
  * @param max 최대 픽셀 값
  * @returns `clamp`를 사용하여 최소값, 뷰포트 기반 계산 값, 최대값을 포함하는 CSS 표현식
  */
-export const calcResponsive = (min: number, max: number) =>
-  `clamp(${min}px, calc(${max} / 1920 * 100vw), ${max}px)`;
+export const calcResponsiveCore = (min: number, max: number, type?: "vw" | "vh") => {
+  const viewPortType = type ?? "vw";
+
+  return `clamp(${min}px, calc(${max} / 1920 * 100${viewPortType}), ${max}px)`;
+};
 
 /**
  * 퍼센트를 기준으로 최소값을 계산하고, 최대값과 함께 반응형 값을 제공합니다.
@@ -370,5 +363,72 @@ export const calcResponsive = (min: number, max: number) =>
  * @param max 최대 픽셀 값
  * @returns `calcResponsive`를 호출하여 퍼센트 기반 최소값과 최대값으로 생성된 CSS 표현식
  */
-export const calcResponsiveByPercent = (percentage: number, max: number) =>
-  calcResponsive(calcByPercent(max, percentage), max);
+export const calcResponsiveByPercent = (percentage: number, max: number) => {
+  return calcResponsiveCore(calcByPercent(max, percentage), max);
+};
+
+const config = {
+  designWidth: 1920,
+  designHeight: 1080,
+  minWidth: 1024,
+  minHeight: 768,
+};
+
+/**
+ * 반응형 CSS clamp 값을 생성하는 유틸리티 함수
+ *
+ * @description
+ * 디자인 시안의 고정 크기 값을 반응형 clamp() 함수로 변환합니다.
+ * 최소값, 반응형 값, 최대값을 자동으로 계산하여 CSS clamp를 생성합니다.
+ *
+ * @example
+ * // 기본 설정
+ * const config = {
+ *   designWidth: 1920,    // 디자인 기준 너비
+ *   designHeight: 1080,   // 디자인 기준 높이
+ *   minWidth: 1024,       // 최소 지원 너비
+ *   minHeight: 768        // 최소 지원 높이
+ * };
+ *
+ * const calcResponsive = createResponsiveClampCalculator(config);
+ *
+ * // 사용 예시
+ * calcResponsive({ value: 32 })                    // width 기준, 숫자값
+ * calcResponsive({ value: "24px" })                // width 기준, 문자열
+ * calcResponsive({ value: 50, dimension: "height" }) // height 기준
+ * calcResponsive({ value: 40, minValue: 20 })      // 최소값 직접 지정
+ *
+ * // 결과 예시
+ * // clamp(17px, calc(32 / 1920 * 100vw), 32px)
+ *
+ * @param {ViewportConfig} config - 뷰포트 설정 객체
+ * @returns {Function} 반응형 clamp 값을 생성하는 함수
+ */
+export const calcResponsive = createResponsiveClampCalculator(config);
+
+/**
+ * 디자인 시안의 크기를 기준으로 현재 뷰포트에 맞는 반응형 크기를 계산하는 함수를 생성합니다.
+ *
+ * @param config - 디자인 시안의 기준 크기 설정
+ * @param config.designWidth - 디자인 시안의 기준 너비 (픽셀)
+ * @param config.designHeight - 디자인 시안의 기준 높이 (픽셀)
+ *
+ * @returns 현재 뷰포트에 맞는 크기를 계산하는 함수를 반환합니다.
+ *
+ * @example
+ * // useWindowSize 훅과 함께 사용
+ * const App = () => {
+ *   const windowSize = useWindowSize();
+ *
+ *   // 디자인 시안의 30px을 현재 뷰포트 너비에 맞게 변환
+ *   const responsiveWidth = calcResponsiveValue({
+ *     value: 30,
+ *     dimension: "width",
+ *     window: windowSize
+ *   });
+ *
+ *   return <div style={{ width: responsiveWidth }} />;
+ * }
+ */
+
+export const calcResponsiveValue = createViewportSizeCalculator(config);

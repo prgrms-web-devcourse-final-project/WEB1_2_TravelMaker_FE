@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { fn } from "@storybook/test";
 
 import Modal from "./Modal";
 import { headerArgTypes } from "./headerArgTypes";
@@ -22,7 +21,7 @@ export const DefaultModal: Story = {
     url: "http://wayfarer.com/SI3DK21K",
     code: "APL3DKDD",
     roomId: "SI3DKD21",
-    email: "apple@naver.com",
-    onInviteEmail: fn(),
+    // email: "apple@naver.com",
+    // onInviteEmail: fn(),
   },
 };

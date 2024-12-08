@@ -1,12 +1,12 @@
 import { ElementType, FC } from "react";
 import styled, { css } from "styled-components";
 
-import { CustomTheme } from "@common/styles/theme";
+import { calcResponsive, CustomTheme } from "@common/styles/theme";
 import extractNumber from "@common/utils/extractNumber";
-import calculateProportionalSize from "@common/utils/calculateProportionalSize";
 import CloseIcon from "@components/assets/icons/CloseIcon";
 import commonCircleStyle from "@common/styles/circleStyle";
 import HostIcon from "@components/assets/icons/HostIcon";
+import scaleByContainer from "@common/utils/scaleByContainer";
 
 type ShadowTypes = keyof (CustomTheme["shadows"] & { none: "string" });
 
@@ -42,6 +42,7 @@ interface ProfileImageProps extends ProfileBaseProps {
   Icon?: ElementType<{ size?: number; color?: string }>;
   showBadge?: boolean;
   isHost?: boolean;
+  hasBackground?: boolean;
 }
 
 interface ProfileLabelProps extends ProfileBaseProps {
@@ -51,6 +52,7 @@ interface ProfileLabelProps extends ProfileBaseProps {
 interface ClickableProps {
   onClick: () => void;
   isInteractive?: boolean;
+  showCursor?: boolean;
 }
 
 interface ProfileClickableProps extends ProfileImageProps, ClickableProps {}
@@ -76,11 +78,15 @@ const DEFAULTS = {
 
 const Profile: ProfileComponent = {
   Image: ({ url, Icon = ProfileCloseIcon, ...styleProps }) => {
-    const { size, stroke, shadow, badgeColor, showBadge, isHost } = styleProps;
+    const { size, stroke, shadow, badgeColor, showBadge, isHost, hasBackground } = styleProps;
     const { badgeDimension, badgeIconDimension, x, y } = getDimensions(size);
 
     return (
-      <Base.ProfileContainer $size={size} $stroke={stroke} $shadow={shadow}>
+      <Base.ProfileContainer
+        $size={size}
+        $stroke={stroke}
+        $shadow={shadow}
+        $hasBackground={hasBackground}>
         <Base.Host $position={{ x, y }} $isHost={isHost}>
           <HostIcon size={badgeDimension} />
         </Base.Host>
@@ -100,9 +106,12 @@ const Profile: ProfileComponent = {
       </Base.TextContainer>
     );
   },
-  ClickableImage: ({ onClick, isInteractive, ...otherProps }) => {
+  ClickableImage: ({ onClick, isInteractive, showCursor, ...otherProps }) => {
     return (
-      <Base.ClickableContainer onClick={onClick} $isInteractive={isInteractive}>
+      <Base.ClickableContainer
+        onClick={onClick}
+        $isInteractive={isInteractive}
+        $cursor={showCursor}>
         <Profile.Image {...otherProps} />
       </Base.ClickableContainer>
     );
@@ -130,28 +139,31 @@ const baseContentStyle = css<BaseContentStyleProps>`
 `;
 
 const Base = {
-  ProfileContainer: styled.div.attrs<BaseContentStyleProps>(
-    ({ $stroke = false, $shadow = "none" }) => ({
+  ProfileContainer: styled.div.attrs<BaseContentStyleProps & { $hasBackground?: boolean }>(
+    ({ $stroke = false, $shadow = "none", $hasBackground = true }) => ({
       $stroke,
       $shadow,
+      $hasBackground,
     })
-  )<BaseContentStyleProps>`
+  )`
     ${baseContentStyle}
-    background-color: ${({ theme }) => theme.colors.tertiary.disabled};
+    background-color: ${({ $hasBackground, theme }) =>
+      $hasBackground ? theme.colors.tertiary.disabled : "transparent"};
   `,
   TextContainer: styled.div.attrs<BaseContentStyleProps>(
     ({ $stroke = false, $shadow = "small" }) => ({ $stroke, $shadow })
-  )<BaseContentStyleProps>`
+  )`
     ${baseContentStyle}
     background-color: ${({ theme }) => theme.colors.background.neutral0};
   `,
-  ClickableContainer: styled.div.attrs<Pick<BadgeStyleProps, "$isInteractive">>(
-    ({ $isInteractive = true }) => ({
-      $isInteractive,
-    })
-  )`
+  ClickableContainer: styled.div.attrs<
+    Pick<BadgeStyleProps, "$isInteractive"> & { $cursor?: boolean }
+  >(({ $isInteractive = true, $cursor = true }) => ({
+    $isInteractive,
+    $cursor,
+  }))`
     flex: 1;
-    cursor: pointer;
+    cursor: ${({ $cursor }) => ($cursor ? "pointer" : "default")};
     transition: ${({ $isInteractive }) => ($isInteractive ? "transform 0.2s ease" : "none")};
     &:hover {
       transform: ${({ $isInteractive }) => ($isInteractive ? "translateY(-5px)" : "none")};
@@ -164,7 +176,12 @@ const Base = {
     justify-content: center;
     align-items: center;
     color: ${({ theme }) => theme.colors.text.title};
-    font-size: ${({ theme }) => theme.typography.body.regular.fontSize};
+    font-size: ${({ theme }) =>
+      calcResponsive({
+        value: theme.typography.body.regular.fontSize,
+        dimension: "height",
+        minValue: 13,
+      })};
   `,
   Image: styled.img.attrs(() => ({ alt: "image-profile" }))`
     width: 100%;
@@ -211,15 +228,11 @@ const Base = {
 };
 
 const getDimensions = (size: number) => {
-  const getProportionalSize = (size: number, target: number) => {
-    return calculateProportionalSize(size, target, DEFAULTS.PROFILE_SIZE);
-  };
-
   return {
-    badgeDimension: getProportionalSize(size, DEFAULTS.BADGE_SIZE),
-    badgeIconDimension: getProportionalSize(size, DEFAULTS.ICON_SIZE),
-    x: getProportionalSize(size, DEFAULTS.HOST_POSITION.x),
-    y: getProportionalSize(size, DEFAULTS.HOST_POSITION.y),
+    badgeDimension: scaleByContainer(size, DEFAULTS.BADGE_SIZE, DEFAULTS.PROFILE_SIZE),
+    badgeIconDimension: scaleByContainer(size, DEFAULTS.ICON_SIZE, DEFAULTS.PROFILE_SIZE),
+    x: scaleByContainer(size, DEFAULTS.HOST_POSITION.x, DEFAULTS.PROFILE_SIZE),
+    y: scaleByContainer(size, DEFAULTS.HOST_POSITION.y, DEFAULTS.PROFILE_SIZE),
   };
 };
 

@@ -1,8 +1,9 @@
 import { ChangeEvent, FC, useRef } from "react";
 import styled from "styled-components";
 
-import { calcResponsiveByPercent } from "@common/styles/theme";
+import { calcResponsive } from "@common/styles/theme";
 import SendIcon from "@components/assets/icons/Send";
+import { hideScrollbar } from "@common/styles/hideScrollbar";
 
 interface Props {
   onSubmit: (text: string) => void;
@@ -45,12 +46,16 @@ const ChatInput: FC<Props> = ({ onSubmit }) => {
 };
 
 const OuterContainer = styled.div`
+  ${hideScrollbar}
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
-  min-height: ${calcResponsiveByPercent(-15, 55)};
-  padding: 17.5px 22px;
+  min-height: ${calcResponsive({ value: 55, dimension: "height" })};
+  padding: ${calcResponsive({ value: 17.5, dimension: "height" })}${calcResponsive({
+      value: 22,
+      dimension: "height",
+    })};
   border-radius: ${({ theme: { cornerRadius } }) => cornerRadius.extraLarge};
   background-color: ${({ theme }) => theme.colors.background.neutral0};
   box-shadow: ${({ theme }) => theme.shadows.medium};
@@ -78,17 +83,23 @@ const IconContainer = styled.div`
 `;
 
 const TextArea = styled.textarea`
+  ${hideScrollbar}
   width: 100%;
   height: 25px;
   min-height: 25px;
-  max-height: 150px;
+  max-height: ${calcResponsive({ value: 150, dimension: "width" })};
   line-height: 1.8;
   outline: none;
   border: none;
   resize: none;
   vertical-align: top;
   display: flex;
-  font-size: ${({ theme }) => theme.typography.body.bold.fontSize};
+  font-size: ${({ theme }) =>
+    calcResponsive({
+      value: theme.typography.body.bold.fontSize,
+      dimension: "height",
+      minValue: 13,
+    })};
   font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
   font-family: ${({ theme }) => theme.typography.fontFamily.main};
   color: ${({ theme }) => theme.colors.text.caption};

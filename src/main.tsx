@@ -5,6 +5,18 @@ import { Provider as ReduxProvider } from "react-redux";
 import router from "./routes";
 import { CustomThemeProvider } from "@common/styles/ThemeProvider.tsx";
 import { store } from "@common/redux/store.ts";
+import { UserProvider } from "@pages/My/contexts/UserContext.tsx";
+import { setDefaultsHeaderAuth } from "@api/fetch.ts";
+import { setupAxiosInterceptors } from "@pages/Login/setupAxiosInterceptors.ts";
+
+// 로컬 스토리지에서 토큰 가져오기
+const token = localStorage.getItem("accessToken");
+
+if (token) {
+  setDefaultsHeaderAuth(token); // Axios 기본 헤더에 토큰 추가
+}
+// Axios Interceptors 초기화
+setupAxiosInterceptors();
 
 const enableMocking = async () => {
   if (process.env.NODE_ENV !== "development" || import.meta.env.VITE_MSW_ENABLED !== "true") {
@@ -22,7 +34,9 @@ enableMocking().then(() => {
   createRoot(document.getElementById("root")!).render(
     <CustomThemeProvider>
       <ReduxProvider store={store}>
-        <RouterProvider router={router} />
+        <UserProvider>
+          <RouterProvider router={router} />
+        </UserProvider>
       </ReduxProvider>
     </CustomThemeProvider>
   );
