@@ -113,6 +113,10 @@ const ButtonContainer = styled.button<{ $hidden: boolean }>`
   aspect-ratio: 1;
   flex-shrink: 0;
   border-radius: ${({ theme: { cornerRadius } }) => cornerRadius.small};
+  transition: transform 0.2s ease;
+  &:hover {
+    transform: scale(1.1);
+  }
 `;
 
 const Base = {

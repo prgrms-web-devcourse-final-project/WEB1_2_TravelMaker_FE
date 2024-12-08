@@ -1,17 +1,17 @@
 import { useEffect } from "react";
 
-import { fetchUserProfile } from "@api/my/member";
 import useFetch from "@common/hooks/useFetch";
+import { getRoomList } from "../api/getRoomList";
 
-export const useUserProfile = () => {
-  const { state, request } = useFetch(fetchUserProfile);
+export const useRoomList = () => {
+  const { state, request } = useFetch(getRoomList);
 
   useEffect(() => {
     request(undefined);
   }, [request]);
 
   return {
-    userProfile: state.data,
+    roomList: state.data,
     isLoading: state.loading,
     error: state.error,
   };

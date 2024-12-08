@@ -35,10 +35,10 @@ export const DefaultChatInfoBar: Story = {
   args: {
     url: "https://picsum.photos/200/300",
     profiles: [
-      { url: "https://picsum.photos/200/300", onClick: fn() },
-      { url: "https://picsum.photos/200/300", onClick: fn() },
-      { url: "https://picsum.photos/200/300", onClick: fn(), isHost: true },
-      { url: "https://picsum.photos/200/300", onClick: fn() },
+      { url: "https://picsum.photos/200/300", onHostClick: fn() },
+      { url: "https://picsum.photos/200/300", onHostClick: fn() },
+      { url: "https://picsum.photos/200/300", onHostClick: fn(), isHost: true },
+      { url: "https://picsum.photos/200/300", onHostClick: fn() },
     ],
   },
 };

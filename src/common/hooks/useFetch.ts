@@ -1,5 +1,5 @@
 import { AxiosError } from "axios";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import { delayExecution } from "@common/utils/delayExecution";
 
@@ -16,28 +16,24 @@ interface FetchState<D> {
   error: ServerError | null;
 }
 
-interface useFetchReturn<P, D> {
+type FetchFunction<P, D> = P extends void ? () => Promise<D> : (payload: P) => Promise<D>;
+
+interface UseFetchReturn<P, D> {
   state: FetchState<D>;
-  request: (payload?: P) => Promise<void>;
+  request: P extends void ? () => Promise<void> : (payload: P) => Promise<void>;
 }
 
-/**
- * 비동기 요청에 대한 상태를 제공하는 훅
- *
- * @param props.fetch - 요청 핸들러 함수를 전달합니다.
- * @param options.delay - 지연할 응답 시간을 명시합니다.
- */
 const useFetch = <P, D>(
-  fetch: (payload?: P) => Promise<D>,
+  fetch: FetchFunction<P, D>,
   options?: { delay: number }
-): useFetchReturn<P, D> => {
+): UseFetchReturn<P, D> => {
   const [state, setState] = useState<FetchState<D>>({
     data: null,
     loading: false,
     error: null,
   });
 
-  const request = async (payload?: P) => {
+  const request = useCallback(async (payload?: P) => {
     try {
       setState(() => ({ data: null, error: null, loading: true }));
 
@@ -45,7 +41,9 @@ const useFetch = <P, D>(
         await delayExecution(options.delay).start();
       }
 
-      const data = await fetch(payload);
+      const data = await (payload === undefined
+        ? (fetch as () => Promise<D>)()
+        : (fetch as (payload: P) => Promise<D>)(payload));
 
       setState({ data, loading: false, error: null });
     } catch (error) {
@@ -55,9 +53,10 @@ const useFetch = <P, D>(
         error: error as ServerError,
       });
     }
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  return { state, request };
+  return { state, request } as UseFetchReturn<P, D>;
 };
 
 export default useFetch;
