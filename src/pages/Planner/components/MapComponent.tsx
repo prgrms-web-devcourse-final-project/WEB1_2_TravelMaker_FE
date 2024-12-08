@@ -1,6 +1,7 @@
+import styled from "styled-components";
 import React, { useRef, useState, useCallback } from "react";
 import { GoogleMap, useJsApiLoader, OverlayView, Polyline } from "@react-google-maps/api";
-import styled from "styled-components";
+
 import { calcResponsive } from "@common/styles/theme";
 import NormalMarker from "@components/normalmarker/NormalMarker";
 import NormalMarkerDetails from "@components/markerdetails/NormalMarkerDetails";
@@ -10,8 +11,8 @@ import SearchResultList from "@components/searchresultlist/SearchResultList";
 import ZoomScreen from "@components/zoomscreen/ZoomScreen";
 import NoImage from "@components/assets/images/NoImage.svg";
 import ScheduleManager from "./ScheduleManager";
-import Chat from "@components/chat/Chat";
-import SettingButton from "@components/button/SettingButton";
+import PlannerSettingContainer from "../containers/PlannerSettingContainer";
+import ChatContainer from "../containers/ChatContainer";
 
 const MapComponent = () => {
   const containerStyle = {
@@ -347,17 +348,6 @@ const MapComponent = () => {
     [mapRef, addMarker]
   );
 
-  const myProfile = "https://via.placeholder.com/150";
-  const profiles = [
-    { url: "https://via.placeholder.com/150", onClick: () => {} },
-    { url: "https://via.placeholder.com/150", onClick: () => {} },
-  ];
-  const chatList = [
-    { type: "sender" as const, text: "안녕!", url: "https://via.placeholder.com/150" },
-    { type: "receiver" as const, text: "우리 여행 어디로 가?", url: null },
-  ];
-  const handleChatSubmit = () => {};
-
   return (
     <Container>
       <MapSection>
@@ -463,15 +453,10 @@ const MapComponent = () => {
         )}
       </MapSection>
       <SettingSection>
-        <SettingButton />
+        <PlannerSettingContainer />
       </SettingSection>
       <ChatSection>
-        <Chat
-          myProfile={myProfile}
-          profiles={profiles}
-          chatList={chatList}
-          onSubmit={handleChatSubmit}
-        />
+        <ChatContainer />
       </ChatSection>
     </Container>
   );

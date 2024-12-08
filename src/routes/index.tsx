@@ -2,7 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 
 import { Main, NotFound, Login, My, Planner, Landing } from "pages";
 import { ROUTES } from "./type";
-import { RoomCreateModal, RoomEnterModal } from "@pages/Modal";
+import { CreateRoomModal, EnterRoomModal } from "@pages/Modal";
 import Header from "@components/header/Header";
 import ProtectedRoute from "./ProtectedRoute";
 
@@ -42,7 +42,7 @@ const router = createBrowserRouter([
     path: ROUTES.CREATE_MODAL,
     element: (
       <ProtectedRoute>
-        <RoomCreateModal />
+        <CreateRoomModal />
       </ProtectedRoute>
     ),
   },
@@ -50,7 +50,7 @@ const router = createBrowserRouter([
     path: ROUTES.ENTER_MODAL,
     element: (
       <ProtectedRoute>
-        <RoomEnterModal />
+        <EnterRoomModal />
       </ProtectedRoute>
     ),
   },
