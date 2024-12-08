@@ -7,9 +7,8 @@ export const useUserProfile = () => {
   const { state, request } = useFetch(fetchUserProfile);
 
   useEffect(() => {
-    request();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    request(undefined);
+  }, [request]);
 
   return {
     userProfile: state.data,
