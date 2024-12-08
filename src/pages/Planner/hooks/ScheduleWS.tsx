@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import { useState, useCallback, useEffect } from "react";
-import { WebSocketClient } from "@common/services/WebSocketClient";
+import { WebSocketClient_ } from "@common/services/WebSocketClient_";
 
 // ScheduleAction 정의
 type ScheduleAction =
@@ -53,7 +53,7 @@ export const useScheduleWS = (roomId: string | undefined) => {
       return;
     }
 
-    const wsClient = WebSocketClient.getInstance();
+    const wsClient = WebSocketClient_.getInstance();
 
     wsClient.send(`/app/room/${roomId}/schedule`, { action: "LIST_SCHEDULES" });
   }, [roomId]);
@@ -66,7 +66,7 @@ export const useScheduleWS = (roomId: string | undefined) => {
         return;
       }
 
-      const wsClient = WebSocketClient.getInstance();
+      const wsClient = WebSocketClient_.getInstance();
 
       wsClient.send(`/app/room/${roomId}/schedule`, {
         action: "LIST_SCHEDULEITEMS",
@@ -90,7 +90,7 @@ export const useScheduleWS = (roomId: string | undefined) => {
         return;
       }
 
-      const wsClient = WebSocketClient.getInstance();
+      const wsClient = WebSocketClient_.getInstance();
 
       wsClient.send(`/app/room/${roomId}/schedule`, {
         action: "UPDATED_SCHEDULEITEM",
@@ -108,7 +108,7 @@ export const useScheduleWS = (roomId: string | undefined) => {
         return;
       }
 
-      const wsClient = WebSocketClient.getInstance();
+      const wsClient = WebSocketClient_.getInstance();
 
       wsClient.send(`/app/room/${roomId}/schedule`, {
         action: "DELETE_SCHEDULEITEM",
@@ -125,7 +125,7 @@ export const useScheduleWS = (roomId: string | undefined) => {
       return;
     }
 
-    const wsClient = WebSocketClient.getInstance();
+    const wsClient = WebSocketClient_.getInstance();
 
     wsClient.setOnConnect(() => {
       console.log("웹소켓 연결 성공");

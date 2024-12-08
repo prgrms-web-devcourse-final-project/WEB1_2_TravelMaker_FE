@@ -1,31 +1,34 @@
-import { ComponentProps, useMemo } from "react";
+import { ComponentProps, memo, useMemo } from "react";
 
 import { useTypedParams } from "@common/hooks/useTypedParams";
 import Chat from "@components/chat/Chat";
 import { ROUTES } from "@routes/type";
 import ChatList from "@components/chat/ChatList";
 import { useUserProfile } from "../hooks/useUserProfile";
-import { useWebSocketChat } from "../hooks/useWebSocketChat";
 import ChatInfoBar from "@components/chat/ChatInfoBar";
 import { useRoomInfo } from "../hooks/useRoomInfo";
 import { useRoomMemberRemoval } from "../hooks/useRoomMemberRemoval";
+import { useWebSocketChat } from "../hooks/useWebSocketChat";
+import { useWebSocketMembers } from "../hooks/useWebSocketMembers";
 
 type ChatListProps = ComponentProps<typeof ChatList>["dataList"];
 type ChatInfoBarProps = ComponentProps<typeof ChatInfoBar>["profiles"];
 
-const ChatContainer = () => {
+const ChatContainer = memo(() => {
   const { roomId } = useTypedParams<typeof ROUTES.PLANNER>();
   const { userProfile } = useUserProfile();
   const { roomInfo } = useRoomInfo(roomId);
-  const { messages, members, sendMessage } = useWebSocketChat(roomId, userProfile);
+  const { messages, sendChatMessage } = useWebSocketChat(roomId);
+  const { members } = useWebSocketMembers(roomId);
+
   const { request } = useRoomMemberRemoval();
   const isHost = userProfile?.email === roomInfo?.hostEmail;
 
   const transformedMessages: ChatListProps = useMemo(() => {
-    return messages.map(({ data }) => ({
-      type: userProfile?.email === data.sender ? "sender" : "receiver",
-      url: data.profileImage,
-      text: data.message,
+    return messages.map(({ message, sender, profileImage }) => ({
+      type: userProfile?.email === sender ? "sender" : "receiver",
+      url: profileImage ?? null,
+      text: message,
     }));
   }, [messages, userProfile?.email]);
 
@@ -51,10 +54,10 @@ const ChatContainer = () => {
       isHost={isHost}
       myProfile={userProfile?.profileImage ?? ""}
       chatList={transformedMessages}
-      onSubmit={sendMessage}
+      onSubmit={sendChatMessage}
       profiles={transformedMembers}
     />
   );
-};
+});
 
 export default ChatContainer;
