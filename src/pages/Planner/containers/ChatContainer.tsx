@@ -20,11 +20,19 @@ const ChatContainer = memo(() => {
   const { userProfile } = useUserProfile();
   const { roomInfo } = useRoomInfo(roomId);
   const { messages, sendChatMessage } = useWebSocketChat(roomId);
-  const { members, userToKick } = useWebSocketMembers(roomId);
+  const { members, userToKick, deletedRoom } = useWebSocketMembers(roomId);
   const navigate = useTypedNavigate();
 
   const { request } = useRoomMemberRemoval();
   const isHost = userProfile?.email === roomInfo?.hostEmail;
+
+  useEffect(() => {
+    if (deletedRoom) {
+      window.alert("방이 삭제되었습니다.");
+      navigate("/", undefined, { replace: true });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [deletedRoom]);
 
   useEffect(() => {
     if (userToKick && userProfile?.email === userToKick) {

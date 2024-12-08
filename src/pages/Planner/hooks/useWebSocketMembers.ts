@@ -50,6 +50,7 @@ export const useWebSocketMembers = (roomId?: string) => {
   const [members, setMembers] = useState<MemberData[]>([]);
   const { isConnected, sendMessage, subscribe } = useWebSocketClient();
   const [userToKick, setUserToKick] = useState<string | null>(null);
+  const [deletedRoom, setDeletedRoom] = useState<boolean>(false);
 
   const handleMessage = useCallback(({ data, action }: MemberServerMessage) => {
     switch (action) {
@@ -65,6 +66,7 @@ export const useWebSocketMembers = (roomId?: string) => {
         break;
       case "DELETE_ROOM":
         setMembers([]);
+        setDeletedRoom(true);
         break;
     }
   }, []);
@@ -104,6 +106,7 @@ export const useWebSocketMembers = (roomId?: string) => {
 
   return {
     userToKick,
+    deletedRoom,
     members,
     requestMemberList,
     isConnected,
