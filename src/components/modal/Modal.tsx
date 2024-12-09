@@ -230,6 +230,7 @@ const Modal: ModalComponent = {
       customInput: <DateClickable />,
       dateFormat: "yy.MM.dd",
       portalId: "root",
+      popperClassName: "calendar-popper",
     };
 
     return (
