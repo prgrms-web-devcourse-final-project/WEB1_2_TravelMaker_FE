@@ -15,7 +15,7 @@ interface MapBaseMessage {
   action: MapWebSocketAction;
 }
 
-interface MarkerData {
+export interface MarkerData {
   markerId: number;
   email: string;
   profileImage: string;
@@ -95,27 +95,24 @@ export const useMapMarkers = (roomId?: string) => {
   const [markers, setMarkers] = useState<MarkerData[]>([]);
   const { isConnected, sendMessage, subscribe } = useWebSocketClient();
 
+  useEffect(() => {
+    console.log("Current markers:", markers);
+  }, [markers]);
+
   const handleMessage = useCallback((data: MapServerMessage) => {
     switch (data.action) {
       case "ADDED_MARKER":
-        console.log("Marker added from server:", data.data);
-        if (!data.data.profileImage) {
-          data.data.profileImage = "https://via.placeholder.com/150";
-        }
         setMarkers((prevMarkers) => [...prevMarkers, data.data]);
         break;
       case "LIST_MARKERS":
-        console.log("List of markers received:", data.data);
         setMarkers(data.data);
         break;
       case "UPDATED_MARKER":
-        console.log("Marker updated:", data.data);
         setMarkers((prevMarkers) =>
           prevMarkers.map((marker) => (marker.markerId === data.data.markerId ? data.data : marker))
         );
         break;
       case "DELETED_MARKER":
-        console.log("Marker deleted:", data.data.markerId);
         setMarkers((prevMarkers) =>
           prevMarkers.filter((marker) => marker.markerId !== data.data.markerId)
         );
