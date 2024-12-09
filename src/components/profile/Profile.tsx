@@ -249,7 +249,7 @@ const InfoWrapper = styled.div`
   text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
 
   @media (max-width: 1550px) {
     max-width: 280px;

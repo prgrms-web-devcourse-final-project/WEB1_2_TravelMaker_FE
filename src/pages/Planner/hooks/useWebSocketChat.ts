@@ -1,3 +1,4 @@
+// useWebSocketChat.ts
 /* eslint-disable no-console */
 import { useWebSocketClient } from "@common/hooks/useWebSocketClient";
 import { useCallback, useEffect, useState } from "react";

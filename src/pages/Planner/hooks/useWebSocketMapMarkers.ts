@@ -15,9 +15,10 @@ interface MapBaseMessage {
   action: MapWebSocketAction;
 }
 
-interface MarkerData {
+export interface MarkerData {
   markerId: number;
   email: string;
+  profileImage: string;
   scheduleId: number;
   lat: number;
   lng: number;
@@ -79,7 +80,7 @@ interface UpdatedMarkerPayload extends MapBaseMessage {
 interface DeletedMarkerPayload extends MapBaseMessage {
   action: "DELETED_MARKER";
   data: {
-    message: string;
+    markerId: number;
   };
 }
 
@@ -94,28 +95,29 @@ export const useMapMarkers = (roomId?: string) => {
   const [markers, setMarkers] = useState<MarkerData[]>([]);
   const { isConnected, sendMessage, subscribe } = useWebSocketClient();
 
+  useEffect(() => {
+    console.log("Current markers:", markers);
+  }, [markers]);
+
   const handleMessage = useCallback((data: MapServerMessage) => {
     switch (data.action) {
       case "ADDED_MARKER":
-        setMarkers((prev) => [...prev, data.data]);
+        setMarkers((prevMarkers) => [...prevMarkers, data.data]);
         break;
       case "LIST_MARKERS":
         setMarkers(data.data);
         break;
       case "UPDATED_MARKER":
-        setMarkers((prev) =>
-          prev.map((marker) => (marker.markerId === data.data.markerId ? data.data : marker))
+        setMarkers((prevMarkers) =>
+          prevMarkers.map((marker) => (marker.markerId === data.data.markerId ? data.data : marker))
         );
         break;
       case "DELETED_MARKER":
-        // eslint-disable-next-line no-case-declarations
-        const deletedMarkerId = data.data.message.match(/\d+/)?.[0];
-
-        if (deletedMarkerId) {
-          setMarkers((prev) =>
-            prev.filter((marker) => marker.markerId !== Number(deletedMarkerId))
-          );
-        }
+        setMarkers((prevMarkers) =>
+          prevMarkers.filter((marker) => marker.markerId !== data.data.markerId)
+        );
+        break;
+      default:
         break;
     }
   }, []);
@@ -191,6 +193,8 @@ export const useMapMarkers = (roomId?: string) => {
   const requestMarkerList = useCallback(
     (scheduleId: number) => {
       if (!roomId) return;
+
+      console.log("Sending LIST_MARKERS request for scheduleId:", scheduleId);
 
       const message: ListMarkersPayload = {
         action: "LIST_MARKERS",

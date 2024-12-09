@@ -8,7 +8,11 @@ import { useSchedules } from "../hooks/useWebSocketSchedules";
 import { ROUTES } from "@routes/type";
 import { useTypedParams } from "@common/hooks/useTypedParams";
 
-const ScheduleManager = () => {
+interface ScheduleManagerProps {
+  onScheduleIdChange: (scheduleId: number) => void;
+}
+
+const ScheduleManager: React.FC<ScheduleManagerProps> = ({ onScheduleIdChange }) => {
   const { roomId } = useTypedParams<typeof ROUTES.PLANNER>();
 
   const {
@@ -55,17 +59,21 @@ const ScheduleManager = () => {
   useEffect(() => {
     if (schedules.length > 0) {
       const scheduleId = findScheduleId(currentDate, currentPlan);
-      // 현재 날짜와 플랜에 맞는 스케줄 ID 찾기
 
       loadScheduleItems(scheduleId);
+      if (scheduleId) {
+        onScheduleIdChange(scheduleId);
+      }
     }
-  }, [currentDate, currentPlan, schedules, findScheduleId, loadScheduleItems]);
+  }, [currentDate, currentPlan, schedules, findScheduleId, loadScheduleItems, onScheduleIdChange]);
 
   const handlePlanChange = (planType: string) => {
     setCurrentPlan(planType); // 플랜 변경
     const scheduleId = findScheduleId(currentDate, planType);
 
-    loadScheduleItems(scheduleId);
+    if (scheduleId) {
+      onScheduleIdChange(scheduleId);
+    }
   };
 
   // 날짜 변경 시 처리하는 함수
@@ -98,7 +106,7 @@ const ScheduleManager = () => {
     setLoading(true);
     deleteScheduleItem(scheduleItemId);
     const scheduleId = findScheduleId(currentDate, currentPlan);
-    
+
     loadScheduleItems(scheduleId);
   };
 

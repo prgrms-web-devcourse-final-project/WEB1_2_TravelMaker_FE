@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import React, { useRef, useState, useCallback } from "react";
+import React, { useRef, useState, useCallback, useEffect } from "react";
 import { GoogleMap, useJsApiLoader, OverlayView, Polyline } from "@react-google-maps/api";
 
 import { calcResponsive } from "@common/styles/theme";
@@ -13,6 +13,7 @@ import NoImage from "@components/assets/images/NoImage.svg";
 import ScheduleManager from "./ScheduleManager";
 import PlannerSettingContainer from "../containers/PlannerSettingContainer";
 import ChatContainer from "../containers/ChatContainer";
+import { MarkerData, useMapMarkers } from "../hooks/useWebSocketMapMarkers";
 
 const MapComponent = () => {
   const containerStyle = {
@@ -41,16 +42,10 @@ const MapComponent = () => {
   const mapRef = useRef<google.maps.Map | null>(null);
   const geocoderRef = useRef<google.maps.Geocoder | null>(null);
 
-  const [markers, setMarkers] = useState<
-    {
-      lat: number;
-      lng: number;
-      title?: string;
-      address?: string;
-      isConfirmed?: boolean;
-      index?: number;
-    }[]
-  >([]);
+  const { markers, addMarker, updateMarker, deleteMarker, requestMarkerList, isConnected } =
+    useMapMarkers("roomId");
+
+  const [, setLocalMarkers] = useState<MarkerData[]>([]);
   const [selectedMarker, setSelectedMarker] = useState<{
     lat: number;
     lng: number;
@@ -65,145 +60,136 @@ const MapComponent = () => {
   const [currentZoom, setCurrentZoom] = useState(10);
   const [mapCenter] = useState(initialCenter);
   const [isSearchVisible, setIsSearchVisible] = useState(true);
+  const [scheduleId, setScheduleId] = useState<number>(1);
 
-  const onLoad = (map: google.maps.Map) => {
-    mapRef.current = map;
-    geocoderRef.current = new window.google.maps.Geocoder();
-
-    map.addListener("rightclick", (event: google.maps.MapMouseEvent) => {
-      if (event.latLng) {
-        const newMarker = {
-          lat: event.latLng.lat(),
-          lng: event.latLng.lng(),
-        };
-
-        addMarker(newMarker);
-        fetchLocationDetails(newMarker.lat, newMarker.lng);
-      }
-    });
-  };
-
-  const fetchLocationDetails = async (lat: number, lng: number) => {
-    if (!geocoderRef.current || !mapRef.current) return;
-
-    const location = { lat, lng };
-
-    try {
-      const results = await new Promise<google.maps.GeocoderResult[]>((resolve, reject) => {
-        geocoderRef.current!.geocode({ location }, (res, status) => {
-          if (status === "OK" && res) resolve(res);
-          else reject(status);
-        });
-      });
-
-      if (results.length > 0) {
-        const formattedAddress = results[0]?.formatted_address || "Unknown Location";
-
-        try {
-          const placeResults = await new Promise<google.maps.places.PlaceResult[]>(
-            (resolve, reject) => {
-              const service = new window.google.maps.places.PlacesService(mapRef.current!);
-              const placeRequest = {
-                location,
-                radius: 10,
-                type: "point_of_interest",
-                language: "ko",
-              };
-
-              service.nearbySearch(placeRequest, (res, status) => {
-                if (status === window.google.maps.places.PlacesServiceStatus.OK && res)
-                  resolve(res);
-                else reject(status);
-              });
-            }
-          );
-
-          if (placeResults.length > 0) {
-            const firstPlace = placeResults[0];
-            const placeName = firstPlace.name || "Unnamed Place";
-            const photoUrl = firstPlace?.photos?.[0]?.getUrl({ maxWidth: 100 }) || NoImage;
-
-            await addMarker({
-              lat,
-              lng,
-              title: placeName,
-              address: formattedAddress,
-              imageSrc: photoUrl,
-            });
-          }
-        } catch {
-          await addMarker({
-            lat,
-            lng,
-            title: "Unnamed Place",
-            address: formattedAddress,
-            imageSrc: NoImage,
-          });
-        }
-      }
-    } catch {
-      await addMarker({
-        lat,
-        lng,
-        title: "Unknown Place",
-        address: "Unknown Location",
-        imageSrc: NoImage,
-      });
+  useEffect(() => {
+    if (isConnected) {
+      requestMarkerList(scheduleId);
     }
-  };
+  }, [isConnected, requestMarkerList, scheduleId]);
 
   const onUnmount = () => {
     mapRef.current = null;
   };
 
-  const handleMarkerClick = useCallback(
-    (marker: { lat: number; lng: number }, index: number) => {
-      const clickedMarker = markers.find((m) => m.lat === marker.lat && m.lng === marker.lng);
+  const handleMarkerClick = useCallback((marker: MarkerData, index: number) => {
+    setIsSearchVisible(false);
+    setSelectedMarker(marker);
+    setActiveMarker(index);
+  }, []);
 
-      setIsSearchVisible(false);
-      if (clickedMarker) {
-        setSelectedMarker(clickedMarker);
-      }
-      setActiveMarker(index);
-    },
-    [markers]
-  );
-
-  const handleModalClose = () => {
+  const handleModalClose = useCallback(() => {
     setSelectedMarker(null);
     setActiveMarker(null);
     setIsSearchVisible(false);
-  };
+  }, []);
 
-  const handleConfirm = () => {
-    setMarkers((prevMarkers) => {
-      const updatedMarkers = prevMarkers.map((marker) =>
-        marker.lat === selectedMarker?.lat && marker.lng === selectedMarker?.lng
-          ? {
-              ...marker,
-              isConfirmed: true,
+  const addNewMarker = useCallback(
+    async (scheduleId: number, lat: number, lng: number) => {
+      try {
+        await addMarker(scheduleId, lat, lng);
+        requestMarkerList(scheduleId);
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error("Failed to add marker:", error);
+      }
+    },
+    [addMarker, requestMarkerList]
+  );
+
+  const fetchLocationDetails = useCallback(
+    async (lat: number, lng: number) => {
+      if (!geocoderRef.current || !mapRef.current) return;
+
+      const location = { lat, lng };
+
+      try {
+        const results = await new Promise<google.maps.GeocoderResult[]>((resolve, reject) => {
+          geocoderRef.current!.geocode({ location }, (res, status) => {
+            if (status === "OK" && res) resolve(res);
+            else reject(status);
+          });
+        });
+
+        if (results.length > 0) {
+          try {
+            const placeResults = await new Promise<google.maps.places.PlaceResult[]>(
+              (resolve, reject) => {
+                const service = new window.google.maps.places.PlacesService(mapRef.current!);
+                const placeRequest = {
+                  location,
+                  radius: 10,
+                  type: "point_of_interest",
+                  language: "ko",
+                };
+
+                service.nearbySearch(placeRequest, (res, status) => {
+                  if (status === window.google.maps.places.PlacesServiceStatus.OK && res)
+                    resolve(res);
+                  else reject(status);
+                });
+              }
+            );
+
+            if (placeResults.length > 0) {
+              await addMarker(scheduleId, lat, lng);
             }
-          : marker
+          } catch {
+            await addMarker(scheduleId, lat, lng);
+          }
+        }
+      } catch {
+        await addMarker(scheduleId, lat, lng);
+      }
+    },
+    [mapRef, geocoderRef, addMarker, scheduleId]
+  );
+
+  const onLoad = useCallback(
+    (map: google.maps.Map) => {
+      mapRef.current = map;
+      geocoderRef.current = new window.google.maps.Geocoder();
+
+      map.addListener("rightclick", async (event: google.maps.MapMouseEvent) => {
+        if (event.latLng) {
+          const lat = event.latLng.lat();
+          const lng = event.latLng.lng();
+
+          try {
+            await addNewMarker(scheduleId, lat, lng);
+            await fetchLocationDetails(lat, lng);
+            setScheduleId((prevId) => prevId + 1);
+          } catch (error) {
+            // eslint-disable-next-line no-console
+            console.error("Failed to add marker on right click:", error);
+          }
+        }
+      });
+    },
+    [scheduleId, addNewMarker, fetchLocationDetails]
+  );
+
+  const handleConfirm = useCallback(async () => {
+    if (selectedMarker) {
+      const marker = markers.find(
+        (m) => m.lat === selectedMarker.lat && m.lng === selectedMarker.lng
       );
 
-      const confirmedMarkers = updatedMarkers.filter((marker) => marker.isConfirmed);
-      const unconfirmedMarkers = updatedMarkers.filter((marker) => !marker.isConfirmed);
-
-      let confirmedIndex = 1;
-
-      const sortedMarkers = [
-        ...confirmedMarkers.map((marker) => ({
-          ...marker,
-          index: confirmedIndex++,
-        })),
-        ...unconfirmedMarkers,
-      ];
-
-      return sortedMarkers;
-    });
-
-    handleModalClose();
-  };
+      if (marker) {
+        try {
+          await updateMarker(marker.markerId, true);
+          setLocalMarkers((prevMarkers) =>
+            prevMarkers.map((m) => (m.markerId === marker.markerId ? { ...m, confirm: true } : m))
+          );
+          await requestMarkerList(scheduleId);
+          handleModalClose();
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error("Failed to confirm marker:", error);
+        }
+      }
+    }
+  }, [selectedMarker, markers, updateMarker, scheduleId, requestMarkerList, handleModalClose]);
 
   const handleSearch = (query: string) => {
     if (!query.trim() || !mapRef.current) return;
@@ -291,8 +277,8 @@ const MapComponent = () => {
 
   const getPolylinePath = () => {
     const confirmedMarkers = markers
-      .filter((marker) => marker.isConfirmed)
-      .sort((a, b) => (a.index || 0) - (b.index || 0));
+      .filter((marker) => marker.confirm)
+      .sort((a, b) => a.itemOrder - b.itemOrder);
 
     return confirmedMarkers.map((marker) => ({
       lat: marker.lat,
@@ -300,59 +286,57 @@ const MapComponent = () => {
     }));
   };
 
-  const addMarker = useCallback(
-    async (newMarker: {
-      lat: number;
-      lng: number;
-      title?: string;
-      address?: string;
-      imageSrc?: string;
-    }) => {
-      setMarkers((prevMarkers) => {
-        const markerExists = prevMarkers.some(
-          (marker) => marker.lat === newMarker.lat && marker.lng === newMarker.lng
-        );
-
-        if (markerExists) {
-          return prevMarkers.map((marker) =>
-            marker.lat === newMarker.lat && marker.lng === newMarker.lng
-              ? { ...marker, ...newMarker }
-              : marker
-          );
-        }
-
-        return [...prevMarkers, newMarker];
-      });
-    },
-    [setMarkers]
-  );
-
   const handleResultClick = useCallback(
     (lat: number, lng: number, title: string, address: string, imageSrc: string) => {
       if (mapRef.current) {
         mapRef.current.panTo({ lat, lng });
-        addMarker({ lat, lng, title, address, imageSrc });
+
+        addMarker(scheduleId, lat, lng);
         setSelectedMarker({ lat, lng, title, address, imageSrc });
-        setMarkers((prevMarkers) => {
-          const markerIndex = prevMarkers.findIndex(
-            (marker) => marker.lat === lat && marker.lng === lng
-          );
-
-          setActiveMarker(markerIndex);
-
-          return prevMarkers;
-        });
+        setActiveMarker(markers.findIndex((marker) => marker.lat === lat && marker.lng === lng));
         setIsSearchVisible(false);
+        setScheduleId((prevId) => prevId + 1);
       }
     },
-    [mapRef, addMarker]
+    [mapRef, addMarker, markers, scheduleId]
+  );
+
+  const handleDelete = useCallback(async () => {
+    if (selectedMarker) {
+      const marker = markers.find(
+        (m) => m.lat === selectedMarker.lat && m.lng === selectedMarker.lng
+      );
+
+      if (marker) {
+        try {
+          await deleteMarker(marker.markerId);
+          setLocalMarkers((prevMarkers) =>
+            prevMarkers.filter((m) => m.markerId !== marker.markerId)
+          );
+          setScheduleId((prevId) => Math.max(1, prevId - 1));
+          await requestMarkerList(scheduleId);
+          handleModalClose();
+        } catch (error) {
+          // eslint-disable-next-line no-console
+          console.error("Failed to delete marker:", error);
+        }
+      }
+    }
+  }, [selectedMarker, markers, deleteMarker, scheduleId, requestMarkerList, handleModalClose]);
+
+  const handleScheduleIdChange = useCallback(
+    (newScheduleId: number) => {
+      setScheduleId(newScheduleId);
+      requestMarkerList(newScheduleId);
+    },
+    [requestMarkerList]
   );
 
   return (
     <Container>
       <MapSection>
         <OverlayContainer>
-          <ScheduleManager />
+          <ScheduleManager onScheduleIdChange={handleScheduleIdChange} />
         </OverlayContainer>
         <SearchContainer>
           <SearchBar onSearch={handleSearch} />
@@ -394,21 +378,25 @@ const MapComponent = () => {
               />
               {isLoaded &&
                 mapRef.current &&
+                markers.length > 0 &&
                 markers.map((marker, index) => (
-                  <OverlayView key={index} position={marker} mapPaneName="floatPane">
+                  <OverlayView
+                    key={marker.markerId}
+                    position={{ lat: marker.lat, lng: marker.lng }}
+                    mapPaneName="floatPane">
                     <div
                       onClick={(e) => {
                         e.stopPropagation();
-                        if (!marker.isConfirmed) {
+                        if (!marker.confirm) {
                           handleMarkerClick(marker, index);
                         }
                       }}
-                      style={{ transform: "translate(-20px, -100%)" }}>
-                      {marker.isConfirmed ? (
-                        <ConfirmedMarker index={marker.index!} size={50} />
+                      style={{ transform: "translate(-50%, -100%)" }}>
+                      {marker.confirm ? (
+                        <ConfirmedMarker index={marker.itemOrder || 1} size={50} />
                       ) : (
                         <NormalMarker
-                          profileImage="https://via.placeholder.com/150"
+                          profileImage={marker.profileImage || NoImage}
                           size={28}
                           profileSize={28}
                           isSelected={activeMarker === index}
@@ -424,15 +412,7 @@ const MapComponent = () => {
                   title={selectedMarker?.title || "No Name"}
                   address={selectedMarker?.address || "No Address"}
                   imageSrc={selectedMarker?.imageSrc || NoImage}
-                  onDelete={() => {
-                    setMarkers((prev) =>
-                      prev.filter(
-                        (marker) =>
-                          marker.lat !== selectedMarker?.lat || marker.lng !== selectedMarker?.lng
-                      )
-                    );
-                    handleModalClose();
-                  }}
+                  onDelete={handleDelete}
                   onConfirm={handleConfirm}
                 />
               </DetailsWrapper>
@@ -522,6 +502,6 @@ const SettingSection = styled.div`
 
 const ChatSection = styled.div`
   position: absolute;
-  bottom: ${calcResponsive({ value: 160, dimension: "width" })};
+  top: ${calcResponsive({ value: 170, dimension: "width" })};
   right: ${calcResponsive({ value: 25, dimension: "width" })};
 `;
