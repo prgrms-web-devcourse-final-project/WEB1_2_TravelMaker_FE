@@ -3,12 +3,14 @@ import styled from "styled-components";
 import { calcResponsive } from "@common/styles/theme";
 import StartPlannerCardContainer from "./containers/StartPlannerCardContainer";
 import MyPlannerCardListContainer from "./containers/MyPlannerCardListContainer";
+import TokenCookieManager from "@components/debug/TokenCookieManager";
 
 const Main = () => {
   return (
     <Container>
       <MyPlannerCardListContainer />
       <StartPlannerCardContainer />
+      <TokenCookieManager />
     </Container>
   );
 };

@@ -24,9 +24,9 @@ const RouteCardList: FC<RouteCardListProps> = ({ items, onSave, deleteScheduleIt
   return (
     <CardListContainer>
       {items.length > 0 ? (
-        items.map((item, index) => (
+        items.map((item, itemOrder) => (
           <RouteCard
-            key={`${item.scheduleItemId}-${index}`}
+            key={`${item.scheduleItemId}-${itemOrder}`}
             item={item} // RouteCard에 item을 전달
             onSave={onSave} // onSave를 RouteCard에 전달
             deleteScheduleItem={deleteScheduleItem}
