@@ -1,9 +1,13 @@
 import "./tailwind.css";
 
 import { createGlobalStyle } from "styled-components";
-import TicketingRegular from "@assets/fonts/Ticketing-regular.otf";
+import TicketingRegular from "../../assets/fonts/Ticketing-Regular.otf";
 
 export const GlobalStyle = createGlobalStyle`
+    .calendar-popper {
+        z-index: 9999 !important;
+    }
+
     @font-face {
         font-family: 'Ticketing-regular';
         src: url(${TicketingRegular}) format('opentype');
@@ -26,6 +30,7 @@ export const GlobalStyle = createGlobalStyle`
     /* 2. Remove default margin */
     * {
         margin: 0;
+        
     }
 
     /* Typographic tweaks!
@@ -72,6 +77,10 @@ export const GlobalStyle = createGlobalStyle`
         isolation: isolate;
     }
 
+    html {
+        font-size: 16px;  /* 기준값 설정 */
+    }
+
     body {
     /* 기본 텍스트 렌더링 최적화 */
     -webkit-font-smoothing: antialiased;
@@ -84,15 +93,11 @@ export const GlobalStyle = createGlobalStyle`
     background-color: ${({ theme }) => theme.colors.background.neutral0};
     color: ${({ theme }) => theme.colors.text.title};
 
-    /* 스크롤바 스타일링 추가 */
+    /* 스크롤바 스타일링 추가
     overflow-x: hidden;
-    overflow-y: auto;
+    overflow-y: auto; */
 
-    /* 스크롤 동작을 부드럽게 만드는 속성*/
-    scroll-behavior: smooth;
-    -webkit-overflow-scrolling: touch;
-
-    /* y축 스크롤바 스타일링 */
+    /* y축 스크롤바 스타일링
     &::-webkit-scrollbar {
         width: 6px;
         height: 0px;
@@ -113,10 +118,7 @@ export const GlobalStyle = createGlobalStyle`
         &:hover {
         background: rgba(159, 202, 241, 0.8);
         }
-    }
+    } */
 
-    /* Firefox */
-    scrollbar-width: thin;
-    scrollbar-color: rgba(159, 202, 241, 0.5) transparent;
     }
 `;

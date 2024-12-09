@@ -1,8 +1,11 @@
 import axios from "axios";
 
-export const BASE_URL = import.meta.env.VITE_API_URL;
+export const baseURL = import.meta.env.VITE_API_URL;
 
-export const httpClient = axios.create({ baseURL: BASE_URL });
+export const httpClient = axios.create({
+  baseURL: baseURL,
+  withCredentials: true,
+});
 
 /**
  * HTTP 클라이언트의 전역 Authorization 헤더를 구성한다.

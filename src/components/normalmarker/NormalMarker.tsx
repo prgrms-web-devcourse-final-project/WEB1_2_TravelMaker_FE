@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import MarkerIcon from "../assets/images/NormalMarkerImage";
+import Profile from "@components/chat/ChatProfile";
+import { calcResponsive } from "@common/styles/theme";
 
 interface NormalMarkerProps {
   profileImage: string;
@@ -8,6 +10,7 @@ interface NormalMarkerProps {
   profileSize?: number;
   onClick?: () => void;
   isSelected?: boolean;
+  color?: string;
 }
 
 export const NormalMarker: React.FC<NormalMarkerProps> = ({
@@ -16,24 +19,25 @@ export const NormalMarker: React.FC<NormalMarkerProps> = ({
   profileSize = 28,
   onClick,
   isSelected = false,
+  color,
 }) => {
   return (
     <MarkerWrapper $size={size} $isSelected={isSelected} onClick={onClick}>
-      <MarkerIcon />
-      <ProfileWrapper $profileSize={profileSize}>
-        <ProfileImage src={profileImage} alt="Profile" />
+      <MarkerIcon color={color} />
+      <ProfileWrapper size={profileSize}>
+        <Profile.Image url={profileImage} size={profileSize} />
       </ProfileWrapper>
     </MarkerWrapper>
   );
 };
 
 const MarkerWrapper = styled.div<{ $size: number; $isSelected: boolean }>`
-  position: relative;
-  width: ${({ $size }) => $size * 1.6}px;
-  height: ${({ $size }) => $size * 1.6}px;
+  width: ${({ $size }) => calcResponsive({ value: $size * 2, dimension: "width" })};
+  height: ${({ $size }) => calcResponsive({ value: $size * 2.6, dimension: "width" })};
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   transform: ${({ $isSelected }) => ($isSelected ? "scale(1.2)" : "scale(1)")};
   transition:
     transform 0.3s ease,
@@ -41,12 +45,9 @@ const MarkerWrapper = styled.div<{ $size: number; $isSelected: boolean }>`
   cursor: pointer;
 `;
 
-const ProfileWrapper = styled.div<{ $profileSize: number }>`
-  width: ${({ $profileSize }) => $profileSize}px;
-  height: ${({ $profileSize }) => $profileSize}px;
+const ProfileWrapper = styled.div<{ size: number }>`
   position: absolute;
-  top: -3px;
-  transform: translateX(-50%, 20%);
+  top: 4px;
   background-color: ${({ theme }) => theme.colors.background.neutral0};
   border-radius: 50%;
   border: 1px solid ${({ theme }) => theme.colors.text.title};
@@ -54,11 +55,4 @@ const ProfileWrapper = styled.div<{ $profileSize: number }>`
   transition: all 0.3s ease;
 `;
 
-const ProfileImage = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.3s ease;
-`;
-
-export default NormalMarker;
+export default React.memo(NormalMarker);

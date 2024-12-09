@@ -1,33 +1,17 @@
 import type { SVGProps } from "react";
 
 const PlaneIcon = (props: SVGProps<SVGSVGElement>) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width={30} height={30} fill="none" {...props}>
-    <mask
-      id="a"
-      width={30}
-      height={30}
-      x={0}
-      y={0}
-      maskUnits="userSpaceOnUse"
-      style={{
-        maskType: "luminance",
-      }}>
-      <path fill="#fff" d="M30 0H0v30h30z" />
-    </mask>
-    <g mask="url(#a)">
-      <path
-        fill="#F4F7FB"
-        d="m13.265 13.487-5.638-8.84L10.041 4l8.689 8.025 6.578-1.762a1.875 1.875 0 1 1 .97 3.622L7.562 18.898l-.97-3.623.3-.081 3.085 3.056-3.283.88a1.25 1.25 0 0 1-1.416-.6L2 12.623l1.811-.485 3.083 3.056zm-8.098 9.21h20v2.5h-20z"
-      />
-    </g>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 22" fill="none" {...props}>
+    <path
+      fill="#F4F7FB"
+      d="M11.265 9.487 5.627.647 8.041 0l8.689 8.025 6.578-1.762a1.875 1.875 0 1 1 .97 3.622L5.562 14.898l-.97-3.623.3-.081 3.085 3.056-3.283.88a1.25 1.25 0 0 1-1.416-.6L0 8.623l1.811-.485 3.083 3.056zm-8.098 9.21h20v2.5h-20z"
+    />
   </svg>
 );
 
-const PlaneIcon2 = ({ width = "70", height = "100%", ...props }: SVGProps<SVGSVGElement>) => (
+const PlaneIcon2 = ({ ...props }: SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    width={width}
-    height={height}
     viewBox="0 0 70 49"
     preserveAspectRatio="none"
     fill="none"

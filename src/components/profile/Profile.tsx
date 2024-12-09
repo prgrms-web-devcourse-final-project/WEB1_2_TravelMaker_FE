@@ -1,23 +1,43 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import DefaultImage from "../assets/images/DefaultImage.svg";
-import CameraIcon from "../assets/icons/CameraIcon";
-import EditIcon from "../assets/icons/EditIcon";
+import CameraIcon from "../assets/icons/CameraIcon.svg";
+import EditIcon from "../assets/icons/EditIcon.svg";
+import { useUserContext } from "@pages/My/contexts/UserContext";
+
 interface ProfileWithInfoProps {
   src?: string;
   name: string;
   email: string;
   onCameraClick?: (file: File) => void;
+  onNameChange?: (newName: string) => void;
 }
 
-const ProfileWithInfo: React.FC<ProfileWithInfoProps> = ({ src, name, email, onCameraClick }) => {
+const ProfileWithInfo: React.FC<ProfileWithInfoProps> = ({
+  src,
+  name,
+  email,
+  onCameraClick,
+  onNameChange,
+}) => {
   const [isEditing, setIsEditing] = useState(false);
   const [currentName, setCurrentName] = useState(name);
-  const [profileImage, setProfileImage] = useState<string | null | undefined>(src);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const { profileImage, setProfileImage } = useUserContext();
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (src && profileImage !== src) {
+      setProfileImage(src);
+    }
+  }, [src, profileImage, setProfileImage]);
+
+  useEffect(() => {
+    setCurrentName(name);
+  }, [name]);
 
   const handleEditClick = () => {
     setIsEditing(true);
+    setErrorMessage(null);
   };
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,35 +45,47 @@ const ProfileWithInfo: React.FC<ProfileWithInfoProps> = ({ src, name, email, onC
 
     if (inputValue.length <= 8) {
       setCurrentName(inputValue);
+      setErrorMessage(null);
     }
   };
 
-  const handleConfirmClick = () => {
-    setIsEditing(false);
+  const handleConfirmClick = async () => {
+    if (!currentName || currentName.trim().length === 0) {
+      setErrorMessage("1자 이상 입력해주세요.");
+
+      return;
+    }
+
+    try {
+      setIsEditing(false);
+
+      if (onNameChange) {
+        await onNameChange(currentName);
+      }
+    } catch {
+      alert("닉네임 변경에 실패했습니다. 다시 시도해주세요.");
+    }
   };
 
   const handleFileUpload = () => {
     fileInputRef.current?.click();
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
 
     if (file) {
-      const reader = new FileReader();
+      try {
+        if (onCameraClick) {
+          await onCameraClick(file);
+          const imageUrl = URL.createObjectURL(file);
 
-      reader.onload = () => {
-        const imageUrl = reader.result as string;
-
-        setProfileImage(imageUrl);
-        onCameraClick?.(file);
-      };
-      reader.readAsDataURL(file);
+          setProfileImage(imageUrl);
+        }
+      } catch {
+        alert("프로필 이미지 변경에 실패했습니다.");
+      }
     }
-  };
-
-  const handleResetToDefault = () => {
-    setProfileImage(null);
   };
 
   return (
@@ -64,13 +96,12 @@ const ProfileWithInfo: React.FC<ProfileWithInfoProps> = ({ src, name, email, onC
             <ProfileImage src={profileImage} alt="Profile" />
           ) : (
             <DefaultBackground>
-              <img src={DefaultImage} alt="Default" />
+              <span>이미지 없음</span>
             </DefaultBackground>
           )}
-          <HoverText onClick={handleResetToDefault}>기본 프로필 이미지로 변경</HoverText>
         </ProfileImageWrapper>
         <CameraIconWrapper onClick={handleFileUpload}>
-          <CameraIcon />
+          <img src={CameraIcon} alt="CameraIcon" />
         </CameraIconWrapper>
         <input
           ref={fileInputRef}
@@ -91,11 +122,12 @@ const ProfileWithInfo: React.FC<ProfileWithInfoProps> = ({ src, name, email, onC
             <>
               <UserName>{currentName}</UserName>
               <EditIconWrapper onClick={handleEditClick}>
-                <EditIcon />
+                <img src={EditIcon} alt="EditIcon" />
               </EditIconWrapper>
             </>
           )}
         </UserNameWrapper>
+        {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
         <Email>{email}</Email>
       </InfoWrapper>
     </Container>
@@ -108,6 +140,11 @@ const Container = styled.div`
   align-items: center;
   justify-content: center;
   background-color: ${({ theme }) => theme.colors.background.neutral0};
+  padding: 20px;
+
+  @media (max-width: 768px) {
+    padding: 15px;
+  }
 `;
 
 const ProfileWrapper = styled.div`
@@ -118,6 +155,18 @@ const ProfileWrapper = styled.div`
   align-items: center;
   justify-content: center;
   margin-bottom: 40px;
+
+  @media (max-width: 1550px) {
+    width: 180px;
+    height: 180px;
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 768px) {
+    width: 160px;
+    height: 160px;
+    margin-bottom: 10px;
+  }
 `;
 
 const ProfileImageWrapper = styled.div`
@@ -135,6 +184,11 @@ const ProfileImageWrapper = styled.div`
   &:hover span {
     opacity: 1;
   }
+
+  img {
+    width: 100%;
+    object-fit: cover;
+  }
 `;
 
 const ProfileImage = styled.img`
@@ -145,25 +199,20 @@ const ProfileImage = styled.img`
 `;
 
 const DefaultBackground = styled.div`
-  width: 100%;
+  width: 240px;
   height: 100%;
   border-radius: ${({ theme }) => theme.cornerRadius.circular};
   display: flex;
   align-items: center;
   justify-content: center;
-`;
 
-const HoverText = styled.span`
-  position: absolute;
-  bottom: 35%;
-  background-color: ${({ theme }) => theme.colors.background.neutral1};
-  color: ${({ theme }) => theme.colors.text.body};
-  font-size: ${({ theme }) => theme.typography.heading.h3.fontSize};
-  padding: 5px 10px;
-  border-radius: ${({ theme }) => theme.cornerRadius.medium};
-  opacity: 0;
-  transition: opacity 0.3s ease-in-out;
-  cursor: pointer;
+  @media (max-width: 1550px) {
+    max-width: 150px;
+  }
+
+  @media (max-width: 768px) {
+    max-width: 130px;
+  }
 `;
 
 const CameraIconWrapper = styled.div`
@@ -178,7 +227,17 @@ const CameraIconWrapper = styled.div`
   justify-content: center;
   cursor: pointer;
 
-  svg {
+  @media (max-width: 1550px) {
+    max-width: 50px;
+    max-height: 50px;
+  }
+
+  @media (max-width: 768px) {
+    max-width: 40px;
+    max-height: 40px;
+  }
+
+  img {
     width: 100%;
     height: 100%;
   }
@@ -190,7 +249,18 @@ const InfoWrapper = styled.div`
   text-align: center;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
+
+  @media (max-width: 1550px) {
+    max-width: 280px;
+    max-height: 80px;
+  }
+
+  @media (max-width: 768px) {
+    max-width: 280px;
+    max-height: 60px;
+    margin-top: 30px;
+  }
 `;
 
 const UserNameWrapper = styled.div`
@@ -199,6 +269,14 @@ const UserNameWrapper = styled.div`
   align-items: center;
   justify-content: center;
   margin-left: 40px;
+
+  @media (max-width: 1550px) {
+    max-height: 34px;
+  }
+
+  @media (max-width: 768px) {
+    max-height: 24px;
+  }
 `;
 
 const InputWrapper = styled.div`
@@ -217,6 +295,16 @@ const Input = styled.input`
   border-bottom: ${({ theme }) => theme.strokeWidth.thick} solid
     ${({ theme }) => theme.colors.stroke.neutral3};
   outline: none;
+
+  @media (max-width: 1550px) {
+    max-height: 34px;
+    font-size: 28px;
+  }
+
+  @media (max-width: 768px) {
+    max-height: 24px;
+    font-size: 20px;
+  }
 `;
 
 const ConfirmButton = styled.button`
@@ -235,12 +323,38 @@ const ConfirmButton = styled.button`
     background-color: ${({ theme }) => theme.colors.text.title};
     transform: scale(1.01);
   }
+
+  @media (max-width: 1550px) {
+    font-size: ${({ theme }) => theme.typography.heading.h3.fontSize};
+  }
+
+  @media (max-width: 768px) {
+    font-size: ${({ theme }) => theme.typography.heading.h4.fontSize};
+  }
+`;
+
+const ErrorMessage = styled.div`
+  position: absolute;
+  margin-top: 15px;
+  margin-left: 80px;
+  color: ${({ theme }) => theme.colors.danger.normal};
+  font-size: 12px;
+  caret-color: transparent;
+  z-index: 0;
 `;
 
 const UserName = styled.div`
   font-size: 40px;
   font-weight: ${({ theme }) => theme.typography.heading.h1.fontWeight};
   color: ${({ theme }) => theme.colors.text.body};
+
+  @media (max-width: 1550px) {
+    font-size: 28px;
+  }
+
+  @media (max-width: 768px) {
+    font-size: 20px;
+  }
 `;
 
 const EditIconWrapper = styled.div`
@@ -248,12 +362,35 @@ const EditIconWrapper = styled.div`
   display: flex;
   align-items: center;
   cursor: pointer;
+
+  @media (max-width: 1550px) {
+    max-width: 24px;
+    max-height: 24px;
+  }
+
+  @media (max-width: 768px) {
+    max-width: 18px;
+    max-height: 18px;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+  }
 `;
 
 const Email = styled.div`
   width: 280px;
   font-size: ${({ theme }) => theme.typography.heading.h2.fontSize};
   color: ${({ theme }) => theme.colors.text.body};
+
+  @media (max-width: 1550px) {
+    font-size: ${({ theme }) => theme.typography.heading.h3.fontSize};
+  }
+
+  @media (max-width: 768px) {
+    font-size: ${({ theme }) => theme.typography.body.regular.fontSize};
+  }
 `;
 
 export default ProfileWithInfo;
