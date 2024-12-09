@@ -18,8 +18,26 @@ const ChatInput: FC<Props> = ({ onSubmit }) => {
     target.style.height = target.scrollHeight + "px";
   };
 
+  const onKeyDownHandler = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key !== "Enter") return;
+
+    if (e.shiftKey) {
+      // Shift + Enter: 줄바꿈 허용
+      return;
+    }
+
+    // Enter만: 메시지 전송
+    e.preventDefault();
+
+    if (textareaRef.current && textareaRef.current.value.trim()) {
+      onSubmit(textareaRef.current.value);
+      textareaRef.current.value = "";
+      textareaRef.current.style.height = "auto";
+    }
+  };
+
   const onSubmitHandler = () => {
-    if (textareaRef.current) {
+    if (textareaRef.current && textareaRef.current.value.trim()) {
       onSubmit(textareaRef.current.value);
       textareaRef.current.value = "";
       textareaRef.current.style.height = "auto";
@@ -35,6 +53,7 @@ const ChatInput: FC<Props> = ({ onSubmit }) => {
             rows={1}
             placeholder="Write your message"
             onChange={onChangeTextAreaHandler}
+            onKeyDown={onKeyDownHandler}
           />
         </InputContainer>
         <IconContainer onClick={onSubmitHandler}>
