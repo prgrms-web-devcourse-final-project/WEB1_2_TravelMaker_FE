@@ -27,6 +27,9 @@ export interface MarkerData {
   itemOrder: number;
   createdAt: string;
   updatedAt: string;
+  title?: string;
+  address?: string;
+  imageSrc?: string;
 }
 
 // 요청 페이로드 타입

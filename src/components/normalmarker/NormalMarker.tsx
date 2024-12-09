@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import MarkerImage from "../assets/images/NormalMarkerImage.svg";
+import MarkerIcon from "../assets/images/NormalMarkerImage";
 import Profile from "@components/chat/ChatProfile";
 import { calcResponsive } from "@common/styles/theme";
 
@@ -10,6 +10,7 @@ interface NormalMarkerProps {
   profileSize?: number;
   onClick?: () => void;
   isSelected?: boolean;
+  color?: string;
 }
 
 export const NormalMarker: React.FC<NormalMarkerProps> = ({
@@ -18,10 +19,11 @@ export const NormalMarker: React.FC<NormalMarkerProps> = ({
   profileSize = 28,
   onClick,
   isSelected = false,
+  color,
 }) => {
   return (
     <MarkerWrapper $size={size} $isSelected={isSelected} onClick={onClick}>
-      <img src={MarkerImage} alt="Marker Image" />
+      <MarkerIcon color={color} />
       <ProfileWrapper size={profileSize}>
         <Profile.Image url={profileImage} size={profileSize} />
       </ProfileWrapper>
@@ -30,8 +32,8 @@ export const NormalMarker: React.FC<NormalMarkerProps> = ({
 };
 
 const MarkerWrapper = styled.div<{ $size: number; $isSelected: boolean }>`
-  width: ${({ $size }) => calcResponsive({ value: $size * 1.6, dimension: "width" })};
-  height: ${({ $size }) => calcResponsive({ value: $size * 2, dimension: "width" })};
+  width: ${({ $size }) => calcResponsive({ value: $size * 2, dimension: "width" })};
+  height: ${({ $size }) => calcResponsive({ value: $size * 2.6, dimension: "width" })};
   display: flex;
   flex-direction: column;
   align-items: center;

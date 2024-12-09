@@ -167,7 +167,7 @@ const ScheduleBox = styled(FlexColumn)`
   align-items: center;
   gap: 40px;
   margin-top: 30px;
-  margin-bottom: 25px;
+  margin-bottom: -20px;
 
   @media (max-height: 1060px) {
     margin-top: 20px;
