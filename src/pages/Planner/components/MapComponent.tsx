@@ -65,6 +65,7 @@ const MapComponent = () => {
   const [mapCenter] = useState(initialCenter);
   const [isSearchVisible, setIsSearchVisible] = useState(true);
   const [scheduleId, setScheduleId] = useState<number>(1);
+  const scheduleIdRef = useRef<number>(scheduleId);
 
   useEffect(() => {
     if (isConnected) {
@@ -73,12 +74,25 @@ const MapComponent = () => {
   }, [isConnected, requestMarkerList, scheduleId]);
 
   useEffect(() => {
+    scheduleIdRef.current = scheduleId;
+  }, [scheduleId]);
+
+  useEffect(() => {
     setLocalMarkers(markers);
   }, [markers]);
 
   const onUnmount = () => {
     mapRef.current = null;
   };
+
+  const handleScheduleIdChange = useCallback(
+    (newScheduleId: number) => {
+      setScheduleId(newScheduleId);
+      scheduleIdRef.current = newScheduleId;
+      requestMarkerList(newScheduleId);
+    },
+    [requestMarkerList]
+  );
 
   const handleMarkerClick = useCallback(
     async (marker: MarkerData, index: number) => {
@@ -105,7 +119,7 @@ const MapComponent = () => {
             (resolve, reject) => {
               const request = {
                 location,
-                radius: 50,
+                radius: 20,
                 type: "point_of_interest",
               };
 
@@ -159,81 +173,8 @@ const MapComponent = () => {
     [localMarkers]
   );
 
-  // const fetchLocationDetails = useCallback(
-  //   async (lat: number, lng: number) => {
-  //     if (!geocoderRef.current || !mapRef.current) return;
-
-  //     const location = { lat, lng };
-
-  //     try {
-  //       const results = await new Promise<google.maps.GeocoderResult[]>((resolve, reject) => {
-  //         geocoderRef.current!.geocode({ location }, (res, status) => {
-  //           if (status === "OK" && res) resolve(res);
-  //           else reject(status);
-  //         });
-  //       });
-
-  //       if (results.length > 0) {
-  //         const address = results[0].formatted_address;
-  //         const service = new window.google.maps.places.PlacesService(mapRef.current!);
-  //         const placeResults = await new Promise<google.maps.places.PlaceResult[]>(
-  //           (resolve, reject) => {
-  //             const request = {
-  //               location,
-  //               radius: 10,
-  //               type: "point_of_interest",
-  //             };
-
-  //             service.nearbySearch(request, (res, status) => {
-  //               if (status === window.google.maps.places.PlacesServiceStatus.OK && res) {
-  //                 resolve(res);
-  //               } else {
-  //                 reject(status);
-  //               }
-  //             });
-  //           }
-  //         );
-
-  //         let title = "Unnamed Place";
-  //         let imageSrc = NoImage;
-
-  //         if (placeResults.length > 0) {
-  //           const place = placeResults[0];
-
-  //           title = place.name || "Unnamed Place";
-  //           imageSrc = place.photos?.[0]?.getUrl({ maxWidth: 100 }) || NoImage;
-  //         }
-
-  //         setLocalMarkers((prevMarkers) => [
-  //           ...prevMarkers,
-  //           {
-  //             markerId: Date.now(),
-  //             lat,
-  //             lng,
-  //             confirm: false,
-  //             itemOrder: prevMarkers.length + 1,
-  //             title,
-  //             address,
-  //             imageSrc,
-  //             email: "",
-  //             profileImage: "",
-  //             scheduleId,
-  //             color: "",
-  //             createdAt: new Date().toISOString(),
-  //             updatedAt: new Date().toISOString(),
-  //           },
-  //         ]);
-  //       }
-  //     } catch (error) {
-  //       // eslint-disable-next-line no-console
-  //       console.error("Failed to fetch location details:", error);
-  //     }
-  //   },
-  //   [geocoderRef, mapRef, scheduleId]
-  // );
-
   const addNewMarker = useCallback(
-    async (scheduleId: number, lat: number, lng: number) => {
+    async (lat: number, lng: number, scheduleId: number) => {
       if (isMarkerExists(lat, lng)) {
         alert("이미 마커가 있는 위치입니다.");
 
@@ -258,7 +199,7 @@ const MapComponent = () => {
             (resolve, reject) => {
               const request = {
                 location: { lat, lng },
-                radius: 50,
+                radius: 20,
                 type: "point_of_interest",
               };
 
@@ -282,7 +223,7 @@ const MapComponent = () => {
             imageSrc = place.photos?.[0]?.getUrl({ maxWidth: 100 }) || NoImage;
           }
 
-          await addMarker(scheduleId, lat, lng);
+          addMarker(scheduleId, lat, lng);
 
           const newMarker: MarkerData = {
             markerId: Date.now(),
@@ -306,7 +247,7 @@ const MapComponent = () => {
         setLocalMarkers((prevMarkers) => prevMarkers.filter((m) => m.markerId !== Date.now()));
       }
     },
-    [addMarker, localMarkers, geocoderRef, mapRef, isMarkerExists]
+    [isMarkerExists, addMarker, localMarkers.length]
   );
 
   const onLoad = useCallback(
@@ -314,18 +255,18 @@ const MapComponent = () => {
       mapRef.current = map;
       geocoderRef.current = new window.google.maps.Geocoder();
 
-      map.addListener("rightclick", async (event: google.maps.MapMouseEvent) => {
+      map.addListener("rightclick", (event: google.maps.MapMouseEvent) => {
         if (event.latLng) {
           const lat = event.latLng.lat();
           const lng = event.latLng.lng();
 
           if (!isMarkerExists(lat, lng)) {
-            await addNewMarker(scheduleId, lat, lng);
+            addNewMarker(lat, lng, scheduleIdRef.current);
           }
         }
       });
     },
-    [scheduleId, addNewMarker, isMarkerExists]
+    [addNewMarker, isMarkerExists]
   );
 
   const handleConfirm = useCallback(async () => {
@@ -519,16 +460,14 @@ const MapComponent = () => {
             imageSrc,
             email: "",
             profileImage: imageSrc,
-            scheduleId,
-            color: "#ff0000", // 기본 색상 설정
+            scheduleId: scheduleIdRef.current,
+            color: "#000000",
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
           };
 
-          // 서버에 마커 추가
-          await addMarker(scheduleId, lat, lng);
+          await addMarker(scheduleIdRef.current, lat, lng);
 
-          // 로컬 상태 업데이트
           setLocalMarkers((prevMarkers) => [...prevMarkers, newMarker]);
           setSelectedMarker({ lat, lng, title, address, imageSrc });
           setActiveMarker(localMarkers.length);
@@ -537,10 +476,9 @@ const MapComponent = () => {
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error("Failed to add marker:", error);
-        setLocalMarkers((prevMarkers) => prevMarkers.filter((m) => m.markerId !== Date.now()));
       }
     },
-    [addMarker, localMarkers, geocoderRef, mapRef, scheduleId, isMarkerExists]
+    [addMarker, localMarkers, geocoderRef, mapRef, isMarkerExists]
   );
 
   const handleDelete = useCallback(async () => {
@@ -563,14 +501,6 @@ const MapComponent = () => {
       }
     }
   }, [selectedMarker, localMarkers, deleteMarker]);
-
-  const handleScheduleIdChange = useCallback(
-    (newScheduleId: number) => {
-      setScheduleId(newScheduleId);
-      requestMarkerList(newScheduleId);
-    },
-    [requestMarkerList]
-  );
 
   return (
     <Container>
