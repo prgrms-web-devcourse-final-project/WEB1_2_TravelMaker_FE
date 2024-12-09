@@ -12,16 +12,7 @@ export type EnterErrorResponse = paths[typeof path]["post"]["responses"];
  * [POST] 방 입장
  */
 export const enterRoom = async (payload: EnterRoomRequest) => {
-  const token = localStorage.getItem("accessToken");
-
-  if (!token) {
-    throw new Error("No access token found");
-  }
-  const { data } = await httpClient.post<EnterRoomResponse>(path, payload, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const { data } = await httpClient.post<EnterRoomResponse>(path, payload);
 
   return data;
 };

@@ -1,46 +1,39 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import styled from "styled-components";
+import { useLocation } from "react-router-dom";
+
 import Button from "@components/button/Button";
 import Google from "@components/assets/icons/GoogleIcon";
 import Kakao from "@components/assets/icons/KakaoIcon";
 import LargeLogo from "@components/assets/images/LargeLogo"; // LargeLogo 컴포넌트 경로
-import { useLocation, useNavigate } from "react-router-dom";
 import { baseURL } from "@api/fetch";
-import { setDefaultsHeaderAuth } from "@api/fetch";
+import { useTypedNavigate } from "@common/hooks/useTypedNavigate";
+import { useAuth } from "@common/hooks/useAuth";
 
-const saveAuthData = (data: { accessToken?: string }) => {
-  const { accessToken } = data || {};
-
-  if (accessToken) {
-    // Axios 기본 헤더에 토큰 추가
-    setDefaultsHeaderAuth(accessToken);
-    // 로컬 스토리지에 토큰 저장
-    localStorage.setItem("accessToken", accessToken);
-
-    return true;
-  }
-
-  return false;
-};
-
-const Login: React.FC = () => {
+const Login = () => {
   const location = useLocation();
-  const navigate = useNavigate();
+  const navigate = useTypedNavigate();
+  const { login } = useAuth();
 
   useEffect(() => {
     // 현재 URL에서 Authorization Code를 추출
     const params = new URLSearchParams(location.search);
     const accessToken = params.get("accessToken");
 
+    // 로그인이 성공한 시점
     if (accessToken) {
-      // saveAuthData 함수 호출
-      if (saveAuthData({ accessToken })) {
-        // 리다이렉트로 URL 클리어 (토큰 노출 방지)
-        window.history.replaceState({}, document.title, "/");
-        navigate("/"); // 메인 페이지로 이동
-      }
+      login(
+        { payload: { accessToken } },
+        {
+          onSuccess: () => {
+            // 리다이렉트로 URL 클리어 (토큰 노출 방지)
+            window.history.replaceState({}, document.title, "/");
+            navigate("/", undefined, { replace: true });
+          },
+        }
+      );
     }
-  }, [location, navigate]);
+  }, [location, login, navigate]);
 
   /**
    * 로그인 버튼 클릭 시 호출

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { withDevOnly } from "./withDevOnly";
 import { setDefaultsHeaderAuth } from "@api/fetch";
+import { authLocalStorage } from "@api/authLocalStorage";
 
 interface TokenInputProps {
   style?: React.CSSProperties;
@@ -18,7 +19,7 @@ const TokenCookieManager: React.FC<TokenInputProps> = withDevOnly(({ style }) =>
 
   useEffect(() => {
     // 초기 쿠키 값 로드
-    const currentAccessToken = localStorage.getItem("accessToken") || "";
+    const currentAccessToken = authLocalStorage.get().accessToken || "";
     const currentRefreshToken = getCookie("refreshToken") || "";
 
     setTokenInputs({
@@ -27,7 +28,7 @@ const TokenCookieManager: React.FC<TokenInputProps> = withDevOnly(({ style }) =>
     });
 
     setDefaultsHeaderAuth(currentAccessToken);
-    localStorage.setItem("accessToken", currentAccessToken);
+    authLocalStorage.set({ accessToken: currentAccessToken });
   }, []);
 
   const handleTokenChange = (type: "accessToken" | "refreshToken", value: string) => {
@@ -48,7 +49,7 @@ const TokenCookieManager: React.FC<TokenInputProps> = withDevOnly(({ style }) =>
 
     if (tokenInputs.accessToken) {
       setCookie("accessToken", tokenInputs.accessToken);
-      localStorage.setItem("accessToken", tokenInputs.accessToken);
+      authLocalStorage.set({ accessToken: tokenInputs.accessToken });
     }
 
     if (tokenInputs.refreshToken) {
@@ -65,7 +66,7 @@ const TokenCookieManager: React.FC<TokenInputProps> = withDevOnly(({ style }) =>
       accessToken: "",
       refreshToken: "",
     });
-    localStorage.removeItem("accessToken");
+    authLocalStorage.set({ accessToken: "" });
     alert("토큰이 삭제되었습니다.");
   };
 
