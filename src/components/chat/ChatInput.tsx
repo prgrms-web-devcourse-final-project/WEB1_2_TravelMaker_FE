@@ -12,6 +12,15 @@ interface Props {
 const ChatInput: FC<Props> = ({ onSubmit }) => {
   // 비제어 컴포넌트 사용
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const isComposing = useRef<boolean>(false);
+
+  const onCompositionStart = () => {
+    isComposing.current = true;
+  };
+
+  const onCompositionEnd = () => {
+    isComposing.current = false;
+  };
 
   const onChangeTextAreaHandler = ({ target }: ChangeEvent<HTMLTextAreaElement>) => {
     target.style.height = "auto";
@@ -19,21 +28,19 @@ const ChatInput: FC<Props> = ({ onSubmit }) => {
   };
 
   const onKeyDownHandler = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key !== "Enter") return;
+    if (e.key !== "Enter" || isComposing.current) return;
+    if (e.shiftKey) return;
 
-    if (e.shiftKey) {
-      // Shift + Enter: 줄바꿈 허용
-      return;
-    }
-
-    // Enter만: 메시지 전송
     e.preventDefault();
+    e.stopPropagation();
 
-    if (textareaRef.current && textareaRef.current.value.trim()) {
-      onSubmit(textareaRef.current.value);
-      textareaRef.current.value = "";
-      textareaRef.current.style.height = "auto";
-    }
+    if (!textareaRef.current?.value.trim()) return;
+
+    const value = textareaRef.current.value.trim();
+
+    textareaRef.current.value = "";
+    textareaRef.current.style.height = "auto";
+    onSubmit(value);
   };
 
   const onSubmitHandler = () => {
@@ -54,6 +61,8 @@ const ChatInput: FC<Props> = ({ onSubmit }) => {
             placeholder="Write your message"
             onChange={onChangeTextAreaHandler}
             onKeyDown={onKeyDownHandler}
+            onCompositionStart={onCompositionStart}
+            onCompositionEnd={onCompositionEnd}
           />
         </InputContainer>
         <IconContainer onClick={onSubmitHandler}>

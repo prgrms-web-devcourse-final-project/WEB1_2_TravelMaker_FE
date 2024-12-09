@@ -118,7 +118,7 @@ export const useWebSocket = (roomId: string): UseWebSocketReturn => {
     cleanup();
 
     const client = new Client({
-      brokerURL: `/room?access_token=${getTokenString(accessToken)}`,
+      brokerURL: `/room?accessToken=${getTokenString(accessToken)}`,
       reconnectDelay: 3000,
       heartbeatIncoming: 2000,
       heartbeatOutgoing: 2000,
