@@ -6,15 +6,9 @@ import router from "./routes";
 import { CustomThemeProvider } from "@common/styles/ThemeProvider.tsx";
 import { store } from "@common/redux/store.ts";
 import { UserProvider } from "@pages/My/contexts/UserContext.tsx";
-import { setDefaultsHeaderAuth } from "@api/fetch.ts";
 import { setupAxiosInterceptors } from "@pages/Login/setupAxiosInterceptors.ts";
+import { AuthProvider } from "@common/provider/AuthContext.tsx";
 
-// 로컬 스토리지에서 토큰 가져오기
-const token = localStorage.getItem("accessToken");
-
-if (token) {
-  setDefaultsHeaderAuth(token); // Axios 기본 헤더에 토큰 추가
-}
 // Axios Interceptors 초기화
 setupAxiosInterceptors();
 
@@ -34,9 +28,11 @@ enableMocking().then(() => {
   createRoot(document.getElementById("root")!).render(
     <CustomThemeProvider>
       <ReduxProvider store={store}>
-        <UserProvider>
-          <RouterProvider router={router} />
-        </UserProvider>
+        <AuthProvider>
+          <UserProvider>
+            <RouterProvider router={router} />
+          </UserProvider>
+        </AuthProvider>
       </ReduxProvider>
     </CustomThemeProvider>
   );

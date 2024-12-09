@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+
 import { calcResponsiveByPercent } from "@common/styles/theme";
 import ProfileWithInfo from "@components/profile/Profile";
 import Button from "@components/button/Button";
@@ -11,11 +11,13 @@ import {
   updateProfileImage,
   UserProfile,
 } from "@api/my/member";
-import axios from "axios";
+import { useAuth } from "@common/hooks/useAuth";
+import { useTypedNavigate } from "@common/hooks/useTypedNavigate";
 
 const My = () => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
-  const navigate = useNavigate();
+  const { logout } = useAuth();
+  const navigate = useTypedNavigate();
 
   const getUserProfile = async () => {
     try {
@@ -57,12 +59,12 @@ const My = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-
-    delete axios.defaults.headers.common.Authorization;
-
-    alert("로그아웃이 완료되었습니다.");
-    navigate("/landing");
+    logout({
+      onSuccess: () => {
+        alert("로그아웃이 완료되었습니다.");
+        navigate("/landing", undefined, { replace: true });
+      },
+    });
   };
 
   const handleWithdraw = async () => {
@@ -71,8 +73,7 @@ const My = () => {
         await deleteUserAccount();
         alert("회원탈퇴가 완료되었습니다.");
         setProfile(null);
-
-        navigate("/landing");
+        navigate("/landing", undefined, { replace: true });
       } catch {
         alert("회원탈퇴에 실패했습니다.");
       }

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Client, StompSubscription } from "@stomp/stompjs";
 import { getTokenString } from "@common/utils/getTokenString";
+import { useAuth } from "./useAuth";
 
 // 웹소켓으로 주고받을 메시지 타입 정의
 interface WebSocketMessage {
@@ -36,6 +37,7 @@ export const useWebSocket = (roomId: string): UseWebSocketReturn => {
   const reconnectTimeoutRef = useRef<NodeJS.Timeout>();
   // 컴포넌트 마운트 상태를 추적하는 ref
   const mountedRef = useRef(true);
+  const { accessToken } = useAuth();
 
   // 웹소켓 연결이 활성 상태인지 확인하는 타입 가드
   const isWebSocketActive = (
@@ -116,7 +118,7 @@ export const useWebSocket = (roomId: string): UseWebSocketReturn => {
     cleanup();
 
     const client = new Client({
-      brokerURL: `/room?access_token=${getTokenString()}`,
+      brokerURL: `/room?access_token=${getTokenString(accessToken)}`,
       reconnectDelay: 3000,
       heartbeatIncoming: 2000,
       heartbeatOutgoing: 2000,
@@ -194,7 +196,7 @@ export const useWebSocket = (roomId: string): UseWebSocketReturn => {
     clientRef.current = client;
     client.activate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [roomId]);
+  }, [roomId, accessToken]);
 
   // 특정 채널에 구독하는 함수
   const subscribe = useCallback((channel: string, handler: WebSocketHandler) => {

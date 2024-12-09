@@ -4,6 +4,10 @@ import { createGlobalStyle } from "styled-components";
 import TicketingRegular from "@assets/fonts/Ticketing-regular.otf";
 
 export const GlobalStyle = createGlobalStyle`
+    .calendar-popper {
+        z-index: 9999 !important;
+    }
+
     @font-face {
         font-family: 'Ticketing-regular';
         src: url(${TicketingRegular}) format('opentype');
