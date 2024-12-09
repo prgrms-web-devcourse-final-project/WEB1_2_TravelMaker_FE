@@ -2,20 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import CheckIcon from "@components/assets/icons/CheckIcon";
 
-// 스케줄 데이터 타입 정의
-// interface Schedule {
-//   schedule_id: number; // 스케줄의 고유 ID
-//   plan: string; // 플랜 (예: "A", "B", "C")
-//   date: string; // 날짜 (예: "11/20")
-//   room_id: string; // 방 ID
-//   scheduleItem?: {
-//     schedule_id: number;
-//     title?: string;
-//     address: string;
-//     content: string;
-//   }[];
-// }
-
 // PlanButtons 컴포넌트에 전달될 props 타입 정의
 interface PlanButtonsProps {
   currentPlan: string; // 현재 선택된 플랜

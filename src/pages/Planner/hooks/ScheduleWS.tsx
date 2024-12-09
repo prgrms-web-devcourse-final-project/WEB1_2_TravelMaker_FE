@@ -41,7 +41,7 @@ interface ScheduleItem {
   itemOrder: number;
 }
 
-export const useScheduleWS = (roomId: string | undefined) => {
+export const useScheduleWS = (roomId?: string) => {
   const [schedules, setSchedules] = useState<ScheduleList[]>([]);
   const [scheduleItems, setScheduleItems] = useState<ScheduleItem[]>([]);
   const [isConnected, setIsConnected] = useState(false);
