@@ -48,7 +48,7 @@ const OuterContainer = styled.div`
 const InnerContainer = styled(FlexBox)`
   flex-direction: column;
   justify-content: center; /* 수직 중앙 정렬 */
-  align-items: center; /* 수평 중앙 정렬 */
+  align-items: center; /* 수평 왼쪽 정렬 */
 `;
 
 const Text = styled.div`
@@ -58,7 +58,7 @@ const Text = styled.div`
   color: ${({ theme }) => theme.colors.text.body};
   font-family: ${({ theme }) => theme.typography.fontFamily.main};
   font-weight: 500;
-  text-align: center; /* 텍스트 중앙 정렬 */
+  text-align: center;
 
   @media (max-width: 1024px) {
     width: 300px;

@@ -25,10 +25,12 @@ const ScheduleManager: React.FC<ScheduleManagerProps> = ({ onScheduleIdChange })
     isConnected,
   } = useSchedules(roomId);
 
+  const [scheduleItemsState, setScheduleItems] = useState(() => scheduleItems);
   // 현재 날짜 및 플랜 관리
   const [currentDate, setCurrentDate] = useState(() => schedules[0]?.actualDate || "");
   const [currentPlan, setCurrentPlan] = useState("A");
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
+  const [hasError, setHasError] = useState(false);
 
   // 모든 스케줄에서 날짜만 추출한 배열
   const dateArray = Array.from(new Set(schedules.map((schedule) => schedule.actualDate)));
@@ -49,9 +51,14 @@ const ScheduleManager: React.FC<ScheduleManagerProps> = ({ onScheduleIdChange })
   const loadScheduleItems = useCallback(
     (scheduleId: number | null) => {
       if (!scheduleId) {
+        setScheduleItems([]);
+        setHasError(true);
+
         return;
       }
-      requestScheduleItems(scheduleId); // scheduleId로 아이템 요청
+      setScheduleItems([]); // 새로운 요청 전에 기존 아이템들을 클리어
+      setHasError(false);
+      requestScheduleItems(scheduleId);
     },
     [requestScheduleItems]
   );
@@ -71,6 +78,7 @@ const ScheduleManager: React.FC<ScheduleManagerProps> = ({ onScheduleIdChange })
     setCurrentPlan(planType); // 플랜 변경
     const scheduleId = findScheduleId(currentDate, planType);
 
+    loadScheduleItems(scheduleId);
     if (scheduleId) {
       onScheduleIdChange(scheduleId);
     }
@@ -86,7 +94,13 @@ const ScheduleManager: React.FC<ScheduleManagerProps> = ({ onScheduleIdChange })
 
   useEffect(() => {
     if (roomId && isConnected) {
-      requestScheduleList();
+      try {
+        requestScheduleList();
+        setHasError(false);
+      } catch {
+        setHasError(true);
+        // console.error("스케줄 목록 조회 중 오류 발생:", error);
+      }
     }
   }, [roomId, isConnected, requestScheduleList]);
 
@@ -102,13 +116,32 @@ const ScheduleManager: React.FC<ScheduleManagerProps> = ({ onScheduleIdChange })
     [updateScheduleItem]
   );
 
-  const handleDelete = (scheduleItemId: number) => {
-    setLoading(true);
-    deleteScheduleItem(scheduleItemId);
-    const scheduleId = findScheduleId(currentDate, currentPlan);
-
-    loadScheduleItems(scheduleId);
+  const handleDelete = async (scheduleItemId: number) => {
+    try {
+      await deleteScheduleItem(scheduleItemId);
+      setScheduleItems((prevItems) =>
+        prevItems.filter((item) => item.scheduleItemId !== scheduleItemId)
+      );
+      setScheduleItems((prevItems) =>
+        prevItems.filter((item) => item.scheduleItemId !== scheduleItemId)
+      );
+    } catch {
+      // console.error("일정 삭제 중 오류 발생:", error);
+    }
   };
+
+  // scheduleItems가 변경될 때마다 scheduleItemsState 업데이트
+  useEffect(() => {
+    // scheduleItems가 undefined이거나 빈 배열이면 에러 상태로 처리
+    if (!scheduleItems || !Array.isArray(scheduleItems) || scheduleItems.length === 0) {
+      setScheduleItems([]);
+      setHasError(true);
+
+      return;
+    }
+    setScheduleItems(scheduleItems);
+    setHasError(false);
+  }, [scheduleItems]);
 
   return (
     <Container>
@@ -116,10 +149,15 @@ const ScheduleManager: React.FC<ScheduleManagerProps> = ({ onScheduleIdChange })
       <ScheduleBox>
         <ScheduleBar
           currentDate={currentDate}
-          schedules={dateArray} // 날짜 배열만 전달
+          schedules={dateArray}
           onChangeDate={handleDateChange}
         />
-        <RouteCardList items={scheduleItems} onSave={onSave} deleteScheduleItem={handleDelete} />
+        <RouteCardList
+          items={scheduleItemsState}
+          onSave={onSave}
+          deleteScheduleItem={handleDelete}
+          hasError={hasError}
+        />
         <button aria-hidden={loading}></button>
       </ScheduleBox>
       <LogoWrapper>
