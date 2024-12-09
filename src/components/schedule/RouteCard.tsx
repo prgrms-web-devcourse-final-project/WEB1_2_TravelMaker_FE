@@ -48,6 +48,7 @@ const RouteCard: FC<RouteCardProps> = ({ item, onSave, deleteScheduleItem }) => 
       scheduleItemId: item.scheduleItemId,
       markerId: item.markerId,
       address: item.address,
+      itemOrder: item.itemOrder,
       isEditing,
       editableName: editableName || "", // 기본값 제공
       editableContent: editableContent || "", // 기본값 제공
@@ -63,7 +64,7 @@ const RouteCard: FC<RouteCardProps> = ({ item, onSave, deleteScheduleItem }) => 
   return (
     <OuterContainer>
       <TopContainer>
-        <Index>{item.markerId}</Index>
+        <Index>{item.itemOrder}</Index>
         <CloseButton onClick={handleDelete}>
           <CloseIcon />
         </CloseButton>

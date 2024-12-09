@@ -5,7 +5,7 @@ import { FC } from "react";
 // DetailPopupProps 정의 수정
 interface DetailPopupProps {
   scheduleItemId: number;
-  markerId: number;
+  itemOrder: number;
   address: string;
   isEditing: boolean;
   editableName: string | undefined; // 수정: string | undefined로 타입 변경
@@ -19,7 +19,7 @@ interface DetailPopupProps {
 
 const DetailPopup: FC<DetailPopupProps> = ({
   scheduleItemId,
-  markerId,
+  itemOrder,
   address,
   isEditing,
   editableName,
@@ -38,7 +38,7 @@ const DetailPopup: FC<DetailPopupProps> = ({
 
     {/* 상세 내용 */}
     <DetailContent>
-      <MarkerId>{markerId}</MarkerId>
+      <ItemOrder>{itemOrder}</ItemOrder>
       <Name>
         {isEditing ? (
           <Input
@@ -109,7 +109,7 @@ const DetailContent = styled.div`
   margin-top: 10px;
 `;
 
-const MarkerId = styled.div`
+const ItemOrder = styled.div`
   margin-left: 10px;
   font-size: 32px;
 `;

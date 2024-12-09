@@ -25,7 +25,7 @@ const ScheduleBar: React.FC<ScheduleBarProps> = ({ currentDate, schedules, onCha
   const formatDate = (date: string) => {
     if (!date) return "/"; // date가 유효하지 않으면 빈 문자열 반환
 
-    const [, month, day] = date.split("/");
+    const [, month, day] = date.split("-");
 
     return `${month}/${day}`;
   };

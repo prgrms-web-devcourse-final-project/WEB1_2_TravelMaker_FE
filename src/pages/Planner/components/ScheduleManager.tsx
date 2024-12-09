@@ -31,7 +31,9 @@ const ScheduleManager: React.FC<ScheduleManagerProps> = ({ onScheduleIdChange })
   const [loading, setLoading] = useState(false);
 
   // 모든 스케줄에서 날짜만 추출한 배열
-  const dateArray = schedules.map((schedule) => schedule.actualDate);
+const dateArray = Array.from(
+  new Set(schedules.map((schedule) => schedule.actualDate))
+);
 
   // 주어진 날짜와 플랜에 해당하는 스케줄 ID를 찾아 반환
   const findScheduleId = useCallback(
@@ -83,7 +85,7 @@ const ScheduleManager: React.FC<ScheduleManagerProps> = ({ onScheduleIdChange })
 
     loadScheduleItems(scheduleId);
   };
-
+  
   useEffect(() => {
     if (roomId && isConnected) {
       requestScheduleList();
