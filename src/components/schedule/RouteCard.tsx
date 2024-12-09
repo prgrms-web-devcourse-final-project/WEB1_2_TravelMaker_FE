@@ -87,6 +87,7 @@ const RouteCard: FC<RouteCardProps> = ({ item, onSave, deleteScheduleItem }) => 
 export default RouteCard;
 
 // 공통 스타일 정의
+// 공통 스타일 정의
 const FlexBox = styled.div`
   display: flex;
   align-items: center;
@@ -145,12 +146,12 @@ const CloseButton = styled.button`
 
 const InnerContainer = styled(FlexBox)`
   flex-direction: column;
-  margin-left: 18px;
 `;
 
 const TitleSection = styled(TextEllipsis)`
   width: 350px;
   margin-top: -10px;
+  margin-left: -20px;
   font-size: ${({ theme }) => theme.typography.heading.h2.fontSize};
   color: ${({ theme }) => theme.colors.text.body};
   font-family: ${({ theme }) => theme.typography.fontFamily.main};
@@ -164,6 +165,7 @@ const TitleSection = styled(TextEllipsis)`
 const LocationSection = styled(TextEllipsis)`
   width: 330px;
   margin-top: 5px;
+  margin-left: -35px;
   font-size: ${({ theme }) => theme.typography.body.regular.fontSize};
   color: ${({ theme }) => theme.colors.text.body};
   font-family: ${({ theme }) => theme.typography.fontFamily.main};

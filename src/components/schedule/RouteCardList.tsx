@@ -4,9 +4,10 @@ import { FC } from "react";
 import InfoCard from "@components/schedule/InfoCard";
 
 interface RouteCardListProps {
-  items: ScheduleItem[]; // ScheduleItem[] 타입으로 수정
+  items: ScheduleItem[];
   onSave: (scheduleItemId: number, name: string, content: string) => void;
-  deleteScheduleItem: (scheduleItemId: number) => void; // 삭제 함수 추가
+  deleteScheduleItem: (scheduleItemId: number) => void;
+  hasError?: boolean;
 }
 
 export interface ScheduleItem {
@@ -20,23 +21,23 @@ export interface ScheduleItem {
   itemOrder: number;
 }
 
-const RouteCardList: FC<RouteCardListProps> = ({ items, onSave, deleteScheduleItem }) => {
+const RouteCardList: FC<RouteCardListProps> = ({ items, onSave, deleteScheduleItem, hasError }) => {
   return (
     <CardListContainer>
-      {items.length > 0 ? (
+      {hasError || items.length === 0 ? (
+        <InfoCard>
+          <p>일반 마커를 확정하면</p>
+          <p>순서대로 일정이 추가됩니다.</p>
+        </InfoCard>
+      ) : (
         items.map((item, itemOrder) => (
           <RouteCard
             key={`${item.scheduleItemId}-${itemOrder}`}
-            item={item} // RouteCard에 item을 전달
-            onSave={onSave} // onSave를 RouteCard에 전달
+            item={item}
+            onSave={onSave}
             deleteScheduleItem={deleteScheduleItem}
           />
         ))
-      ) : (
-        <InfoCard>
-          <p>일반 마커를 확정하면</p> {/* 문구만 표시 */}
-          <p>순서대로 일정이 추가됩니다.</p>
-        </InfoCard>
       )}
     </CardListContainer>
   );
