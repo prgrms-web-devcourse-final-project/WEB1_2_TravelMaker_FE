@@ -16,6 +16,7 @@ export default defineConfig(({ mode }) => {
       __VITE_APP_URL__: JSON.stringify(env.VITE_APP_URL),
     },
     assetsInclude: ["./src/assets/fonts/Ticketing-Regular.otf"],
+    base: "./",
     server: {
       proxy: {
         "/room": {

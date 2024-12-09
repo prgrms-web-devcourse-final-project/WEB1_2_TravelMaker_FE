@@ -1,7 +1,7 @@
 import "./tailwind.css";
 
 import { createGlobalStyle } from "styled-components";
-import TicketingRegular from "@assets/fonts/Ticketing-regular.otf";
+import TicketingRegular from "../../assets/fonts/Ticketing-Regular.otf";
 
 export const GlobalStyle = createGlobalStyle`
     .calendar-popper {
