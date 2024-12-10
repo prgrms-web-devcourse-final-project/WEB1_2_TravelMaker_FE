@@ -45,7 +45,7 @@ const Login = () => {
 
     const authUrls = {
       google: `${baseURL}/auth/login/google?redirect_uri=${redirectUri}`,
-      kakao: `https://kauth.kakao.com/oauth/authorize?client_id=ecf4fa7ba5b7c3dd0aecf41e4f30163c&redirect_uri=${redirectUri}&response_type=code`,
+      kakao: `https://kauth.kakao.com/oauth/authorize?client_id=${import.meta.env.VITE_KAKAO_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=code`,
     };
 
     // 제공자에 맞는 인증 URL로 리다이렉트
