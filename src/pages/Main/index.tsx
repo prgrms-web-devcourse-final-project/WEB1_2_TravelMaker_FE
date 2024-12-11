@@ -1,67 +1,30 @@
 import styled from "styled-components";
 
-import { calcResponsiveByPercent } from "@common/styles/theme";
-import MyPlannerCardList from "@components/cardList/MyPlannerCardList";
-import StartPlannerCard from "@components/card/StartPlannerCard";
+import { calcResponsive } from "@common/styles/theme";
+import StartPlannerCardContainer from "./containers/StartPlannerCardContainer";
+import MyPlannerCardListContainer from "./containers/MyPlannerCardListContainer";
 
 const Main = () => {
   return (
-    <>
-      <Container>
-        <MyPlannerCardList items={mock} onEmptyCardClick={() => {}} />
-        <StartPlannerCard onClickPlanner={() => {}} onSubmit={() => {}} />
-      </Container>
-    </>
+    <Container>
+      <MyPlannerCardListContainer />
+      <StartPlannerCardContainer />
+    </Container>
   );
 };
 
 const Container = styled.div`
   display: flex;
-  flex-direction: column-reverse;
+  position: fixed;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
+  top: 0;
+  left: 0;
+  min-width: 100%;
   min-height: 100vh;
-  gap: ${calcResponsiveByPercent(-15, 100)};
-  margin: 50px 0;
-
-  @media (min-width: 1024px) {
-    margin: 0;
-    flex-direction: row;
-    gap: ${calcResponsiveByPercent(-15, 250)};
-  }
+  gap: ${calcResponsive({ value: 250, dimension: "width" })};
+  z-index: 0;
 `;
 
 export default Main;
-
-const mock = [
-  {
-    country: "KOREA",
-    startDate: "2024.11.24",
-    endDate: "2024.11.30",
-    onClick: () => {},
-  },
-  {
-    country: "JAPAN",
-    startDate: "2025.01.01",
-    endDate: "2025.01.07",
-    onClick: () => {},
-  },
-  {
-    country: "CHINA",
-    startDate: "2025.02.01",
-    endDate: "2025.02.07",
-    onClick: () => {},
-  },
-  {
-    country: "JAPAN",
-    startDate: "2025.03.01",
-    endDate: "2025.03.07",
-    onClick: () => {},
-  },
-  {
-    country: "KOREA",
-    startDate: "2025.11.24",
-    endDate: "2025.11.30",
-    onClick: () => {},
-  },
-];

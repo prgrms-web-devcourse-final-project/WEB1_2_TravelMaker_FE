@@ -1,4 +1,4 @@
-import { calcResponsiveByPercent } from "@common/styles/theme";
+import { calcResponsive } from "@common/styles/theme";
 import { ChangeEvent, FC } from "react";
 import styled from "styled-components";
 
@@ -113,6 +113,10 @@ const ButtonContainer = styled.button<{ $hidden: boolean }>`
   aspect-ratio: 1;
   flex-shrink: 0;
   border-radius: ${({ theme: { cornerRadius } }) => cornerRadius.small};
+  transition: transform 0.2s ease;
+  &:hover {
+    transform: scale(1.1);
+  }
 `;
 
 const Base = {
@@ -121,7 +125,8 @@ const Base = {
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: ${calcResponsiveByPercent(-15, 55)};
+    height: ${calcResponsive({ value: 55, dimension: "height" })};
+
     padding: 20px;
     border-radius: ${({ theme: { cornerRadius } }) => cornerRadius.large};
     background-color: ${({ theme }) => theme.colors.secondary.subtle};

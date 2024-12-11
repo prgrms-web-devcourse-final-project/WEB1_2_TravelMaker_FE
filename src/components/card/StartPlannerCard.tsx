@@ -1,22 +1,19 @@
+import { FC, useState } from "react";
 import styled from "styled-components";
 
-import { calcResponsiveByPercent } from "@common/styles/theme";
+import { calcResponsive } from "@common/styles/theme";
 import Button from "@components/button/Button";
 import Divider from "@components/divider/Divider";
 import FormField from "@components/field/FormField";
-import { FC, useState } from "react";
 
 interface Props {
   onClickPlanner: () => void;
   onSubmit: (code: string) => void;
+  placeholder?: string;
 }
 
-const StartPlannerCard: FC<Props> = ({ onClickPlanner, onSubmit }) => {
+const StartPlannerCard: FC<Props> = ({ onClickPlanner, onSubmit, placeholder }) => {
   const [code, setCode] = useState("");
-
-  const onSubmitHandler = () => {
-    return onSubmit(code);
-  };
 
   return (
     <Container>
@@ -28,8 +25,13 @@ const StartPlannerCard: FC<Props> = ({ onClickPlanner, onSubmit }) => {
       <Button label="플래너 시작하기" fullWidth onClick={onClickPlanner} />
       <Divider />
       <SubmitContainer>
-        <FormField.Input label={code} onChange={setCode} />
-        <Button label="참여하기" type="small" onClick={onSubmitHandler} />
+        <FormField.Input label={code} onChange={setCode} placeholder={placeholder} />
+        <Button
+          label="참여하기"
+          type="small"
+          onClick={() => onSubmit(code)}
+          disabled={code.length <= 0}
+        />
       </SubmitContainer>
     </Container>
   );
@@ -38,22 +40,24 @@ const StartPlannerCard: FC<Props> = ({ onClickPlanner, onSubmit }) => {
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${calcResponsiveByPercent(-10, 50)};
+  gap: ${calcResponsive({ value: 50, dimension: "width" })};
+  max-width: ${calcResponsive({ value: 500, dimension: "width" })};
 `;
 
 const SubmitContainer = styled.div`
   display: flex;
-  gap: ${calcResponsiveByPercent(-10, 30)};
+  gap: ${calcResponsive({ value: 30 })};
 `;
 
 const LogoLabel = styled.h1`
   font-weight: ${({ theme }) => theme.typography.fontWeight.bold};
-  font-size: 64px;
+  font-size: ${calcResponsive({ value: 64, dimension: "height" })};
   color: ${({ theme }) => theme.colors.text.body};
 `;
 
 const DescriptionLabel = styled.p`
-  font-size: ${({ theme }) => theme.typography.heading.h3.fontSize};
+  font-size: ${({ theme }) =>
+    calcResponsive({ value: theme.typography.heading.h3.fontSize, dimension: "height" })};
   color: ${({ theme }) => theme.colors.text.body};
 `;
 

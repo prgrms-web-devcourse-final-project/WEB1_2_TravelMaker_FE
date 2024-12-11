@@ -1,58 +1,56 @@
-import React from "react";
+import { useEffect } from "react";
 import styled from "styled-components";
+import { useLocation } from "react-router-dom";
+
 import Button from "@components/button/Button";
 import Google from "@components/assets/icons/GoogleIcon";
 import Kakao from "@components/assets/icons/KakaoIcon";
 import LargeLogo from "@components/assets/images/LargeLogo"; // LargeLogo 컴포넌트 경로
+import { baseURL } from "@api/fetch";
+import { useTypedNavigate } from "@common/hooks/useTypedNavigate";
+import { useAuth } from "@common/hooks/useAuth";
 
-const Login: React.FC = () => {
-  const handleLoginClick = () => {
-    alert("로그인 버튼 클릭됨");
+const Login = () => {
+  const location = useLocation();
+  const navigate = useTypedNavigate();
+  const { login } = useAuth();
+
+  useEffect(() => {
+    // 현재 URL에서 Authorization Code를 추출
+    const params = new URLSearchParams(location.search);
+    const accessToken = params.get("accessToken");
+
+    // 로그인이 성공한 시점
+    if (accessToken) {
+      login(
+        { payload: { accessToken } },
+        {
+          onSuccess: () => {
+            // 리다이렉트로 URL 클리어 (토큰 노출 방지)
+            window.history.replaceState({}, document.title, "/");
+            navigate("/", undefined, { replace: true });
+          },
+        }
+      );
+    }
+  }, [location, login, navigate]);
+
+  /**
+   * 로그인 버튼 클릭 시 호출
+   * 사용자를 Google 또는 Kakao 인증 페이지로 리다이렉트
+   * @param provider - "google" 또는 "kakao" (로그인 제공자)
+   */
+  const handleLogin = (provider: "google" | "kakao") => {
+    const redirectUri = `${baseURL}/auth/${provider}/callback`; // 리디렉션 URI 설정
+
+    const authUrls = {
+      google: `${baseURL}/auth/login/google?redirect_uri=${redirectUri}`,
+      kakao: `https://kauth.kakao.com/oauth/authorize?client_id=${import.meta.env.VITE_KAKAO_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=code`,
+    };
+
+    // 제공자에 맞는 인증 URL로 리다이렉트
+    window.location.href = authUrls[provider];
   };
-
-  //구글 및 카카오 로그인 버튼 클릭 시 해당 OAuth 서버로 인증 요청을 보내도록 설정
-
-  // const handleLoginClick = (provider: "google" | "kakao") => {
-  //   const googleAuthUrl = "https://accounts.google.com/o/oauth2/auth?client_id=YOUR_GOOGLE_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code&scope=email profile";
-  //   const kakaoAuthUrl = "https://kauth.kakao.com/oauth/authorize?client_id=YOUR_KAKAO_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code";
-
-  //   if (provider === "google") {
-  //     window.location.href = googleAuthUrl; // 구글 로그인 리다이렉트
-  //   } else if (provider === "kakao") {
-  //     window.location.href = kakaoAuthUrl; // 카카오 로그인 리다이렉트
-  //   }
-  // };
-
-  //인증 완료 후, 클라이언트는 백엔드로 토큰 요청 API를 호출
-  //백엔드로부터 받은 JWT 또는 access_token을 저장하고, 로그인 상태 관리
-
-  // useEffect(() => {
-  //   const urlParams = new URLSearchParams(window.location.search);
-  //   const code = urlParams.get("code");
-
-  //   if (code) {
-  //     fetch("/api/auth/callback", { // 백엔드에 인증 코드 전달
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({ code }),
-  //     })
-  //       .then((res) => res.json())
-  //       .then((data) => {
-  //         localStorage.setItem("token", data.token); // 토큰 저장
-  //         alert("로그인 성공!");
-  //       })
-  //       .catch(() => alert("로그인 실패!"));
-  //   }
-  // }, []);
-
-  //리다이렉트 처리
-
-  // const redirectToHome = () => {
-  //   const token = localStorage.getItem("token");
-  //   if (token) {
-  //     window.location.href = "/home"; // 메인 페이지로 이동
-  //   }
-  // };
 
   return (
     <LoginPageWrapper>
@@ -61,24 +59,9 @@ const Login: React.FC = () => {
           <LargeLogo width={300} height={320} /> {/* SVG 컴포넌트 사용 */}
         </LogoWrapper>
         <ButtonWrapper>
-          <Button label="Google로 시작하기" icon={Google} onClick={handleLoginClick} />
-          <Button label="Kakao로 시작하기" icon={Kakao} onClick={handleLoginClick} />
+          <Button label="Google로 시작하기" icon={Google} onClick={() => handleLogin("google")} />
+          <Button label="Kakao로 시작하기" icon={Kakao} onClick={() => handleLogin("kakao")} />
         </ButtonWrapper>
-
-        {/* 버튼에 provider 값을 전달: */}
-
-        {/* <ButtonWrapper>
-  <Button
-    label="Google로 시작하기"
-    icon={Google}
-    onClick={() => handleLoginClick("google")}
-  />
-</ButtonWrapper>
-<Button
-  label="Kakao로 시작하기"
-  icon={Kakao}
-  onClick={() => handleLoginClick("kakao")}
- /> */}
       </LoginDiv>
     </LoginPageWrapper>
   );
@@ -86,6 +69,7 @@ const Login: React.FC = () => {
 
 export default Login;
 
+// 스타일링
 const LoginPageWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -98,17 +82,19 @@ const LoginPageWrapper = styled.div`
 const LoginDiv = styled.div`
   width: 500px;
   height: 650px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
 `;
 
 const LogoWrapper = styled.div`
   margin-bottom: 40px; /* 로고 아래 간격 */
-  margin-left: 100px;
 `;
+
 const ButtonWrapper = styled.div`
   display: flex;
-  align-items: center;
   flex-direction: column;
+  align-items: center;
   margin-top: 150px;
   gap: 40px;
 `;

@@ -1,46 +1,65 @@
+import { useEffect } from "react";
 import styled from "styled-components";
-import Icon from "../assets/images/SmallLogo";
+import { useNavigate, Outlet } from "react-router-dom";
+import SmallLogo from "@components/assets/images/SmallLogo.svg";
+import { calcResponsive, calcResponsiveValue } from "@common/styles/theme";
+import Profile from "@components/chat/ChatProfile";
+import useWindowSize from "@common/hooks/useWindowSize";
+import { useUserContext } from "@pages/My/contexts/UserContext";
 
-export const Header = () => (
-  <HeaderWrapper>
-    <LogoWrapper>
-      <Icon />
-    </LogoWrapper>
-    <CircleButton />
-  </HeaderWrapper>
-);
+export const Header = () => {
+  const windowSize = useWindowSize();
+  const navigate = useNavigate();
+  const { profileImage, refreshProfile } = useUserContext();
 
+  useEffect(() => {
+    refreshProfile();
+  }, [refreshProfile]);
+
+  return (
+    <>
+      <HeaderWrapper>
+        <LogoWrapper>
+          <img
+            src={SmallLogo}
+            alt="Logo"
+            onClick={() => navigate("/")}
+            style={{ cursor: "pointer" }}
+          />
+        </LogoWrapper>
+        <div>
+          <Profile.ClickableImage
+            onClick={() => navigate("/my")}
+            isInteractive={false}
+            url={profileImage || "https://picsum.photos/200/300"}
+            size={calcResponsiveValue({ value: 70, window: windowSize, dimension: "height" })}
+            hasBackground={false}
+          />
+        </div>
+      </HeaderWrapper>
+      <Outlet />
+    </>
+  );
+};
 export default Header;
 
 const HeaderWrapper = styled.header`
+  position: relative;
   display: flex;
+  z-index: 1;
   justify-content: space-between;
   align-items: center;
-  padding: 50px;
+  padding: ${calcResponsive({ value: 50, dimension: "height" })};
 `;
 
 const LogoWrapper = styled.div`
   display: flex;
   align-items: center;
 
-  svg {
+  img {
     width: 160px;
-    height: 70px;
-  }
-`;
-
-const CircleButton = styled.div`
-  width: 70px;
-  height: 70px;
-  background-color: #ccc;
-  border-radius: ${({ theme }) => theme.cornerRadius.circular};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  gap: 50px;
-
-  &:hover {
-    background-color: #bbb;
+    height: auto;
+    max-height: 70px;
+    object-fit: contain;
   }
 `;

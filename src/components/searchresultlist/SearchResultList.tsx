@@ -2,16 +2,27 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { SearchResultCard } from "../searchresultcard/SearchResultCard";
 import { MoreButton } from "../more/MoreButton";
+import { calcResponsive } from "@common/styles/theme";
+import scrollbarStyle from "@common/styles/scrollbarStyle";
 
 interface SearchResultListProps {
   results: {
     imageSrc: string;
     title: string;
     address: string;
+    lat: number;
+    lng: number;
   }[];
+  onResultClick: (
+    lat: number,
+    lng: number,
+    title: string,
+    address: string,
+    imageSrc: string
+  ) => void;
 }
 
-export const SearchResultList: React.FC<SearchResultListProps> = ({ results }) => {
+export const SearchResultList: React.FC<SearchResultListProps> = ({ results, onResultClick }) => {
   const [visibleCount, setVisibleCount] = useState(5);
 
   const hasMore = visibleCount < results.length;
@@ -32,6 +43,11 @@ export const SearchResultList: React.FC<SearchResultListProps> = ({ results }) =
             imageSrc={result.imageSrc}
             title={result.title}
             address={result.address}
+            lat={result.lat}
+            lng={result.lng}
+            onLocationClick={() =>
+              onResultClick(result.lat, result.lng, result.title, result.address, result.imageSrc)
+            }
           />
         ))}
       </List>
@@ -46,75 +62,57 @@ export const SearchResultList: React.FC<SearchResultListProps> = ({ results }) =
 };
 
 const Container = styled.div`
-  width: 400px;
-  height: 770px;
-  padding: 20px;
+  width: ${calcResponsive({ value: 400, dimension: "width" })};
+  height: ${calcResponsive({ value: 800, dimension: "height" })};
+  padding: ${calcResponsive({ value: 20, dimension: "width" })};
   background-color: ${({ theme }) => theme.colors.background.neutral0};
   border-radius: ${({ theme }) => theme.cornerRadius.extraLarge};
   box-shadow: ${({ theme }) => theme.shadows.small};
   position: relative;
   display: flex;
   flex-direction: column;
-  padding-right: 15px;
 `;
 
 const Header = styled.h2`
-  font-size: ${({ theme }) => theme.typography.heading.h3.fontSize};
+  font-size: ${calcResponsive({ value: 22, dimension: "height" })};
   font-weight: bold;
   color: ${({ theme }) => theme.colors.text.title};
-  margin-bottom: 25px;
+  margin-bottom: ${calcResponsive({ value: 25, dimension: "width" })};
   display: flex;
   align-items: center;
 `;
 
 const Count = styled.span`
-  font-size: ${({ theme }) => theme.typography.caption.fontSize};
+  font-size: ${calcResponsive({ value: 14, dimension: "height" })};
   font-weight: ${({ theme }) => theme.typography.caption.fontWeight};
   color: ${({ theme }) => theme.colors.text.body};
-  margin-left: 10px;
+  margin-left: ${calcResponsive({ value: 10, dimension: "width" })};
 `;
 
 const List = styled.div`
-  height: 585px;
+  height: ${calcResponsive({ value: 590, dimension: "height" })};
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: ${calcResponsive({ value: 20, dimension: "width" })};
   overflow-y: auto;
   overflow-x: hidden;
-  margin-right: -10px;
-
-  &::-webkit-scrollbar {
-    width: 10px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: ${({ theme }) => theme.colors.background.neutral2};
-    border-radius: ${({ theme }) => theme.cornerRadius.large};
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => theme.colors.primary.hover};
-    border-radius: ${({ theme }) => theme.cornerRadius.large};
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
-    background: ${({ theme }) => theme.colors.primary.normal};
-  }
+  margin-right: ${calcResponsive({ value: -25, dimension: "width" })};
+  ${scrollbarStyle}
 `;
 
 const MoreWrapper = styled.div`
   position: absolute;
-  bottom: 55px;
+  bottom: ${calcResponsive({ value: 55, dimension: "height" })};
   left: 50%;
   transform: translateX(-50%);
 `;
 
 const Footer = styled.div`
-  width: 120px;
-  height: 20px;
+  width: ${calcResponsive({ value: 120, dimension: "width" })};
+  height: ${calcResponsive({ value: 20, dimension: "height" })};
   position: absolute;
-  bottom: 20px;
-  right: 20px;
+  bottom: ${calcResponsive({ value: 20, dimension: "height" })};
+  right: ${calcResponsive({ value: 20, dimension: "width" })};
   font-size: ${({ theme }) => theme.typography.caption.fontSize};
   color: ${({ theme }) => theme.colors.text.caption};
   text-align: right;

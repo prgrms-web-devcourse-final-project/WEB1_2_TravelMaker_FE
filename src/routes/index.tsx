@@ -1,13 +1,60 @@
 import { createBrowserRouter } from "react-router-dom";
 
-import { Main, NotFound, Login, My, Planner } from "pages";
+import { Main, NotFound, Login, My, Planner, Landing } from "pages";
+import { ROUTES } from "./type";
+import { CreateRoomModal, EnterRoomModal } from "@pages/Modal";
+import Header from "@components/header/Header";
+import ProtectedRoute from "./ProtectedRoute";
 
 const router = createBrowserRouter([
-  { path: "/", element: <Main /> }, // 메인 페이지
-  { path: "/login", element: <Login /> }, // 로그인 페이지
-  { path: "/my", element: <My /> }, // 마이 페이지
-  { path: "/planner", element: <Planner /> }, // 플레너 페이지
-  { path: "*", element: <NotFound /> }, // 404 페이지
+  {
+    element: <Header />,
+    children: [
+      {
+        path: ROUTES.MAIN,
+        element: (
+          <ProtectedRoute>
+            <Main />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: ROUTES.MY,
+        element: (
+          <ProtectedRoute>
+            <My />
+          </ProtectedRoute>
+        ),
+      },
+    ],
+  },
+  { path: ROUTES.LOGIN, element: <Login /> },
+  {
+    path: ROUTES.PLANNER,
+    element: (
+      <ProtectedRoute>
+        <Planner />
+      </ProtectedRoute>
+    ),
+  },
+  { path: ROUTES.LANDING, element: <Landing /> },
+  {
+    path: ROUTES.CREATE_MODAL,
+    element: (
+      <ProtectedRoute>
+        <CreateRoomModal />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: ROUTES.ENTER_MODAL,
+    element: (
+      <ProtectedRoute>
+        <EnterRoomModal />
+      </ProtectedRoute>
+    ),
+  },
+  { path: "*", element: <NotFound /> },
 ]);
 
 export default router;
